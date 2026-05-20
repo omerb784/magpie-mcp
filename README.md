@@ -14,6 +14,13 @@ Local dashboard + embedded MCP server. Your AI agent writes HTML, Mermaid, SVG, 
 
 </div>
 
+<p align="center">
+  <a href="https://omerb784.github.io/magpie-mcp/"><b>Website</b></a> ·
+  <a href="https://omerb784.github.io/magpie-mcp/guide.html"><b>User guide</b></a> ·
+  <a href="https://www.npmjs.com/package/magpie-mcp"><b>npm</b></a> ·
+  <a href="SECURITY.md"><b>Security</b></a>
+</p>
+
 ## What it is
 
 > Your LLM gives you chat history. Magpie gives you a gallery your AI curates for you.
