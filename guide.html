@@ -1,0 +1,1965 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Magpie — User Guide</title>
+<meta name="description" content="Magpie user guide — install, architecture, formats, dashboard, compare, iterate, talk-with-agent, shortcuts, MCP tools, export, backup, FAQ." />
+<link rel="icon" type="image/svg+xml" href="./assets/brand/magpie-mark.svg" />
+<link rel="alternate icon" type="image/png" href="./assets/brand/logo-A.png" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Magpie — User Guide" />
+<meta property="og:description" content="Install, architecture, formats, dashboard, compare, iterate, talk-with-agent, MCP tools, export, backup, FAQ." />
+<meta property="og:image" content="./assets/brand/p05-og-v2.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="./assets/brand/p05-og-v2.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500;1,6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0e0f14;
+    --ink-soft: #3a3f55;
+    --paper: #eef0f4;
+    --paper-2: #d9dce3;
+    --bg-elev: #ffffff;
+    --bg-muted: #e3e5ec;
+    --bg-sidebar: #ffffff;
+    --hairline: #e0e3eb;
+    --hairline-strong: #b9bcc8;
+    --mid: #9396a1;
+    --text-mute: #5a5e6d;
+    --text-subtle: #8b8f9c;
+    --cobalt: #1f2b80;
+    --cobalt-deep: #141d5e;
+    --cobalt-soft: rgba(31, 43, 128, 0.08);
+    --accent-tint: rgba(31, 43, 128, 0.06);
+    --accent-soft: rgba(31, 43, 128, 0.10);
+    --shiny: #d4a233;
+    --shiny-deep: #a87e22;
+    --shiny-bg: rgba(212, 162, 51, 0.12);
+    --terra: #c25d3a;
+    --code-bg: #e3e5ec;
+    --code-fg: #1f2b80;
+    --shadow-sm: 0 1px 2px rgba(14,15,20,0.03), 0 2px 8px rgba(14,15,20,0.04);
+    --shadow: 0 2px 4px rgba(14,15,20,0.04), 0 14px 32px rgba(14,15,20,0.06);
+    --r-sm: 8px;
+    --r: 12px;
+    --r-lg: 16px;
+    --sidebar-w: 296px;
+    --content-max: 760px;
+    --rail-w: 232px;
+    --topbar-h: 60px;
+    --sans: "IBM Plex Sans", system-ui, sans-serif;
+    --serif: "Newsreader", Georgia, serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  [data-theme="dark"] {
+    --ink: #ecedf3;
+    --paper: #0e0f14;
+    --paper-2: #1a1c25;
+    --bg-elev: #161821;
+    --bg-muted: #232633;
+    --bg-sidebar: #14161e;
+    --hairline: #2c2f3a;
+    --hairline-strong: #44485a;
+    --mid: #6a6f80;
+    --text-mute: #a3a8bb;
+    --text-subtle: #7a8099;
+    --cobalt: #6f83e8;
+    --cobalt-soft: rgba(111, 131, 232, 0.14);
+    --accent-tint: rgba(111, 131, 232, 0.08);
+    --accent-soft: rgba(111, 131, 232, 0.18);
+    --shiny: #e0b656;
+    --shiny-deep: #d4a233;
+    --shiny-bg: rgba(212, 162, 51, 0.14);
+    --code-bg: #232633;
+    --code-fg: #c4c7d4;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.2);
+    --shadow: 0 2px 4px rgba(0,0,0,0.4), 0 18px 40px rgba(0,0,0,0.3);
+  }
+  [data-theme="dark"] .engrave-img,
+  [data-theme="dark"] .brand img.mark {
+    filter: invert(0.92) hue-rotate(180deg);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font: 16px/1.7 var(--sans);
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: var(--cobalt); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  code, pre, kbd { font-family: var(--mono); }
+  code {
+    background: var(--code-bg); color: var(--code-fg);
+    padding: 2px 6px; border-radius: 4px; font-size: 0.88em;
+  }
+  pre {
+    background: var(--ink); color: #f0e9da;
+    padding: 18px 22px; border-radius: var(--r-sm);
+    overflow-x: auto; font-size: 0.86rem; line-height: 1.6;
+    margin: 0;
+  }
+  [data-theme="dark"] pre { background: #050609; }
+  pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+  pre code .k { color: var(--shiny); }
+  kbd {
+    background: var(--bg-muted); border: 1px solid var(--hairline-strong);
+    border-bottom-width: 2px; border-radius: 4px;
+    padding: 1px 7px; font-size: 0.82em; color: var(--ink);
+  }
+
+  /* ============ LAYOUT ============ */
+
+  .mobile-bar {
+    display: none;
+    position: sticky; top: 0; z-index: 60;
+    height: var(--topbar-h);
+    align-items: center; gap: 14px;
+    padding: 0 18px;
+    background: rgba(238,240,244,.88);
+    backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid var(--hairline);
+  }
+  [data-theme="dark"] .mobile-bar { background: rgba(14,15,20,.88); }
+  .mobile-bar .menu-btn, .mobile-bar .theme-btn {
+    background: var(--bg-elev); border: 1px solid var(--hairline-strong);
+    border-radius: var(--r-sm); width: 40px; height: 40px;
+    display: grid; place-items: center;
+    cursor: pointer; color: var(--ink); font-size: 16px;
+  }
+  .mobile-bar .theme-btn { margin-left: auto; }
+  .mobile-bar .brand-mobile {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 600; color: var(--ink); text-decoration: none;
+  }
+  .mobile-bar .brand-mobile img { width: 28px; height: 28px; }
+  .mobile-bar .brand-mobile .sub {
+    font-family: var(--serif); font-style: italic;
+    color: var(--text-subtle); font-size: 0.84rem;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    min-height: 100vh;
+  }
+
+  /* ============ RIGHT RAIL — per-section marginalia ============ */
+  /* Rail-cells are siblings of each section inside main; they share the same
+     grid row, so each vignette top-aligns with its corresponding section. */
+  aside.rail-cell {
+    padding: 8px 4px;
+    text-align: center;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 12px;
+  }
+  aside.rail-cell .v-num {
+    font: 500 0.58rem var(--mono);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--shiny-deep);
+    margin: 0;
+  }
+  aside.rail-cell .v-label {
+    font-family: var(--serif); font-style: italic;
+    font-weight: 500;
+    color: var(--text-mute); font-size: 0.86rem;
+    line-height: 1.45; margin: 0; max-width: 22ch;
+  }
+  aside.rail-cell .v-label em,
+  aside.rail-cell .v-label .gold { color: var(--cobalt); font-style: italic; font-weight: 500; }
+  aside.rail-cell .v-label .gold { color: var(--shiny-deep); }
+
+  aside.rail-cell img.engrave-img {
+    max-width: 156px; width: 100%; height: auto;
+    display: block;
+    opacity: 0.82;
+  }
+  aside.rail-cell img.engrave-img.mark { max-width: 44px; opacity: 0.7; }
+  [data-theme="dark"] aside.rail-cell img.engrave-img {
+    filter: invert(0.92) hue-rotate(180deg);
+  }
+
+  aside.rail-cell .gold-rule {
+    height: 1px; width: 40px; background: var(--shiny);
+    margin: 8px auto;
+  }
+
+  /* Vertical spine label — sits at top of first rail-cell */
+  aside.rail-cell .rail-spine {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font: 500 0.62rem var(--mono);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    height: 200px;
+    margin: 0 0 16px;
+    align-self: flex-start;
+  }
+  aside.rail-cell .rail-spine b { color: var(--cobalt); font-weight: 600; }
+
+  /* mini 3-actor stack */
+  aside.rail-cell .mini-actors {
+    display: flex; flex-direction: column;
+    gap: 12px; align-items: center; width: 100%;
+  }
+  aside.rail-cell .mini-actor {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    align-items: center; gap: 10px;
+    width: 100%;
+  }
+  aside.rail-cell .mini-actor .ma-portrait {
+    width: 44px; height: 44px;
+    background: var(--paper); border-radius: 50%;
+    display: grid; place-items: center;
+    padding: 4px; overflow: hidden;
+  }
+  aside.rail-cell .mini-actor .ma-portrait img {
+    max-width: 100%; max-height: 100%; opacity: 0.88;
+  }
+  [data-theme="dark"] aside.rail-cell .mini-actor .ma-portrait img {
+    filter: invert(0.92) hue-rotate(180deg);
+  }
+  aside.rail-cell .mini-actor .ma-text { text-align: left; line-height: 1.2; }
+  aside.rail-cell .mini-actor .ma-role {
+    font: 600 0.8rem var(--sans);
+    color: var(--ink); display: block;
+  }
+  aside.rail-cell .mini-actor .ma-verb {
+    font-family: var(--serif); font-style: italic;
+    color: var(--cobalt); font-size: 0.76rem;
+  }
+
+  /* install pill */
+  aside.rail-cell .install-pill {
+    background: var(--ink); color: #f0e9da;
+    padding: 8px 14px; border-radius: 6px;
+    font: 500 0.76rem var(--mono);
+    display: inline-block;
+    box-shadow: var(--shadow-sm);
+  }
+  aside.rail-cell .install-pill .k { color: var(--shiny); }
+
+  /* rubber stamp */
+  aside.rail-cell .stamp {
+    border: 1.5px solid var(--cobalt);
+    padding: 10px 16px; border-radius: 4px;
+    display: inline-flex; flex-direction: column;
+    gap: 1px;
+    font: 600 0.7rem var(--mono);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--cobalt);
+    transform: rotate(-2.5deg);
+    background: var(--bg-elev);
+  }
+  [data-theme="dark"] aside.rail-cell .stamp { background: transparent; }
+
+  /* big serif numeral */
+  aside.rail-cell .big-num {
+    font-family: var(--serif); font-style: italic;
+    font-weight: 600;
+    font-size: 3.6rem; color: var(--cobalt);
+    line-height: 0.9; letter-spacing: -0.03em;
+  }
+  aside.rail-cell .big-num.gold { color: var(--shiny); font-size: 4rem; }
+
+  /* compare mark */
+  aside.rail-cell .compare-mark {
+    display: flex; align-items: center;
+    justify-content: center; gap: 8px;
+  }
+  aside.rail-cell .compare-mark .cm-pane {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    padding: 12px 9px; border-radius: 4px;
+    color: var(--cobalt); font-weight: 500;
+    font: 500 0.74rem var(--mono);
+    min-width: 42px; text-align: center;
+  }
+  aside.rail-cell .compare-mark .cm-pane sub { font-size: 0.7em; vertical-align: -0.2em; }
+  aside.rail-cell .compare-mark .cm-arrow {
+    color: var(--shiny); font-size: 1.2rem;
+  }
+
+  /* version stack */
+  aside.rail-cell .version-stack {
+    display: flex; flex-direction: column; gap: 4px;
+    width: 100%;
+  }
+  aside.rail-cell .version-stack .vs-bar {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    padding: 6px 10px; border-radius: 4px;
+    font: 500 0.7rem var(--mono);
+    color: var(--text-mute);
+    text-align: left;
+  }
+  aside.rail-cell .version-stack .vs-current {
+    background: var(--shiny-bg); border-color: var(--shiny);
+    color: var(--shiny-deep);
+  }
+
+  /* dashboard mini — sketch of 3 regions */
+  aside.rail-cell .dash-mini {
+    display: grid;
+    grid-template-columns: 18% 1fr 30%;
+    gap: 4px; width: 100%; height: 56px;
+  }
+  aside.rail-cell .dash-mini span {
+    background: var(--bg-elev);
+    border: 1px solid var(--hairline);
+    border-radius: 3px;
+  }
+  aside.rail-cell .dash-mini .dm-grid { background: var(--accent-tint); border-color: var(--cobalt); }
+
+  /* 3-pillars mini for §07 */
+  aside.rail-cell .pillars-mini {
+    display: flex; gap: 4px; width: 100%;
+  }
+  aside.rail-cell .pillars-mini .pm-pillar {
+    flex: 1;
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: 4px;
+    padding: 10px 4px;
+    display: flex; flex-direction: column; gap: 4px;
+    align-items: center;
+  }
+  aside.rail-cell .pillars-mini .pm-ico {
+    font-size: 1.1rem; color: var(--cobalt); line-height: 1;
+  }
+  aside.rail-cell .pillars-mini .pm-name {
+    font: 500 0.62rem var(--mono);
+    letter-spacing: 0.08em;
+    color: var(--text-mute);
+  }
+
+  /* Outbox lanes mini for §08 */
+  aside.rail-cell .lanes-mini {
+    display: flex; flex-direction: column; gap: 8px; width: 100%;
+  }
+  aside.rail-cell .lanes-mini .lm-lane {
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  aside.rail-cell .lanes-mini .lm-label {
+    font: 600 0.56rem var(--mono);
+    letter-spacing: 0.18em;
+    color: var(--shiny-deep);
+    text-align: left;
+  }
+  aside.rail-cell .lanes-mini .lm-label.consumed { color: var(--text-subtle); }
+  aside.rail-cell .lanes-mini .lm-bar {
+    height: 12px;
+    background: var(--bg-elev);
+    border: 1px solid var(--hairline);
+    border-left: 3px solid var(--shiny);
+    border-radius: 3px;
+  }
+  aside.rail-cell .lanes-mini .lm-bar.dim { border-left-color: var(--text-subtle); opacity: 0.7; }
+
+  /* Template mini card for §09 */
+  aside.rail-cell .tmpl-mini {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: 6px; padding: 10px 12px;
+    width: 100%;
+    display: flex; flex-direction: column; gap: 6px;
+    text-align: left;
+    box-shadow: var(--shadow-sm);
+  }
+  aside.rail-cell .tmpl-mini .tm-name {
+    font: 600 0.78rem var(--sans);
+    color: var(--ink);
+  }
+  aside.rail-cell .tmpl-mini .tm-body {
+    font: 500 0.64rem var(--mono);
+    color: var(--text-mute);
+    line-height: 1.4;
+  }
+  aside.rail-cell .tmpl-mini .tm-var {
+    background: var(--cobalt-soft); color: var(--cobalt);
+    padding: 0 4px; border-radius: 2px;
+  }
+  aside.rail-cell .tmpl-mini .tm-tags {
+    display: flex; gap: 4px;
+  }
+  aside.rail-cell .tmpl-mini .tm-tags span {
+    font: 500 0.58rem var(--mono);
+    letter-spacing: 0.1em;
+    background: var(--shiny-bg); color: var(--shiny-deep);
+    padding: 2px 5px; border-radius: 3px;
+  }
+
+  /* kbd stack for §10 */
+  aside.rail-cell .kbd-stack {
+    display: flex; flex-direction: column; gap: 6px; align-items: center;
+  }
+  aside.rail-cell .kbd-stack .kbd-mini {
+    background: var(--bg-muted);
+    border: 1px solid var(--hairline-strong);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    padding: 3px 10px;
+    font: 500 0.74rem var(--mono);
+    color: var(--ink);
+    min-width: 48px; text-align: center;
+  }
+
+  /* export tiles */
+  aside.rail-cell .export-tiles {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4px; width: 100%;
+  }
+  aside.rail-cell .export-tiles span {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    padding: 10px 8px; border-radius: 4px;
+    font: 500 0.7rem var(--mono);
+    letter-spacing: 0.14em;
+    color: var(--cobalt);
+    text-align: center;
+  }
+
+  /* tar stamp */
+  aside.rail-cell .tar-stamp {
+    background: var(--ink); color: var(--shiny);
+    padding: 8px 12px; border-radius: 4px;
+    font: 500 0.62rem var(--mono);
+    display: inline-flex; flex-direction: column;
+    gap: 2px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* colophon mini */
+  aside.rail-cell.colophon {
+    border-top: 1px solid var(--hairline);
+    padding-top: 24px; margin-top: 24px;
+  }
+
+  /* ============ SIDEBAR ============ */
+  aside.sidebar {
+    position: sticky; top: 0;
+    height: 100vh;
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--hairline);
+    padding: 26px 22px 22px;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .sidebar .brand-block {
+    display: flex; align-items: center; gap: 14px;
+    text-decoration: none; color: var(--ink);
+    padding: 0 4px;
+  }
+  .sidebar .brand-block img { width: 44px; height: 44px; object-fit: contain; }
+  .sidebar .brand-block .name {
+    font-family: var(--sans); font-weight: 600;
+    font-size: 1.2rem; letter-spacing: -0.014em;
+    line-height: 1.1; display: block;
+  }
+  .sidebar .brand-block .name::after { content: "."; color: var(--shiny); font-weight: 700; }
+  .sidebar .brand-block .sub {
+    font-family: var(--serif); font-style: italic;
+    color: var(--text-mute); font-size: 0.9rem;
+    margin-top: 2px; display: block;
+  }
+  .sidebar .actions {
+    display: flex; gap: 8px;
+  }
+  .sidebar .actions a, .sidebar .actions button {
+    flex: 1;
+    background: var(--bg-elev);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-sm);
+    padding: 9px 12px;
+    font: 500 0.82rem var(--sans);
+    color: var(--ink); text-decoration: none;
+    text-align: center; cursor: pointer;
+    transition: background 100ms, color 100ms, border-color 100ms;
+    box-shadow: var(--shadow-sm);
+  }
+  .sidebar .actions a:hover, .sidebar .actions button:hover {
+    background: var(--accent-tint); color: var(--cobalt);
+    border-color: var(--cobalt);
+  }
+
+  nav.toc {
+    display: flex; flex-direction: column;
+    flex: 1; margin-top: 2px;
+  }
+  nav.toc .toc-label {
+    font: 500 0.66rem var(--mono);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text-subtle);
+    padding: 4px 8px 10px;
+  }
+  nav.toc a {
+    display: grid; grid-template-columns: 28px 1fr;
+    gap: 8px; align-items: baseline;
+    padding: 7px 12px;
+    border-radius: var(--r-sm);
+    color: var(--text-mute);
+    font-size: 0.94rem; text-decoration: none;
+    transition: background 80ms, color 80ms;
+    position: relative;
+  }
+  nav.toc a .num {
+    font: 500 0.7rem var(--mono);
+    color: var(--text-subtle); letter-spacing: 0.04em;
+  }
+  nav.toc a:hover { background: var(--accent-tint); color: var(--cobalt); text-decoration: none; }
+  nav.toc a.active {
+    color: var(--cobalt); background: var(--accent-soft);
+    font-weight: 500;
+  }
+  nav.toc a.active .num { color: var(--cobalt); }
+
+  .sidebar .foot {
+    border-top: 1px solid var(--hairline);
+    padding-top: 14px; margin-top: 6px;
+    display: flex; flex-direction: column; gap: 4px;
+    font-size: 0.84rem;
+  }
+  .sidebar .foot a {
+    color: var(--text-mute); padding: 5px 8px; border-radius: 4px;
+  }
+  .sidebar .foot a:hover { background: var(--accent-tint); color: var(--cobalt); }
+  .sidebar .foot .meta {
+    font: 500 0.7rem var(--mono);
+    color: var(--text-subtle); letter-spacing: 0.06em;
+    padding: 4px 8px;
+  }
+
+  /* ============ MAIN ============ */
+  main {
+    padding: 64px 72px 140px;
+    max-width: calc(var(--content-max) + 144px);
+    margin: 0 auto;
+    width: 100%;
+  }
+  main > section { max-width: var(--content-max); margin-bottom: 96px; scroll-margin-top: 24px; }
+  main > aside.rail-cell { display: none; }
+
+  /* Wide screens — main becomes a 2-col grid; each section pairs with its
+     rail-cell in the same grid row, so vignettes align to section tops. */
+  @media (min-width: 1280px) {
+    main {
+      max-width: none;
+      padding: 64px 40px 140px;
+      display: grid;
+      grid-template-columns: minmax(0, var(--content-max)) var(--rail-w);
+      column-gap: 40px;
+      align-items: start;
+      justify-content: center;
+      row-gap: 0;
+    }
+    main > section {
+      grid-column: 1;
+      margin-bottom: 96px;
+      max-width: 100%;
+    }
+    main > aside.rail-cell {
+      grid-column: 2;
+      display: flex;
+      align-self: start;
+      margin-bottom: 96px;
+    }
+  }
+
+  /* ============ TYPE ============ */
+  h1 {
+    font-family: var(--sans); font-weight: 600;
+    font-size: clamp(2.5rem, 5vw, 3.2rem);
+    line-height: 1.02; letter-spacing: -0.026em; margin: 0 0 18px;
+  }
+  h1 em {
+    font-family: var(--serif); font-style: italic; font-weight: 500; color: var(--cobalt);
+  }
+  h2 {
+    font-family: var(--sans); font-weight: 600;
+    font-size: clamp(1.55rem, 2.6vw, 1.9rem);
+    letter-spacing: -0.018em;
+    margin: 0 0 10px;
+    line-height: 1.14;
+    display: flex; align-items: baseline; gap: 16px;
+    padding-top: 6px;
+  }
+  h2 em { font-family: var(--serif); font-style: italic; font-weight: 500; color: var(--cobalt); }
+  h2 .num {
+    font-family: var(--mono); color: var(--shiny);
+    font-weight: 500; font-size: 0.5em; letter-spacing: 0.16em;
+    background: var(--shiny-bg);
+    padding: 4px 10px; border-radius: 999px;
+    line-height: 1; flex-shrink: 0;
+  }
+  h3 {
+    font-family: var(--sans); font-weight: 600;
+    font-size: 1.06rem; margin: 36px 0 10px;
+    letter-spacing: -0.005em;
+  }
+  p { margin: 0 0 14px; color: var(--ink); }
+  p.lead {
+    font-family: var(--serif); font-style: italic;
+    font-weight: 400; font-size: 1.18rem; color: var(--text-mute);
+    max-width: 56ch; margin: 0 0 22px;
+    line-height: 1.55;
+  }
+  ul, ol { padding-left: 24px; margin: 0 0 14px; color: var(--ink); }
+  li { margin-bottom: 6px; }
+
+  figure { margin: 24px 0; max-width: 100%; }
+  figure img {
+    width: 100%; height: auto; display: block;
+    border-radius: var(--r); border: 1px solid var(--hairline);
+    box-shadow: var(--shadow);
+  }
+  figcaption {
+    display: flex; align-items: baseline; gap: 14px;
+    margin-top: 14px; font-size: 0.88rem;
+  }
+  figcaption .label {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--shiny-deep);
+    flex-shrink: 0;
+  }
+  figcaption .desc { font-family: var(--serif); font-style: italic; color: var(--text-mute); }
+
+  /* hero pills */
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; }
+  .pill {
+    font-family: var(--mono); font-size: 10.5px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 999px;
+    border: 1px solid var(--hairline);
+    color: var(--text-mute); background: var(--bg-elev);
+    box-shadow: var(--shadow-sm);
+  }
+  .pill.accent { color: var(--cobalt); border-color: var(--cobalt); background: var(--accent-tint); }
+  .pill.gold { color: var(--shiny-deep); border-color: var(--shiny); background: var(--shiny-bg); }
+
+  /* hero strip — refined dashboard preview */
+  .hero { padding: 8px 0 18px; }
+  .hero-install {
+    display: inline-flex; align-items: center; gap: 12px; margin-top: 10px;
+  }
+  .hero pre {
+    padding: 14px 22px; font-size: 0.96rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .hero-strip {
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 14px; margin: 36px 0 12px;
+  }
+  @media (max-width: 720px) { .hero-strip { grid-template-columns: 1fr; } }
+  .hero-strip figure { margin: 0; position: relative; border-radius: var(--r); overflow: hidden;
+                       box-shadow: var(--shadow); border: 1px solid var(--hairline); }
+  .hero-strip figure img {
+    width: 100%; height: 100%; object-fit: cover; object-position: top left;
+    border-radius: 0; border: none; box-shadow: none;
+  }
+  .hero-strip figcaption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 12px 14px;
+    background: linear-gradient(to top, rgba(14,15,20,0.78), rgba(14,15,20,0));
+    color: #f0e9da; margin: 0;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .hero-strip figcaption .label {
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em;
+    color: var(--shiny);
+  }
+  .hero-strip figcaption .desc {
+    font-family: var(--serif); font-style: italic; font-size: 0.82rem;
+    color: rgba(240,233,218,0.85);
+  }
+
+  /* actor cards */
+  .actors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 22px 0; }
+  @media (max-width: 980px) { .actors { grid-template-columns: 1fr; } }
+  .actor {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: var(--r); padding: 22px 22px 24px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .actor:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .actor .seal {
+    width: 64px; height: 64px;
+    background: var(--paper); border-radius: 50%;
+    display: grid; place-items: center; padding: 6px;
+    margin-bottom: 16px;
+  }
+  .actor .seal img { max-width: 100%; max-height: 100%; }
+  .actor .role {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--cobalt);
+    display: inline-flex; align-items: center; gap: 6px;
+    margin: 0 0 6px;
+  }
+  .actor .role::before { content: ""; width: 5px; height: 5px; background: var(--cobalt); border-radius: 50%; }
+  .actor h4 { font-size: 1.18rem; letter-spacing: -0.014em; margin: 0 0 4px; font-weight: 600; }
+  .actor .verb {
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    color: var(--cobalt); font-size: 0.98rem; margin: 0 0 8px;
+  }
+  .actor p { font-size: 0.9rem; line-height: 1.55; color: var(--text-mute); margin: 0; }
+  .actor p strong { color: var(--ink); font-weight: 500; }
+  .shorthand {
+    text-align: center; margin: 30px 0 0;
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    color: var(--ink); font-size: 1.12rem;
+  }
+  .shorthand .sep { color: var(--shiny); margin: 0 12px; }
+
+  /* generic cards */
+  .card {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: var(--r); padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .card h3:first-child { margin-top: 0; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 14px 0; }
+  @media (max-width: 820px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  /* format cards */
+  .format-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+    margin: 18px 0;
+  }
+  @media (max-width: 720px) { .format-grid { grid-template-columns: 1fr; } }
+  .format-card {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: var(--r); overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .format-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .format-card .thumb { aspect-ratio: 5/3; background: var(--bg-muted); overflow: hidden; }
+  .format-card .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .format-card .body { padding: 14px 18px 18px; }
+  .format-card h4 {
+    font-family: var(--sans); font-weight: 600; font-size: 1rem;
+    margin: 0 0 4px; display: flex; align-items: center; gap: 10px;
+  }
+  .format-card .ext {
+    font-family: var(--mono); font-size: 0.72rem; color: var(--text-subtle);
+    letter-spacing: 0.06em; display: block; margin-bottom: 8px;
+  }
+  .format-card p { font-size: 0.88rem; color: var(--text-mute); margin: 0; line-height: 1.5; }
+  .format-card.deferred { background: var(--paper); border-style: dashed; }
+  .badge {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
+  }
+  .badge.html { background: rgba(194,93,58,0.12); color: #c25d3a; }
+  .badge.mermaid { background: rgba(59,111,179,0.12); color: #3b6fb3; }
+  .badge.svg { background: rgba(90,138,82,0.14); color: #5a8a52; }
+  .badge.markdown { background: rgba(183,131,32,0.14); color: #b78320; }
+  .badge.dot { background: rgba(122,75,168,0.12); color: #7a4ba8; }
+  .badge.vega { background: rgba(188,76,108,0.12); color: #bc4c6c; }
+  .badge.d2 { background: rgba(31,122,122,0.12); color: #1f7a7a; }
+
+  /* steps */
+  .step-list { counter-reset: step; padding-left: 0; list-style: none; margin: 18px 0; }
+  .step-list li {
+    counter-increment: step;
+    padding: 18px 22px 18px 78px;
+    position: relative;
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: var(--r); margin-bottom: 10px;
+    font-size: 0.96rem; line-height: 1.6;
+    box-shadow: var(--shadow-sm);
+    transition: transform 160ms ease;
+  }
+  .step-list li:hover { transform: translateX(3px); }
+  .step-list li::before {
+    content: counter(step, decimal-leading-zero);
+    position: absolute; left: 22px; top: 18px;
+    font-family: var(--serif); font-style: italic; font-weight: 600;
+    font-size: 2rem; color: var(--shiny); line-height: 0.9;
+  }
+  .step-list li strong { color: var(--ink); font-weight: 600; }
+
+  /* tabs */
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--hairline); padding: 0 6px; }
+  .tabs button {
+    background: none; border: none; padding: 10px 18px; font-size: 0.9rem;
+    font-family: var(--sans); font-weight: 500;
+    color: var(--text-mute); cursor: pointer; border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tabs button:hover { color: var(--ink); }
+  .tabs button.active { color: var(--cobalt); border-bottom-color: var(--cobalt); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  .code-card { background: var(--bg-elev); border: 1px solid var(--hairline); border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow-sm); }
+  .code-card .tab-panel { padding: 14px 16px 16px; }
+  .code-card .tab-note { font-size: 0.84rem; color: var(--text-mute); margin: 10px 0 0; }
+
+  /* MCP tool cards — phase grouped */
+  .tool-phase {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: var(--r); overflow: hidden;
+    box-shadow: var(--shadow-sm); margin-bottom: 14px;
+  }
+  .tool-phase .ph-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 12px 18px;
+    background: linear-gradient(to right, var(--accent-tint), transparent);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .tool-phase .ph-head h4 {
+    font-family: var(--sans); font-size: 0.96rem; font-weight: 600; margin: 0;
+  }
+  .tool-phase .ph-head .ph-num {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--shiny-deep);
+  }
+  .tool-phase .tool-row {
+    display: grid; grid-template-columns: 200px 1fr;
+    gap: 18px; padding: 12px 18px;
+    border-bottom: 1px solid var(--hairline);
+    transition: background 80ms;
+    align-items: start;
+  }
+  .tool-phase .tool-row:last-child { border-bottom: none; }
+  .tool-phase .tool-row:hover { background: var(--accent-tint); }
+  .tool-phase .tool-name { font-family: var(--mono); font-size: 0.88rem; color: var(--cobalt); font-weight: 500; }
+  .tool-phase .tool-desc { color: var(--text-mute); line-height: 1.5; font-size: 0.92rem; }
+  @media (max-width: 720px) {
+    .tool-phase .tool-row { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  /* shortcuts */
+  .keys { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 18px; margin: 18px 0; }
+  @media (max-width: 640px) { .keys { grid-template-columns: 1fr; } }
+  .keys .row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: var(--r-sm);
+    font-size: 0.92rem;
+  }
+  .keys .row .ks { display: inline-flex; align-items: center; gap: 4px; min-width: 80px; }
+  .keys .row span { color: var(--text-mute); }
+
+  /* presets */
+  .presets-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 18px 0; }
+  @media (max-width: 720px) { .presets-grid { grid-template-columns: 1fr; } }
+  .preset {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: var(--r-sm); padding: 14px 18px;
+    transition: transform 160ms ease, box-shadow 160ms ease;
+  }
+  .preset:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .preset .ico {
+    display: inline-grid; place-items: center;
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--accent-tint); color: var(--cobalt);
+    font-weight: 600; font-size: 14px; margin-right: 10px;
+    vertical-align: -8px;
+  }
+  .preset h4 { display: inline; font-family: var(--sans); font-weight: 600; font-size: 0.96rem; }
+  .preset p { font-size: 0.84rem; color: var(--text-mute); margin: 8px 0 0; line-height: 1.5; }
+
+  .arch-svg, .state-svg { width: 100%; max-width: 100%; height: auto; display: block; margin: 0 auto; }
+
+  /* callouts */
+  .callout {
+    background: var(--bg-elev);
+    border: 1px solid var(--hairline);
+    border-left: 3px solid var(--cobalt);
+    padding: 14px 18px; border-radius: var(--r-sm);
+    margin: 18px 0; font-size: 0.92rem; line-height: 1.55;
+    box-shadow: var(--shadow-sm);
+  }
+  .callout.gold { border-left-color: var(--shiny); }
+  .callout strong { color: var(--cobalt); }
+  .callout.gold strong { color: var(--shiny-deep); }
+  .callout .label {
+    display: block; font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--text-subtle); margin-bottom: 6px;
+  }
+
+  .nogo li::marker { color: var(--shiny); }
+
+  /* code copy buttons */
+  .code-wrap { position: relative; }
+  .code-wrap .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(255,255,255,0.08); color: #f0e9da;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 4px; padding: 4px 10px;
+    font: 500 10.5px var(--mono);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; opacity: 0; transition: opacity 120ms;
+  }
+  .code-wrap:hover .copy-btn, .code-wrap:focus-within .copy-btn { opacity: 1; }
+  .code-wrap .copy-btn:hover { background: rgba(255,255,255,0.16); }
+  .code-wrap .copy-btn.copied { background: var(--shiny-bg); color: var(--shiny); border-color: var(--shiny); }
+
+  /* export grid */
+  .export-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 18px 0; }
+  @media (max-width: 720px) { .export-grid { grid-template-columns: 1fr; } }
+  .export-tile {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: var(--r); padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 160ms ease;
+  }
+  .export-tile:hover { transform: translateY(-2px); }
+  .export-tile .fmt {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--shiny-deep); margin: 0 0 6px;
+  }
+  .export-tile h4 { margin: 0 0 8px; font-size: 1.04rem; }
+  .export-tile p { font-size: 0.9rem; color: var(--text-mute); margin: 0; line-height: 1.5; }
+
+  /* FAQ */
+  .faq {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: var(--r); overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    margin: 18px 0;
+  }
+  .faq details { border-bottom: 1px solid var(--hairline); padding: 0; }
+  .faq details:last-child { border-bottom: none; }
+  .faq summary {
+    cursor: pointer; padding: 16px 22px;
+    font-family: var(--sans); font-weight: 600; font-size: 1rem;
+    color: var(--ink);
+    list-style: none;
+    display: flex; align-items: center; gap: 14px;
+    transition: background 100ms;
+  }
+  .faq summary:hover { background: var(--accent-tint); }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::before {
+    content: "+"; color: var(--shiny); font-family: var(--mono);
+    font-size: 1.2rem; font-weight: 400; line-height: 1; min-width: 16px;
+    transition: transform 200ms;
+  }
+  .faq details[open] summary::before { content: "−"; }
+  .faq details > *:not(summary) { padding: 0 22px 18px 52px; }
+  .faq details p { font-size: 0.94rem; color: var(--text-mute); line-height: 1.6; margin: 0 0 8px; }
+  .faq details ul { font-size: 0.94rem; color: var(--text-mute); }
+
+  /* mobile drawer */
+  .backdrop { display: none; position: fixed; inset: 0; background: rgba(14,15,20,0.5); z-index: 90; }
+  body.menu-open .backdrop { display: block; }
+  @media (max-width: 980px) {
+    :root { --content-max: 100%; }
+    .mobile-bar { display: flex; }
+    .layout { grid-template-columns: 1fr; }
+    aside.sidebar {
+      position: fixed; left: 0; top: 0;
+      width: 296px; height: 100vh;
+      transform: translateX(-100%);
+      transition: transform 200ms ease;
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+    body.menu-open aside.sidebar { transform: translateX(0); }
+    main { padding: 32px 24px 96px; }
+  }
+  @media (max-width: 540px) {
+    main { padding: 24px 18px 80px; }
+    h1 { font-size: 2.1rem; }
+    h2 { font-size: 1.4rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="mobile-bar">
+  <button class="menu-btn" aria-label="Open menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+  <a href="./index.html" class="brand-mobile">
+    <img class="mark" src="./assets/brand/logo-A.png" alt="Magpie mark" />
+    <span>Magpie</span>
+    <span class="sub">User Guide</span>
+  </a>
+  <button class="theme-btn" aria-label="Toggle theme" onclick="toggleTheme()">◐</button>
+</header>
+
+<div class="backdrop" onclick="document.body.classList.remove('menu-open')"></div>
+
+<div class="layout">
+
+  <aside class="sidebar" id="sidebar">
+    <a href="./index.html" class="brand-block">
+      <img class="mark" src="./assets/brand/logo-A.png" alt="Magpie mark" />
+      <div>
+        <span class="name">Magpie</span>
+        <span class="sub">User Guide</span>
+      </div>
+    </a>
+
+    <div class="actions">
+      <a href="./index.html" title="Back to landing">← Home</a>
+      <button onclick="toggleTheme()" title="Toggle light / dark theme">◐ Theme</button>
+    </div>
+
+    <nav class="toc" id="toc">
+      <span class="toc-label">On this page</span>
+      <a href="#top"><span class="num">↑</span>Overview</a>
+      <a href="#actors"><span class="num">00</span>Three actors</a>
+      <a href="#install"><span class="num">01</span>Install</a>
+      <a href="#architecture"><span class="num">02</span>How it works</a>
+      <a href="#formats"><span class="num">03</span>Formats</a>
+      <a href="#dashboard"><span class="num">04</span>Dashboard</a>
+      <a href="#compare"><span class="num">05</span>Compare</a>
+      <a href="#iterate"><span class="num">06</span>Iterate</a>
+      <a href="#talk"><span class="num">07</span>Talk with agent</a>
+      <a href="#outbox"><span class="num">08</span>The Outbox</a>
+      <a href="#templates"><span class="num">09</span>Templates</a>
+      <a href="#shortcuts"><span class="num">10</span>Shortcuts</a>
+      <a href="#tools"><span class="num">11</span>MCP tools</a>
+      <a href="#export"><span class="num">12</span>Export</a>
+      <a href="#backup"><span class="num">13</span>Backup</a>
+      <a href="#faq"><span class="num">14</span>FAQ</a>
+    </nav>
+
+    <div class="foot">
+      <a href="https://github.com/omerb784/magpie-mcp" target="_blank" rel="noopener">GitHub →</a>
+      <a href="https://npmjs.com/package/magpie-mcp" target="_blank" rel="noopener">npm →</a>
+      <span class="meta">v1.0 · MIT</span>
+    </div>
+  </aside>
+
+  <main id="content">
+
+    <section class="hero" id="top">
+      <div class="pills">
+        <span class="pill accent">v1.0</span>
+        <span class="pill">offline · local-first</span>
+        <span class="pill">7 formats</span>
+        <span class="pill gold">MIT</span>
+      </div>
+      <h1>Your loyal <em>Magpie.</em><br/>Lands every visual in the nest.</h1>
+      <p class="lead">
+        Magpie is a local nest for every visual your AI hands you — mockups, diagrams, charts, status reports, plans.
+        Library, projects, tags, versions, side-by-side compare. One Node process, your browser, your disk.
+        No cloud. No accounts.
+      </p>
+      <div class="hero-install">
+        <pre><code><span class="k">$</span> npx magpie-mcp</code></pre>
+      </div>
+
+      <div class="hero-strip">
+        <figure>
+          <img src="./assets/dashboard/01-dashboard-light.png" alt="Magpie dashboard, light theme" loading="lazy" />
+          <figcaption><span class="label">Library</span><span class="desc">grid, projects, tags</span></figcaption>
+        </figure>
+        <figure>
+          <img src="./assets/dashboard/04-grid-all.png" alt="All-visuals grid view" loading="lazy" />
+          <figcaption><span class="label">Grid</span><span class="desc">all visuals</span></figcaption>
+        </figure>
+        <figure>
+          <img src="./assets/dashboard/06-compare-side-by-side.png" alt="Side-by-side compare" loading="lazy" />
+          <figcaption><span class="label">Compare</span><span class="desc">v(N-1) ↔ vN</span></figcaption>
+        </figure>
+      </div>
+    </section>
+    <aside class="rail-cell">
+      <div class="rail-spine">Magpie <b>·</b> User Guide <b>·</b> v1.0</div>
+      <p class="v-num">Plate I</p>
+      <img class="engrave-img" src="./assets/brand/p02-pose-04-perched.png" alt="" loading="lazy" />
+      <p class="v-label">Your loyal <span class="gold">Magpie.</span><br/>Lands every visual<br/>in the nest.</p>
+    </aside>
+
+    <section id="actors">
+      <h2><span class="num">00</span>Three actors</h2>
+      <p class="lead">You're the reader they all serve.</p>
+
+      <div class="actors">
+        <div class="actor">
+          <div class="seal"><img class="engrave-img" src="./assets/brand/p04-master.png" alt="Master · open book with quill — trainer illustration" /></div>
+          <p class="role">trainer</p>
+          <h4>Master</h4>
+          <p class="verb">Teaches your AI Magpie's rules.</p>
+          <p>A portable skill bundled in the npm tarball. Decides which project a visual belongs to, when to iterate vs add, when to ask before filing. <strong>No code, no storage — pure judgment.</strong></p>
+        </div>
+        <div class="actor">
+          <div class="seal"><img class="engrave-img" src="./assets/brand/m04-bird.png" alt="Magpie · the trained bird" /></div>
+          <p class="role">trained bird</p>
+          <h4>Magpie</h4>
+          <p class="verb">Tends the nest, version after version.</p>
+          <p>Your AI with the Master loaded. <strong>Brings visuals to the Nest</strong>, arranges them by project, keeps versions in order, asks before adding when uncertain.</p>
+        </div>
+        <div class="actor">
+          <div class="seal"><img class="engrave-img" src="./assets/brand/m02-nest.png" alt="Nest · woven nest with gold bead" /></div>
+          <p class="role">dumb infra</p>
+          <h4>Nest</h4>
+          <p class="verb">Local. Quiet. Yours.</p>
+          <p>One SQLite file. One blobs folder. Lives at <code>~/.magpie/</code> on your disk. <strong>Holds what your Magpie brings.</strong> No LLM. No telemetry.</p>
+        </div>
+      </div>
+
+      <p class="shorthand">Master trains<span class="sep">·</span>Magpie tends<span class="sep">·</span>Nest keeps.</p>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">Fig. 00 · Cast</p>
+      <div class="mini-actors">
+        <div class="mini-actor">
+          <div class="ma-portrait"><img class="engrave-img" src="./assets/brand/m03-master.png" alt="" loading="lazy" /></div>
+          <div class="ma-text"><span class="ma-role">Master</span><span class="ma-verb">trains</span></div>
+        </div>
+        <div class="mini-actor">
+          <div class="ma-portrait"><img class="engrave-img" src="./assets/brand/m04-bird.png" alt="" loading="lazy" /></div>
+          <div class="ma-text"><span class="ma-role">Magpie</span><span class="ma-verb">tends</span></div>
+        </div>
+        <div class="mini-actor">
+          <div class="ma-portrait"><img class="engrave-img" src="./assets/brand/m02-nest.png" alt="" loading="lazy" /></div>
+          <div class="ma-text"><span class="ma-role">Nest</span><span class="ma-verb">keeps</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <section id="install">
+      <h2><span class="num">01</span>Install &amp; wire to your host</h2>
+      <p class="lead">Two listeners boot from one command: stdio (for your AI host) and HTTP (for your browser).</p>
+
+      <ol class="step-list">
+        <li><strong>Boot the server.</strong> Run <code>npx magpie-mcp</code> in a terminal. It prints a dashboard URL like <code>http://127.0.0.1:3737</code>. Open that in your browser. If 3737 is taken, it auto-bumps.</li>
+        <li><strong>Install the Master skill.</strong> Run <code>npx magpie-mcp --install-skill</code>. Drops the skill into your host's skill directory (auto-detected for Claude Code · Claude Desktop). Your AI now knows the protocol.</li>
+        <li><strong>Get the MCP config snippet.</strong> In another terminal: <code>npx magpie-mcp --print-config</code>. It prints both Claude Code and Claude Desktop forms.</li>
+        <li><strong>Paste into your host.</strong> Use the tab below that matches your client. Restart the host to load the server.</li>
+        <li><strong>Ask your AI to mock something.</strong> Try <em>"Mock a settings page"</em> or <em>"Sketch the auth flow as a diagram."</em> The visual lands in the dashboard within a second.</li>
+      </ol>
+
+      <h3>MCP config snippet</h3>
+      <div class="code-card">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="code">Claude Code</button>
+          <button class="tab-btn" data-tab="desktop">Claude Desktop</button>
+        </div>
+        <div class="tab-panel active" data-tab="code">
+<pre><code>{
+  "mcpServers": {
+    "magpie": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "magpie-mcp"]
+    }
+  }
+}</code></pre>
+          <p class="tab-note">Drop this in <code>.mcp.json</code> at your repo root, or your Claude Code config.</p>
+        </div>
+        <div class="tab-panel" data-tab="desktop">
+<pre><code>{
+  "mcpServers": {
+    "magpie": {
+      "command": "npx",
+      "args": ["-y", "magpie-mcp"]
+    }
+  }
+}</code></pre>
+          <p class="tab-note">Add to <code>claude_desktop_config.json</code>. macOS path: <code>~/Library/Application Support/Claude/</code>. Restart Claude Desktop.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="label">Configuration</span>
+        <strong>MAGPIE_HOME:</strong> set <code>MAGPIE_HOME=/path</code> to pin storage to a custom directory. Default is <code>~/.magpie/</code>. Backup is copying that folder. See <a href="#backup">§13 Backup</a>.
+      </div>
+
+      <div class="callout gold">
+        <span class="label">Other hosts</span>
+        <strong>Cursor · Cline · any MCP host:</strong> Magpie speaks the standard MCP stdio transport — no proprietary protocol, no API key. <code>--install-skill</code> ships to Claude Code + Claude Desktop today; Cursor + Cline detection arrives in v1.1.
+      </div>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">§01 · Install</p>
+      <div class="install-pill"><span class="k">$</span> npx magpie-mcp</div>
+      <p class="v-label"><em>One command.</em><br/>One process.</p>
+    </aside>
+
+    <section id="architecture">
+      <h2><span class="num">02</span>How it works</h2>
+      <p class="lead">One process, two surfaces. Your AI commands via stdio. You watch via the browser. <strong>No LLM lives in the server.</strong></p>
+
+      <figure>
+        <svg class="arch-svg" viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture diagram">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f2b80" /></marker>
+            <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9396a1" /></marker>
+          </defs>
+          <rect x="20" y="40" width="200" height="120" rx="10" fill="#ffffff" stroke="#0e0f14" stroke-width="1.5"/>
+          <text x="120" y="68" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="15" fill="#0e0f14">Your AI host</text>
+          <text x="120" y="86" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">Claude · Cursor · Cline</text>
+          <rect x="36" y="98" width="168" height="20" rx="4" fill="rgba(31,43,128,0.1)" stroke="#1f2b80"/>
+          <text x="120" y="112" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1f2b80">magpie-master · skill</text>
+          <text x="120" y="138" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#8b8f9c">writes HTML · Mermaid · SVG · MD</text>
+          <text x="120" y="152" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#8b8f9c">DOT · Vega-Lite · D2</text>
+          <rect x="280" y="20" width="200" height="300" rx="10" fill="#0e0f14"/>
+          <text x="380" y="50" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="15" fill="#f0e9da">magpie-mcp</text>
+          <text x="380" y="68" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#d4a233">single Node process</text>
+          <line x1="296" y1="82" x2="464" y2="82" stroke="#3a3f55" stroke-width="1"/>
+          <text x="380" y="104" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">stdio listener (MCP)</text>
+          <text x="380" y="132" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">HTTP + WS server</text>
+          <text x="380" y="160" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">better-sqlite3 (sync)</text>
+          <text x="380" y="188" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">~/.magpie/blobs/</text>
+          <text x="380" y="216" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">render pool</text>
+          <text x="380" y="232" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#9396a1">puppeteer-core · WASM</text>
+          <line x1="296" y1="252" x2="464" y2="252" stroke="#3a3f55" stroke-width="1"/>
+          <text x="380" y="276" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="12" fill="#d4a233">no LLM weights</text>
+          <text x="380" y="294" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="12" fill="#d4a233">no telemetry · no phone-home</text>
+          <rect x="540" y="40" width="200" height="120" rx="10" fill="#ffffff" stroke="#0e0f14" stroke-width="1.5"/>
+          <text x="640" y="68" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="15" fill="#0e0f14">Browser tab</text>
+          <text x="640" y="86" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">React dashboard</text>
+          <text x="640" y="108" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#3a3f55">grid · drawer · compare</text>
+          <text x="640" y="126" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#3a3f55">talk-with-agent menu</text>
+          <path d="M 222 90 L 278 90" stroke="#1f2b80" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+          <text x="250" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1f2b80">stdio</text>
+          <path d="M 278 116 L 222 116" stroke="#9396a1" stroke-width="1.4" stroke-dasharray="4 3" fill="none" marker-end="url(#arrow2)"/>
+          <path d="M 482 90 L 538 90" stroke="#1f2b80" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+          <text x="510" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1f2b80">HTTP/WS</text>
+          <path d="M 538 116 L 482 116" stroke="#9396a1" stroke-width="1.4" stroke-dasharray="4 3" fill="none" marker-end="url(#arrow2)"/>
+          <rect x="20" y="220" width="200" height="100" rx="10" fill="#ffffff" stroke="#0e0f14" stroke-width="1.5"/>
+          <text x="120" y="258" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="15" fill="#0e0f14">You</text>
+          <text x="120" y="278" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">tag · star · compare ·</text>
+          <text x="120" y="294" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">archive · talk-with-agent</text>
+          <path d="M 120 220 L 120 160" stroke="#9396a1" stroke-width="1.4" stroke-dasharray="4 3" fill="none"/>
+          <path d="M 220 270 L 278 270" stroke="#d4a233" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+          <text x="248" y="262" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#a87e22">commands</text>
+        </svg>
+        <figcaption><span class="label">Fig. 02</span><span class="desc">Your AI is the command channel. The server is dumb infra — it never calls an LLM.</span></figcaption>
+      </figure>
+
+      <div class="grid-3">
+        <div class="card">
+          <h3>Storage</h3>
+          <p style="font-size:.9rem;color:var(--text-mute);margin:0;">Single SQLite file at <code>~/.magpie/magpie.db</code> for metadata. Blobs at <code>blobs/&lt;id&gt;/v&lt;n&gt;.&lt;ext&gt;</code>. Migrations are <strong>forward-only</strong>.</p>
+        </div>
+        <div class="card">
+          <h3>Renderers</h3>
+          <p style="font-size:.9rem;color:var(--text-mute);margin:0;">Mermaid bundled offline; Markdown via marked + DOMPurify; DOT via graphviz-wasm; Vega-Lite via vega SSR; D2 via wasm. PNG thumbs via <code>puppeteer-core</code>.</p>
+        </div>
+        <div class="card">
+          <h3>No network</h3>
+          <p style="font-size:.9rem;color:var(--text-mute);margin:0;">Offline-capable. Vega-Lite specs must carry inline data (<code>"data": {"values": ...}</code>). Zero telemetry, zero accounts.</p>
+        </div>
+      </div>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">§02 · Constraint</p>
+      <div class="stamp">
+        <span>no LLM</span>
+        <span>no cloud</span>
+        <span>no phone-home</span>
+      </div>
+    </aside>
+
+    <section id="formats">
+      <h2><span class="num">03</span>Seven supported formats</h2>
+      <p class="lead">Your AI picks a format that fits the request. Magpie renders + thumbnails each one. All offline. All side-by-side comparable.</p>
+
+      <div class="format-grid">
+        <div class="format-card">
+          <div class="thumb"><img src="./assets/dashboard/05-drawer-html.png" alt="HTML mockup example" loading="lazy" /></div>
+          <div class="body">
+            <h4>HTML <span class="badge html">html</span></h4>
+            <span class="ext">.html · sandboxed iframe</span>
+            <p>UI mockups, dashboards, landing pages. Rendered in a sandboxed iframe (no <code>allow-same-origin</code>).</p>
+          </div>
+        </div>
+        <div class="format-card">
+          <div class="thumb"><img src="./assets/dashboard/16-format-mermaid.png" alt="Mermaid diagram example" loading="lazy" /></div>
+          <div class="body">
+            <h4>Mermaid <span class="badge mermaid">mermaid</span></h4>
+            <span class="ext">.mmd · bundled v11</span>
+            <p>Flowcharts, sequence, state, ER, gantt. Rendered offline — no CDN.</p>
+          </div>
+        </div>
+        <div class="format-card">
+          <div class="thumb"><img src="./assets/dashboard/15-format-svg.png" alt="SVG example" loading="lazy" /></div>
+          <div class="body">
+            <h4>SVG <span class="badge svg">svg</span></h4>
+            <span class="ext">.svg · direct</span>
+            <p>Icons, logos, single vector elements. Served as <code>image/svg+xml</code>.</p>
+          </div>
+        </div>
+        <div class="format-card">
+          <div class="thumb"><img src="./assets/dashboard/14-format-markdown.png" alt="Markdown rendered example" loading="lazy" /></div>
+          <div class="body">
+            <h4>Markdown <span class="badge markdown">md</span></h4>
+            <span class="ext">.md · marked + DOMPurify</span>
+            <p>Prose, READMEs, design notes. Code blocks syntax-highlighted (highlight.js).</p>
+          </div>
+        </div>
+        <div class="format-card">
+          <div class="thumb"><img src="./assets/dashboard/13-format-dot.png" alt="Graphviz DOT example" loading="lazy" /></div>
+          <div class="body">
+            <h4>Graphviz / DOT <span class="badge dot">dot</span></h4>
+            <span class="ext">.dot · graphviz-wasm</span>
+            <p>Directed and undirected graphs. <code>digraph</code> / <code>graph</code> source.</p>
+          </div>
+        </div>
+        <div class="format-card">
+          <div class="thumb"><img src="./assets/dashboard/11-format-vega.png" alt="Vega-Lite chart example" loading="lazy" /></div>
+          <div class="body">
+            <h4>Vega-Lite <span class="badge vega">vega-lite</span></h4>
+            <span class="ext">.vl.json · vega SSR</span>
+            <p>Charts, data viz. JSON spec with inline data (no remote fetches).</p>
+          </div>
+        </div>
+        <div class="format-card">
+          <div class="thumb"><img src="./assets/dashboard/12-format-d2.png" alt="D2 diagram example" loading="lazy" /></div>
+          <div class="body">
+            <h4>D2 <span class="badge d2">d2</span></h4>
+            <span class="ext">.d2 · @terrastruct/d2 (wasm)</span>
+            <p>Modern diagram-as-code. Clean syntax, good for system maps.</p>
+          </div>
+        </div>
+        <div class="format-card deferred">
+          <div class="thumb" style="display:grid;place-items:center;color:var(--text-subtle);">
+            <span style="font-family:var(--mono);font-size:0.76rem;letter-spacing:0.14em;">DEFERRED</span>
+          </div>
+          <div class="body">
+            <h4>plantuml · excalidraw</h4>
+            <span class="ext">offline + pure-JS rule</span>
+            <p>JVM dep / canvas-heavy — break the offline rule. Not on the roadmap.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">§03 · Formats</p>
+      <div class="big-num">7</div>
+      <p class="v-label">html · mermaid · svg<br/>md · dot · vega · d2</p>
+    </aside>
+
+    <section id="dashboard">
+      <h2><span class="num">04</span>The dashboard</h2>
+      <p class="lead">Three regions: sidebar (filters), grid (your visuals), drawer (the selected one). View-only — entity creation goes through MCP.</p>
+
+      <figure>
+        <img src="./assets/dashboard/04-grid-all.png" alt="Dashboard grid view" loading="lazy" />
+        <figcaption><span class="label">Fig. 04-a</span><span class="desc">Grid view, "All visuals". The sidebar filters compose with AND.</span></figcaption>
+      </figure>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Sidebar filters</h3>
+          <ul style="font-size:.92rem;">
+            <li><strong>Library</strong> — All / Starred / Archived counts.</li>
+            <li><strong>Projects</strong> — flat list with visual counts. Click to filter.</li>
+            <li><strong>Tags</strong> — every tag in the library, sorted by use. Click multiple → AND.</li>
+            <li><strong>Type</strong> — filter by format (html, mermaid, svg, …).</li>
+            <li><strong>Source</strong> — which generator made it (Stitch, Figma, Mermaid Chart, etc.).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>The drawer</h3>
+          <ul style="font-size:.92rem;">
+            <li><strong>Open preview</strong> — full-page render in a unified shell.</li>
+            <li><strong>Compare v(N-1) ↔ vN</strong> — opens side-by-side (see <a href="#compare">§05</a>).</li>
+            <li><strong>Talk with agent</strong> — copy a templated prompt (see <a href="#talk">§07</a>).</li>
+            <li><strong>Download</strong> — PNG / SVG / source.</li>
+            <li><strong>Star, Archive, Re-render thumbnail.</strong></li>
+            <li><strong>Tags</strong> inline editor; <strong>Versions</strong> list with revert.</li>
+          </ul>
+        </div>
+      </div>
+
+      <figure>
+        <img src="./assets/dashboard/05-drawer-html.png" alt="Detail drawer with versions, tags, actions" loading="lazy" />
+        <figcaption><span class="label">Fig. 04-b</span><span class="desc">Detail drawer — actions at top, tags + versions below, archive at bottom.</span></figcaption>
+      </figure>
+
+      <h3>Search</h3>
+      <p>Top bar search (or <kbd>/</kbd> to focus, <kbd>⌘K</kbd> to reset) matches title, project, and tag. Filters from the sidebar still apply on top.</p>
+
+      <h3>Empty state · seed scaffold</h3>
+      <p style="font-size:.92rem;color:var(--text-mute);">Brand-new install? The empty-state CTA loads a 7-visual seed bundle (one per format — a fictional bakery called Linden Loaf) so you have something to browse while you wire up your AI host. Dismissible · idempotent · doesn't run twice.</p>
+
+      <h3>Dark mode</h3>
+      <figure>
+        <img src="./assets/dashboard/02-dashboard-dark.png" alt="Dashboard in dark mode" loading="lazy" />
+        <figcaption><span class="label">Fig. 04-c</span><span class="desc">Dark theme is one click away in the top bar.</span></figcaption>
+      </figure>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">§04 · Dashboard</p>
+      <div class="dash-mini">
+        <span class="dm-rail"></span>
+        <span class="dm-grid"></span>
+        <span class="dm-drawer"></span>
+      </div>
+      <p class="v-label">Sidebar · Grid<br/>· Drawer.</p>
+    </aside>
+
+    <section id="compare">
+      <h2><span class="num">05</span>Compare versions</h2>
+      <p class="lead">When your AI iterates a visual, every version sticks. Pick any two and view them side-by-side.</p>
+
+      <figure>
+        <img src="./assets/dashboard/06-compare-side-by-side.png" alt="Side-by-side compare mode" loading="lazy" />
+        <figcaption><span class="label">Fig. 05</span><span class="desc">Side-by-side. Pickers at top swap A/B; sync-scroll keeps both panes aligned.</span></figcaption>
+      </figure>
+
+      <h3>Shell states</h3>
+      <p>The unified shell decides what to render based on the picker selection:</p>
+      <figure>
+        <svg class="state-svg" viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Shell state machine">
+          <defs>
+            <marker id="sarrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9396a1" /></marker>
+          </defs>
+          <rect x="230" y="20" width="160" height="56" rx="10" fill="rgba(31,43,128,0.10)" stroke="#1f2b80" stroke-width="1.5"/>
+          <text x="310" y="44" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="14" fill="#0e0f14">single</text>
+          <text x="310" y="62" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">B unset · only A renders</text>
+          <rect x="40" y="140" width="160" height="68" rx="10" fill="#ffffff" stroke="#0e0f14" stroke-width="1.5"/>
+          <text x="120" y="164" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="14" fill="#0e0f14">comparable</text>
+          <text x="120" y="182" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">A ≠ B · both panes</text>
+          <text x="120" y="196" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">render side-by-side</text>
+          <rect x="420" y="140" width="160" height="68" rx="10" fill="#ffffff" stroke="#0e0f14" stroke-width="1.5"/>
+          <text x="500" y="164" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="14" fill="#0e0f14">not-comparable</text>
+          <text x="500" y="182" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">A = B · type-mismatch ·</text>
+          <text x="500" y="196" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">empty pane w/ reason</text>
+          <path d="M 290 76 Q 200 110 170 138" stroke="#9396a1" stroke-width="1.4" fill="none" marker-end="url(#sarrow)"/>
+          <text x="220" y="120" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#5a5e6d">add B</text>
+          <path d="M 330 76 Q 420 110 450 138" stroke="#9396a1" stroke-width="1.4" fill="none" marker-end="url(#sarrow)"/>
+          <text x="420" y="120" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#5a5e6d">degenerate B</text>
+          <path d="M 200 174 Q 310 174 420 174" stroke="#9396a1" stroke-width="1.4" fill="none" marker-end="url(#sarrow)"/>
+          <text x="310" y="166" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#5a5e6d">change B</text>
+        </svg>
+        <figcaption><span class="label">Fig. 05-b</span><span class="desc">Shell decides single / comparable / not-comparable from picker state.</span></figcaption>
+      </figure>
+
+      <p style="font-size:.92rem;color:var(--text-mute);">URL-driven: <code>/v/&lt;id&gt;</code> for single, <code>/compare/&lt;id&gt;?a=N&amp;b=M&amp;mode=sxs</code> for compare. Bookmark a specific compare; reload preserves picker + mode.</p>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">§05 · Compare</p>
+      <div class="compare-mark">
+        <span class="cm-pane">v<sub>N-1</sub></span>
+        <span class="cm-arrow">↔</span>
+        <span class="cm-pane">v<sub>N</sub></span>
+      </div>
+      <p class="v-label">Side-by-side. Always.</p>
+    </aside>
+
+    <section id="iterate">
+      <h2><span class="num">06</span>Iterate &amp; revert</h2>
+      <p class="lead">Each refinement creates a new version. Old versions never disappear.</p>
+      <ol>
+        <li>Ask your AI to tweak a visual ("make it dark", "remove the sidebar"). It calls <code>iterate(visual_id, content, message?, description?)</code>.</li>
+        <li>The new version becomes <em>current</em>. <code>v(N-1)</code> stays accessible.</li>
+        <li>From the drawer, click any version to preview it. Click <strong>Revert to v{n}</strong> to make an older version current.</li>
+        <li>Reverting doesn't delete history — it changes which version the thumbnail and default preview point at.</li>
+      </ol>
+      <div class="callout">
+        <span class="label">Big payloads</span>
+        <strong>Big iterations:</strong> for HTML &gt; a few KB, the Master skill instructs your AI to pass <code>content_path</code> instead of inline <code>content</code>. Same result; saves tokens. Path must live under your project root. <strong>Magpie never moves, edits, or deletes the source — it reads + copies.</strong>
+      </div>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">§06 · Iterate</p>
+      <div class="version-stack">
+        <span class="vs-bar">v1 · first pass</span>
+        <span class="vs-bar">v2 · refined</span>
+        <span class="vs-bar vs-current">v3 · current ★</span>
+      </div>
+      <img class="engrave-img" src="./assets/brand/p02-pose-03-descent.png" alt="" loading="lazy" style="max-width:128px;margin-top:8px" />
+      <p class="v-label"><em>The bird descending</em><br/>with a new version.</p>
+    </aside>
+
+    <section id="talk">
+      <h2><span class="num">07</span>Talk with agent</h2>
+      <p class="lead">Three ways to hand a visual back to your AI — push it to the outbox, design a reusable template, or fire a slash command in your host. Same goal: get the bird flying with context already loaded.</p>
+
+      <div class="grid-3">
+        <div class="card">
+          <p style="font:500 0.66rem var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--shiny-deep);margin:0 0 8px;">Pillar 1</p>
+          <h3 style="margin: 0 0 6px;">Outbox</h3>
+          <p style="font-size:.9rem;color:var(--text-mute);margin:0;">
+            Push a templated prompt to a server-managed queue. Your AI picks it up via the <code>magpie://inbox</code> resource or the <code>read_inbox</code> MCP tool. Async — your AI doesn't have to be running yet.
+          </p>
+          <p style="font-size:.84rem;margin:8px 0 0;"><a href="#outbox">→ §08 The Outbox</a></p>
+        </div>
+        <div class="card">
+          <p style="font:500 0.66rem var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--shiny-deep);margin:0 0 8px;">Pillar 2</p>
+          <h3 style="margin: 0 0 6px;">Templates</h3>
+          <p style="font-size:.9rem;color:var(--text-mute);margin:0;">
+            Design a prompt once with named variables and visual references. Use it from the dashboard, scope it to a project, share it across versions. 10 built-ins ship; create your own.
+          </p>
+          <p style="font-size:.84rem;margin:8px 0 0;"><a href="#templates">→ §09 Templates</a></p>
+        </div>
+        <div class="card">
+          <p style="font:500 0.66rem var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--shiny-deep);margin:0 0 8px;">Pillar 3</p>
+          <h3 style="margin: 0 0 6px;">MCP Prompts</h3>
+          <p style="font-size:.9rem;color:var(--text-mute);margin:0;">
+            Same templates surface as slash commands in your AI host (e.g. <code>/magpie:iterate</code> in Claude Code). User-fired — host invokes, your AI receives the resolved prompt.
+          </p>
+          <p style="font-size:.84rem;margin:8px 0 0;"><a href="#templates">→ §09 covers slash menu</a></p>
+        </div>
+      </div>
+
+      <figure>
+        <img src="./assets/dashboard/08-send-to-claude.png" alt="Talk with agent preset menu in the drawer" loading="lazy" />
+        <figcaption><span class="label">Fig. 07</span><span class="desc">Drawer's Talk-with-agent menu. Pick a template → queue to the Outbox or copy to clipboard.</span></figcaption>
+      </figure>
+
+      <div class="callout gold">
+        <span class="label">Privacy</span>
+        <strong>Privacy posture:</strong> the visual never leaves your machine. Only its <code>magpie://visual/&lt;id&gt;</code> reference travels with the prompt. Your AI reads the visual via the MCP resource — same trust boundary as any other MCP call.
+      </div>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">§07 · Three pillars</p>
+      <div class="pillars-mini">
+        <div class="pm-pillar">
+          <span class="pm-ico">⮕</span>
+          <span class="pm-name">Outbox</span>
+        </div>
+        <div class="pm-pillar">
+          <span class="pm-ico">▤</span>
+          <span class="pm-name">Templates</span>
+        </div>
+        <div class="pm-pillar">
+          <span class="pm-ico">/</span>
+          <span class="pm-name">Slash</span>
+        </div>
+      </div>
+    </aside>
+
+    <section id="outbox">
+      <h2><span class="num">08</span>The Outbox</h2>
+      <p class="lead">A two-lane Kanban for queued prompts: Pending on top, Consumed below. Your AI reads from Pending and moves entries to Consumed when picked up.</p>
+
+      <figure>
+        <img src="./assets/dashboard/17-outbox-kanban.png" alt="Outbox view with Pending and Consumed lanes" loading="lazy" />
+        <figcaption><span class="label">Fig. 08</span><span class="desc">Click any row to expand the full prompt body. Pending entries are ready for the agent; Consumed is an audit trail.</span></figcaption>
+      </figure>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>How entries arrive</h3>
+          <ul style="font-size:.92rem;">
+            <li>Drawer → <strong>Talk with agent</strong> → pick a template → <strong>Queue to Outbox</strong>.</li>
+            <li>Templates UI → <strong>Compose</strong> → fill vars → <strong>Send</strong>.</li>
+            <li>HTTP <code>POST /api/inbox</code> with <code>{visual_id, template_id, prompt_body, vars}</code>.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>How your AI consumes</h3>
+          <ul style="font-size:.92rem;">
+            <li>Reads the <code>magpie://inbox</code> MCP resource for the full pending JSON.</li>
+            <li>Or calls the <code>read_inbox</code> tool to pull a batch with a soft consume.</li>
+            <li>Each entry has the resolved <code>prompt_body</code>, the template id, and the visual reference.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Lifecycle</h3>
+      <ol>
+        <li><strong>Pending</strong> — entry just added. WS event <code>inbox.added</code> notifies the dashboard.</li>
+        <li><strong>Consumed</strong> — your AI marked it consumed. WS event <code>inbox.consumed</code>. Stays visible for audit.</li>
+        <li><strong>Deleted</strong> — you removed it. 5-second undo banner; WS event <code>inbox.deleted</code>.</li>
+      </ol>
+
+      <div class="callout">
+        <span class="label">Sidebar entry point</span>
+        <strong>Outbox lives in the sidebar</strong> — between Archived and Templates. Pending count badge updates in real time. Hidden under the rail when sidebar is collapsed; click to navigate.
+      </div>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">§08 · Outbox</p>
+      <div class="lanes-mini">
+        <div class="lm-lane">
+          <span class="lm-label">PENDING</span>
+          <span class="lm-bar"></span>
+          <span class="lm-bar"></span>
+          <span class="lm-bar"></span>
+        </div>
+        <div class="lm-lane">
+          <span class="lm-label consumed">CONSUMED</span>
+          <span class="lm-bar dim"></span>
+          <span class="lm-bar dim"></span>
+        </div>
+      </div>
+    </aside>
+
+    <section id="templates">
+      <h2><span class="num">09</span>Templates</h2>
+      <p class="lead">Reusable prompts with typed variables and visual references. 10 built-ins ship with Magpie; build your own with the same shape. Templates also surface as slash commands in MCP-aware hosts.</p>
+
+      <figure>
+        <img src="./assets/dashboard/18-templates-list.png" alt="Templates UI with built-in and user templates" loading="lazy" />
+        <figcaption><span class="label">Fig. 09-a</span><span class="desc">Templates list. Filter chips at top: All · Global · Project · Visual · Built-in. Click a card to edit, clone, or send.</span></figcaption>
+      </figure>
+
+      <h3>The 10 built-ins</h3>
+      <div class="presets-grid">
+        <div class="preset"><span class="ico">↻</span><h4>Iterate</h4><p>Draft the next version with a specific change.</p></div>
+        <div class="preset"><span class="ico">▦</span><h4>Variants</h4><p>Three options exploring the same intent.</p></div>
+        <div class="preset"><span class="ico">?</span><h4>Explain</h4><p>Walk through decisions in plain language.</p></div>
+        <div class="preset"><span class="ico">A</span><h4>A11y audit</h4><p>WCAG findings — not a rewrite.</p></div>
+        <div class="preset"><span class="ico">⇿</span><h4>Responsive check</h4><p>Desktop ⇿ mobile parity pass.</p></div>
+        <div class="preset"><span class="ico">◐</span><h4>Dark mode port</h4><p>Light theme over to dark, tokens preserved.</p></div>
+        <div class="preset"><span class="ico">−</span><h4>Simplify</h4><p>Cut to the essential moves.</p></div>
+        <div class="preset"><span class="ico">+</span><h4>Add data</h4><p>Real values in place of lorem.</p></div>
+        <div class="preset"><span class="ico">¶</span><h4>Polish prose</h4><p>Tighten copy on a markdown deliverable.</p></div>
+        <div class="preset"><span class="ico">✓</span><h4>Extract decisions</h4><p>Pull decisions out of a status report.</p></div>
+      </div>
+      <p style="font-size:.86rem;color:var(--text-mute);">Built-ins are global — they apply to every project and visual. Cannot be edited or deleted; clone first to customize.</p>
+
+      <h3>Variables</h3>
+      <p>Every template body is a Mustache-style string with named vars. Magpie resolves them against the selected visual:</p>
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="margin-top:0;font-size:.96rem;">Auto-resolved (always available)</h3>
+          <ul style="font-size:.88rem;">
+            <li><code>{{id}}</code> · the visual id</li>
+            <li><code>{{title}}</code> · current title</li>
+            <li><code>{{project}}</code> · project name</li>
+            <li><code>{{type}}</code> · format (html, mermaid, …)</li>
+            <li><code>{{ver}}</code> · current version number</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0;font-size:.96rem;">User-typed (per template)</h3>
+          <ul style="font-size:.88rem;">
+            <li><strong>string</strong> · single-line text input</li>
+            <li><strong>multiline</strong> · textarea</li>
+            <li><strong>enum</strong> · dropdown with locked options</li>
+          </ul>
+          <p style="font-size:.84rem;color:var(--text-mute);margin:6px 0 0;">Max 5 user vars per template. Each can be required + have a default + a label.</p>
+        </div>
+      </div>
+
+      <h3>Scope</h3>
+      <p>User templates can be scoped:</p>
+      <ul>
+        <li><strong>Global</strong> — appears everywhere. Default for new user templates.</li>
+        <li><strong>Project</strong> — only shows when the selected visual lives in that project. Use for project-specific verbs.</li>
+        <li><strong>Visual</strong> — only shows for one specific visual. Use for a recurring iteration loop on one artifact.</li>
+      </ul>
+      <p style="font-size:.86rem;color:var(--text-mute);">Built-ins are always global — the store rejects scope on builtin rows.</p>
+
+      <h3>Visual references</h3>
+      <p style="font-size:.92rem;">Each template can carry up to <strong>3 visual references</strong> — pinned visual ids (optionally version-pinned) that get resolved into the prompt as additional <code>magpie://visual/&lt;id&gt;</code> chips. Use them when an iteration always needs context from the same companion piece — e.g., "compare against the locked design spec".</p>
+
+      <h3>MCP Prompts — same templates, host-fired</h3>
+      <p>Magpie exposes its templates as MCP Prompts. In Claude Code, type <code>/magpie:</code> and the slash menu surfaces them: <code>/magpie:iterate</code>, <code>/magpie:variants</code>, <code>/magpie:explain</code>, <code>/magpie:a11y_audit</code>, <code>/magpie:responsive_check</code>, <code>/magpie:dark_mode_port</code>, <code>/magpie:simplify</code>, <code>/magpie:add_data</code>.</p>
+      <p style="font-size:.92rem;">The host resolves the slash, asks for any required vars, and fires the prompt to your AI as the next turn. No clipboard, no Outbox roundtrip — direct invocation. Built-ins ship today; user templates surface in MCP Prompts in v1.1.</p>
+
+      <div class="callout gold">
+        <span class="label">Versioning</span>
+        <strong>Templates are versioned</strong> like visuals. Edit → new version. Old versions stay queryable. Outbox entries record which template version they were sent against, so the audit trail is reproducible.
+      </div>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">§09 · Templates</p>
+      <div class="tmpl-mini">
+        <span class="tm-name">Iterate</span>
+        <div class="tm-body">
+          Iterate on <span class="tm-var">{{id}}</span>: <span class="tm-var">{{change}}</span>
+        </div>
+        <div class="tm-tags">
+          <span>BUILTIN</span>
+          <span>GLOBAL</span>
+        </div>
+      </div>
+    </aside>
+
+    <section id="shortcuts">
+      <h2><span class="num">10</span>Keyboard shortcuts</h2>
+      <p class="lead">Press <kbd>?</kbd> from any dashboard view to see them all.</p>
+
+      <figure>
+        <img src="./assets/dashboard/03-shortcuts-overlay.png" alt="? shortcut overlay" loading="lazy" />
+        <figcaption><span class="label">Fig. 10</span><span class="desc">The <kbd>?</kbd> overlay — full reference, dismiss with <kbd>Esc</kbd>.</span></figcaption>
+      </figure>
+
+      <div class="keys">
+        <div class="row"><span class="ks"><kbd>/</kbd></span><span>focus search</span></div>
+        <div class="row"><span class="ks"><kbd>⌘K</kbd></span><span>reset search</span></div>
+        <div class="row"><span class="ks"><kbd>j</kbd>&nbsp;/&nbsp;<kbd>k</kbd></span><span>next / prev visual</span></div>
+        <div class="row"><span class="ks"><kbd>Enter</kbd></span><span>open drawer</span></div>
+        <div class="row"><span class="ks"><kbd>Esc</kbd></span><span>close drawer / overlay</span></div>
+        <div class="row"><span class="ks"><kbd>s</kbd></span><span>star / unstar</span></div>
+        <div class="row"><span class="ks"><kbd>?</kbd></span><span>show this overlay</span></div>
+        <div class="row"><span class="ks"><kbd>g</kbd>&nbsp;<kbd>l</kbd></span><span>go to library</span></div>
+      </div>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">§10 · Shortcuts</p>
+      <div class="kbd-stack">
+        <span class="kbd-mini">/</span>
+        <span class="kbd-mini">⌘K</span>
+        <span class="kbd-mini">j&nbsp;&nbsp;k</span>
+        <span class="kbd-mini">?</span>
+      </div>
+    </aside>
+
+    <section id="tools">
+      <h2><span class="num">11</span>MCP tool surface</h2>
+      <p class="lead">Your AI has 14 tools and 3 resources. You don't call them directly — you ask in plain English, and the Master skill picks the right tool.</p>
+
+      <div class="tool-phase">
+        <div class="ph-head"><h4>Phase 1 · Create &amp; list</h4><span class="ph-num">5 tools</span></div>
+        <div class="tool-row"><span class="tool-name">add_visual</span><span class="tool-desc">Save a new mockup / diagram / chart / doc as v1 of a new entity.</span></div>
+        <div class="tool-row"><span class="tool-name">iterate</span><span class="tool-desc">Add a new version to an existing visual. Supports per-version description.</span></div>
+        <div class="tool-row"><span class="tool-name">create_project</span><span class="tool-desc">Create an empty project (usually optional — <code>add_visual</code> auto-creates).</span></div>
+        <div class="tool-row"><span class="tool-name">list_projects</span><span class="tool-desc">Show all projects with counts and last activity.</span></div>
+        <div class="tool-row"><span class="tool-name">list_versions</span><span class="tool-desc">Full version history for a visual.</span></div>
+      </div>
+
+      <div class="tool-phase">
+        <div class="ph-head"><h4>Phase 2 · Find &amp; update</h4><span class="ph-num">5 tools</span></div>
+        <div class="tool-row"><span class="tool-name">find_visuals</span><span class="tool-desc">Search across the library. Filters by tag, source, type, project, starred.</span></div>
+        <div class="tool-row"><span class="tool-name">compare</span><span class="tool-desc">Open the compare view for two versions.</span></div>
+        <div class="tool-row"><span class="tool-name">open_preview</span><span class="tool-desc">Return a preview URL for an existing visual.</span></div>
+        <div class="tool-row"><span class="tool-name">update_visual</span><span class="tool-desc">Rename, retag, star, mark final.</span></div>
+        <div class="tool-row"><span class="tool-name">update_project</span><span class="tool-desc">Rename a project, change type, edit description. Includes rename-and-merge semantics.</span></div>
+      </div>
+
+      <div class="tool-phase">
+        <div class="ph-head"><h4>Phase 3 · Archive &amp; inbox</h4><span class="ph-num">4 tools</span></div>
+        <div class="tool-row"><span class="tool-name">archive_visual</span><span class="tool-desc">Soft-archive a visual (UI restorable).</span></div>
+        <div class="tool-row"><span class="tool-name">archive_project</span><span class="tool-desc">Archive a whole project at once.</span></div>
+        <div class="tool-row"><span class="tool-name">merge_projects</span><span class="tool-desc">Move all visuals from <em>src</em> into <em>dst</em>; archive <em>src</em>.</span></div>
+        <div class="tool-row"><span class="tool-name">read_inbox</span><span class="tool-desc">Read pending visuals from external generators before nesting.</span></div>
+      </div>
+
+      <h3>MCP resources</h3>
+      <div class="grid-3">
+        <div class="card">
+          <h3 style="font-family:var(--mono);font-size:0.9rem;color:var(--cobalt);margin:0 0 6px;">magpie://library</h3>
+          <p style="font-size:.86rem;color:var(--text-mute);margin:0;">Read-only catalogue of all visuals.</p>
+        </div>
+        <div class="card">
+          <h3 style="font-family:var(--mono);font-size:0.9rem;color:var(--cobalt);margin:0 0 6px;">magpie://project/&lt;name&gt;</h3>
+          <p style="font-size:.86rem;color:var(--text-mute);margin:0;">Just one project's visuals.</p>
+        </div>
+        <div class="card">
+          <h3 style="font-family:var(--mono);font-size:0.9rem;color:var(--cobalt);margin:0 0 6px;">magpie://visual/&lt;id&gt;[/v&lt;n&gt;]</h3>
+          <p style="font-size:.86rem;color:var(--text-mute);margin:0;">One specific visual, current or pinned version.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="label">Surface guarantees</span>
+        <strong>Hard delete?</strong> No — the MCP surface is archive-only. To purge permanently, use the dashboard. <strong>Errors are prose</strong>, not structured codes — your AI gets a human-readable message it can recover from.
+      </div>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">Plate II</p>
+      <img class="engrave-img" src="./assets/brand/p02-pose-02-flight-cargo.png" alt="" loading="lazy" />
+      <p class="v-label">14 tools.<br/>3 resources.<br/><em>The bird in motion.</em></p>
+    </aside>
+
+    <section id="export">
+      <h2><span class="num">12</span>Export</h2>
+      <p class="lead">Take any visual offline. Three single-file forms plus a project zip.</p>
+
+      <div class="export-grid">
+        <div class="export-tile">
+          <p class="fmt">png · raster</p>
+          <h4>PNG raster</h4>
+          <p>The rendered thumbnail at full size. Lossy on diagrams; cheap on bandwidth.</p>
+        </div>
+        <div class="export-tile">
+          <p class="fmt">svg · vector</p>
+          <h4>SVG vector</h4>
+          <p>For vector formats — mermaid, svg, dot, vega-lite, d2. Crisp at any size.</p>
+        </div>
+        <div class="export-tile">
+          <p class="fmt">source</p>
+          <h4>Original source</h4>
+          <p>The original <code>.html</code> / <code>.mmd</code> / <code>.svg</code> / <code>.md</code> / <code>.dot</code> / <code>.vl.json</code> / <code>.d2</code> file.</p>
+        </div>
+        <div class="export-tile">
+          <p class="fmt">zip · project</p>
+          <h4>Project zip</h4>
+          <p>Every visual in a project, latest version, with a manifest.</p>
+        </div>
+      </div>
+
+      <p style="font-size:.92rem;color:var(--text-mute);">Find these on the drawer ("Download") or via dashboard project menu ("Export project").</p>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">§12 · Take it offline</p>
+      <div class="export-tiles">
+        <span>PNG</span>
+        <span>SVG</span>
+        <span>SRC</span>
+        <span>ZIP</span>
+      </div>
+    </aside>
+
+    <section id="backup">
+      <h2><span class="num">13</span>Backup &amp; restore</h2>
+      <p class="lead">Two ways to back up. Both produce a single artifact you can store wherever you store everything else.</p>
+
+      <h3>The folder copy</h3>
+      <p>Everything Magpie holds is at <code>~/.magpie/</code> (or wherever <code>MAGPIE_HOME</code> points). Quit Magpie, copy the folder, you're done.</p>
+
+      <h3>The CLI</h3>
+<pre><code><span class="k">$</span> npx magpie-mcp --backup
+<span class="k">→</span> wrote magpie-backup-2026-05-19.tar.gz (12.4 MB)</code></pre>
+      <p style="font-size:.92rem;color:var(--text-mute);">Writes a USTAR + gzip archive. Zero new dependencies. Internally runs a WAL checkpoint first so the snapshot is consistent.</p>
+
+      <h3>Restore</h3>
+      <p>Extract the archive into <code>~/.magpie/</code> (or your <code>MAGPIE_HOME</code>), reboot Magpie. <strong>Migrations are forward-only</strong> — restoring an older snapshot replays missing migrations on next boot. There is no rollback path by design; downgrade = restore from an older backup.</p>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">§13 · Backup</p>
+      <div class="tar-stamp">
+        <span>magpie-backup-</span>
+        <span>2026-05-19.tar.gz</span>
+      </div>
+      <p class="v-label">USTAR + gzip.<br/>One archive.</p>
+      <img class="engrave-img" src="./assets/brand/p02-pose-01-takeoff.png" alt="" loading="lazy" style="max-width:128px;margin-top:8px" />
+      <p class="v-label"><em>Lifting off</em><br/>with the archive.</p>
+    </aside>
+
+    <section id="faq">
+      <h2><span class="num">14</span>FAQ &amp; not-goals</h2>
+
+      <div class="faq">
+        <details open>
+          <summary>Where is my data?</summary>
+          <p><code>~/.magpie/</code> on your machine. SQLite metadata + filesystem blobs. Nothing leaves the host. Override with <code>MAGPIE_HOME=/path</code>.</p>
+        </details>
+        <details>
+          <summary>What is the Master skill, exactly?</summary>
+          <p>A portable Agent Skill — a markdown file with frontmatter that teaches your AI Magpie's protocol. Ships in the npm tarball at <code>skill/magpie-master/SKILL.md</code>. <code>npx magpie-mcp --install-skill</code> drops it into your host's skill directory (Claude Code · Claude Desktop today). The MCP server itself also carries a layered fallback string so untrained hosts still work — the skill is the high-resolution version.</p>
+        </details>
+        <details>
+          <summary>Does Magpie generate visuals?</summary>
+          <p>No. Your AI writes the content; Magpie organizes, renders, versions, and serves it. <strong>There is no LLM in the server.</strong></p>
+        </details>
+        <details>
+          <summary>Can I use it without Claude?</summary>
+          <p>Yes — any MCP-aware host works (Claude Code, Claude Desktop, Cursor, Cline, custom clients). The dashboard alone is also useful as a viewer for content you produce by hand: drop files into the HTTP API directly.</p>
+        </details>
+        <details>
+          <summary>Multiple browsers / multiple machines?</summary>
+          <p>The dashboard binds to <code>127.0.0.1</code> by default — local only. To share, change <code>MAGPIE_BIND</code>. For multi-machine, copy <code>~/.magpie/</code> (or the backup archive); there's no sync.</p>
+        </details>
+        <details>
+          <summary>What about migrations and breaking changes?</summary>
+          <p>Migrations are <strong>forward-only forever</strong> (R21). The runner detects gaps and downgrades at boot. The downgrade path is restore-from-backup — see <a href="#backup">§13 Backup</a>.</p>
+        </details>
+        <details>
+          <summary>Does Magpie touch my source files?</summary>
+          <p>No. <code>content_path</code> is <strong>read + copy only</strong> — bytes go from your named path into the next blob slot. The origin is left exactly where it was. Magpie never moves, edits, or deletes your source.</p>
+        </details>
+        <details>
+          <summary>I ran <code>npx magpie-mcp</code> in two folders — why two HTTP ports?</summary>
+          <p>Magpie runs <strong>one canonical process per <code>MAGPIE_HOME</code></strong>. Subsequent <code>npx magpie-mcp</code> invocations in the same home become <strong>facades</strong> that multiplex MCP traffic to the existing canonical over a named pipe — they bind zero HTTP ports.</p>
+          <p>You see two ports only when you have two <em>different</em> <code>MAGPIE_HOME</code> values. Each home gets its own lock, IPC pipe, and HTTP listener. Example: repo A pins <code>MAGPIE_HOME=./.tmp-home</code> in its <code>.mcp.json</code> and gets canonical A on <code>:3737</code>; repo B with no override falls back to <code>~/.magpie/</code> and gets canonical B on <code>:3738</code> (auto-bumped because <code>:3737</code> was taken).</p>
+          <p>The facade log line <code>connected as facade to canonical pid=N http=:M</code> is informational — it tells you where the canonical's dashboard lives, not that the facade opened a port.</p>
+          <p>To merge into one canonical (one port): set the same <code>MAGPIE_HOME</code> in both shells before running <code>npx magpie-mcp</code>. To kill a stale canonical: read the pid from <code>$MAGPIE_HOME/magpie.lock</code> and terminate it.</p>
+        </details>
+        <details>
+          <summary>Browser support</summary>
+          <p>Chrome / Chromium-based browsers only at v1.0. The render pipeline uses system Chrome via <code>puppeteer-core</code>, and the dashboard targets the same surface. Firefox + Safari are deferred indefinitely.</p>
+        </details>
+        <details>
+          <summary>Things Magpie will <em>not</em> do</summary>
+          <ul class="nogo">
+            <li>Run an LLM. The server is dumb infra.</li>
+            <li>Cloud sync, share links, public gallery.</li>
+            <li>Auto-tag with AI.</li>
+            <li>Multi-user accounts.</li>
+            <li>Ship as Electron / Tauri. Bundled web only.</li>
+          </ul>
+        </details>
+      </div>
+    </section>
+    <aside class="rail-cell">
+      <p class="v-num">§14 · FAQ</p>
+      <div class="big-num gold">?</div>
+      <p class="v-label">Where the doubts land.</p>
+      <div class="gold-rule"></div>
+      <p class="v-label">Made offline<br/>MIT <span class="gold">·</span> v1.0</p>
+    </aside>
+
+  </main>
+
+</div>
+
+<script>
+  function toggleTheme() {
+    const root = document.documentElement;
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('magpie-guide-theme', next); } catch (e) {}
+  }
+  try {
+    const saved = localStorage.getItem('magpie-guide-theme');
+    if (saved) document.documentElement.dataset.theme = saved;
+  } catch (e) {}
+
+  document.querySelectorAll('.tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      const card = btn.closest('.code-card');
+      card.querySelectorAll('.tab-btn').forEach((b) => b.classList.toggle('active', b === btn));
+      card.querySelectorAll('.tab-panel').forEach((p) => p.classList.toggle('active', p.dataset.tab === tab));
+    });
+  });
+
+  (function () {
+    const sections = Array.from(document.querySelectorAll('main section[id]'));
+    if (!sections.length) return;
+    const links = new Map();
+    document.querySelectorAll('nav.toc a[href^="#"]').forEach((a) => {
+      links.set(a.getAttribute('href').slice(1), a);
+    });
+    const setActive = (id) => {
+      links.forEach((a) => a.classList.remove('active'));
+      const a = links.get(id);
+      if (a) a.classList.add('active');
+    };
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter(e => e.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visible.length) setActive(visible[0].target.id);
+    }, { rootMargin: '-15% 0px -70% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] });
+    sections.forEach((s) => observer.observe(s));
+  })();
+
+  document.querySelectorAll('nav.toc a').forEach((a) => {
+    a.addEventListener('click', () => document.body.classList.remove('menu-open'));
+  });
+
+  (function () {
+    document.querySelectorAll('pre').forEach((pre) => {
+      if (pre.parentElement && pre.parentElement.classList.contains('code-wrap')) return;
+      const wrap = document.createElement('div'); wrap.className = 'code-wrap';
+      pre.parentNode.insertBefore(wrap, pre); wrap.appendChild(pre);
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn'; btn.type = 'button'; btn.textContent = 'copy';
+      btn.setAttribute('aria-label', 'Copy code to clipboard');
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(pre.innerText);
+          btn.textContent = 'copied'; btn.classList.add('copied');
+          setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1400);
+        } catch (e) {
+          btn.textContent = 'failed';
+          setTimeout(() => { btn.textContent = 'copy'; }, 1400);
+        }
+      });
+      wrap.appendChild(btn);
+    });
+  })();
+</script>
+
+</body>
+</html>

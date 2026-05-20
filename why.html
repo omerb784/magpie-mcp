@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Why Magpie — three actors, dumb infra, secured, local</title>
+<meta name="description" content="Magpie is an MCP server that has no LLM. Three actors — Master, Magpie, Nest. One Node process. Sandboxed previews. Everything at ~/.magpie/. MIT, offline, no telemetry." />
+<link rel="icon" type="image/svg+xml" href="./assets/brand/magpie-mark.svg" />
+<link rel="alternate icon" type="image/png" href="./assets/brand/logo-A.png" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Why Magpie — an MCP server that has no LLM" />
+<meta property="og:description" content="Three actors. One Node process. Sandboxed previews. Everything on your disk. MIT, offline, no telemetry." />
+<meta property="og:image" content="./assets/brand/p05-og-v2.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="./assets/brand/p05-og-v2.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500;1,6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0e0f14;
+    --ink-soft: #3a3f55;
+    --paper: #eef0f4;
+    --paper-2: #d9dce3;
+    --bg-elev: #ffffff;
+    --bg-muted: #e3e5ec;
+    --hairline: #d9dce3;
+    --hairline-strong: #b9bcc8;
+    --mid: #9396a1;
+    --text-mute: #5a5e6d;
+    --text-subtle: #8b8f9c;
+    --cobalt: #1f2b80;
+    --cobalt-deep: #141d5e;
+    --cobalt-soft: rgba(31, 43, 128, 0.08);
+    --accent-tint: rgba(31, 43, 128, 0.06);
+    --shiny: #d4a233;
+    --shiny-deep: #a87e22;
+    --shiny-bg: rgba(212, 162, 51, 0.12);
+    --terra: #c25d3a;
+    --shadow-sm: 0 1px 2px rgba(14,15,20,0.04), 0 2px 8px rgba(14,15,20,0.04);
+    --shadow: 0 2px 4px rgba(14,15,20,0.04), 0 12px 28px rgba(14,15,20,0.06);
+    --shadow-pop: 0 4px 8px rgba(14,15,20,0.06), 0 24px 60px rgba(14,15,20,0.12);
+    --r-sm: 8px;
+    --r: 12px;
+    --r-lg: 18px;
+    --sans: "IBM Plex Sans", system-ui, sans-serif;
+    --serif: "Newsreader", Georgia, serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.65 var(--sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: var(--cobalt); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  code, pre, kbd { font-family: var(--mono); }
+  code {
+    background: var(--cobalt-soft); color: var(--cobalt);
+    padding: 1px 6px; border-radius: 4px; font-size: 0.88em;
+  }
+  pre {
+    background: var(--ink); color: #f0e9da;
+    padding: 16px 22px; border-radius: var(--r-sm);
+    overflow-x: auto; font-size: 0.92rem; line-height: 1.55;
+    margin: 0;
+  }
+  pre .k { color: var(--shiny); }
+
+  .container { max-width: 880px; margin: 0 auto; padding: 0 32px; }
+  @media (max-width: 640px) { .container { padding: 0 22px; } }
+
+  /* ============ TOPBAR ============ */
+  nav.topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(238, 240, 244, 0.85);
+    backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid rgba(217, 220, 227, 0.6);
+  }
+  nav.topbar .container {
+    max-width: 1180px;
+    display: flex; align-items: center; gap: 28px;
+    padding-top: 14px; padding-bottom: 14px;
+  }
+  .brand {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: var(--ink); text-decoration: none;
+  }
+  .brand img.mark { width: 30px; height: 30px; display: block; }
+  .brand .wm { font-weight: 600; font-size: 1.04rem; letter-spacing: -0.012em; }
+  .brand .wm::after { content: "."; color: var(--shiny); font-weight: 700; }
+  nav.topbar .links {
+    margin-left: auto; display: flex; gap: 4px; align-items: center;
+    font-size: 0.94rem;
+  }
+  nav.topbar .links a {
+    color: var(--text-mute);
+    text-decoration: none; padding: 8px 14px;
+    border-radius: var(--r-sm); transition: color 100ms, background 100ms;
+  }
+  nav.topbar .links a:hover { color: var(--cobalt); background: var(--cobalt-soft); text-decoration: none; }
+  nav.topbar .links a.cta-primary {
+    background: var(--ink); color: #f0e9da; font-weight: 500;
+    padding: 8px 16px; margin-left: 8px;
+  }
+  nav.topbar .links a.cta-primary:hover { background: var(--cobalt); color: #f0e9da; }
+
+  /* ============ TYPE ============ */
+  h1, h2, h3 { font-family: var(--sans); color: var(--ink); letter-spacing: -0.018em; margin: 0; font-weight: 600; }
+  h1 {
+    font-size: clamp(2.4rem, 5vw, 3.4rem);
+    line-height: 1.02; letter-spacing: -0.026em;
+  }
+  h1 em {
+    font-family: var(--serif); font-style: italic; font-weight: 500; color: var(--cobalt);
+  }
+  h2 {
+    font-size: clamp(1.6rem, 2.8vw, 2rem);
+    line-height: 1.14; letter-spacing: -0.018em;
+    display: flex; align-items: baseline; gap: 16px;
+  }
+  h2 em { font-family: var(--serif); font-style: italic; font-weight: 500; color: var(--cobalt); }
+  h2 .num {
+    font-family: var(--mono); color: var(--shiny-deep);
+    font-weight: 500; font-size: 0.5em; letter-spacing: 0.18em;
+    background: var(--shiny-bg);
+    padding: 4px 10px; border-radius: 999px;
+    line-height: 1; flex-shrink: 0;
+  }
+  h3 { font-size: 1.06rem; margin: 28px 0 8px; letter-spacing: -0.005em; }
+  p { margin: 0 0 14px; color: var(--ink); }
+  p.lead {
+    font-family: var(--serif); font-style: italic;
+    font-weight: 400; font-size: 1.22rem;
+    color: var(--text-mute);
+    max-width: 56ch; margin: 0 0 26px;
+    line-height: 1.55;
+  }
+  ul, ol { padding-left: 24px; margin: 0 0 14px; color: var(--ink); }
+  li { margin-bottom: 6px; }
+
+  /* eyebrow */
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--shiny-deep);
+    margin-bottom: 18px;
+  }
+  .eyebrow::before {
+    content: ""; width: 8px; height: 8px; background: var(--shiny);
+    border-radius: 50%;
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    position: relative;
+    padding: 64px 0 56px;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: ""; position: absolute; z-index: 0; pointer-events: none;
+    top: -100px; right: -120px;
+    width: 420px; height: 420px;
+    background: var(--cobalt-soft);
+    border-radius: 50%;
+  }
+  .hero .container { position: relative; z-index: 1; max-width: 1180px; }
+  .hero .grid {
+    display: grid; grid-template-columns: 1.1fr 1fr;
+    gap: 48px; align-items: center;
+  }
+  @media (max-width: 960px) {
+    .hero .grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+  .hero-art {
+    margin: 0;
+    position: relative;
+    display: block;
+    max-width: 560px;
+    width: 100%;
+    margin-inline: auto;
+  }
+  .hero-art.plate {
+    background: #ece8d8;
+    border: 1px solid #c8c0a6;
+    border-radius: var(--r);
+    padding: 14px;
+    box-shadow: var(--shadow);
+  }
+  .hero-art img {
+    width: 100%; height: auto; display: block;
+    border-radius: 6px;
+  }
+  .hero .tagline {
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    font-size: clamp(1.18rem, 1.9vw, 1.36rem);
+    color: var(--cobalt);
+    margin: 22px 0 22px; max-width: 50ch;
+    line-height: 1.5;
+  }
+  .hero .lede {
+    font-size: 1.06rem; line-height: 1.65;
+    color: var(--text-mute); max-width: 60ch;
+    margin: 0 0 32px;
+  }
+  .hero .lede strong { color: var(--ink); font-weight: 600; }
+
+  .hero-cta {
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: stretch;
+    margin-top: 8px;
+  }
+  .install {
+    display: inline-flex; flex-direction: column; gap: 2px;
+    background: var(--ink); color: #f0e9da;
+    border-radius: var(--r);
+    padding: 14px 22px;
+    font-family: var(--mono); font-size: 1rem;
+    box-shadow: var(--shadow);
+  }
+  .install .line { display: flex; align-items: center; gap: 8px; }
+  .install .k { color: var(--shiny); }
+  .install .note { color: var(--mid); font-size: 0.78em; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 14px 22px;
+    border-radius: var(--r);
+    border: 1px solid var(--hairline-strong);
+    background: var(--bg-elev);
+    color: var(--ink);
+    font: 500 0.96rem var(--sans);
+    text-decoration: none;
+    transition: background 100ms, color 100ms, border-color 100ms;
+  }
+  .btn:hover { background: var(--paper-2); border-color: var(--ink); text-decoration: none; }
+  .btn .arrow { margin-left: 8px; transition: transform 160ms; }
+  .btn:hover .arrow { transform: translateX(3px); }
+
+  .anti-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin: 28px 0 0;
+  }
+  .anti-row span {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    color: var(--text-mute);
+    box-shadow: var(--shadow-sm);
+  }
+  .anti-row span b { color: var(--terra); font-weight: 600; margin-right: 5px; }
+
+  /* ============ SECTIONS ============ */
+  section { padding: 64px 0; position: relative; }
+  section.tint {
+    background-color: var(--bg-elev);
+    background-image: url(./assets/brand/p06-paper-texture.png);
+    background-blend-mode: multiply;
+    background-size: 480px 480px;
+    background-repeat: repeat;
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+  }
+  section .head { margin: 0 0 36px; }
+
+  /* ============ ACTORS ============ */
+  .actors-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    margin: 28px 0 22px;
+  }
+  @media (max-width: 880px) { .actors-grid { grid-template-columns: 1fr; } }
+  .actor {
+    background: var(--bg-elev);
+    border-radius: var(--r);
+    padding: 24px 22px 22px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--hairline);
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+  .actor:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .actor .seal {
+    width: 64px; height: 64px;
+    background: var(--paper);
+    border-radius: 50%;
+    display: grid; place-items: center; padding: 8px;
+    margin: 0 0 16px;
+  }
+  .actor .seal img { max-width: 100%; max-height: 100%; }
+  .actor .role {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--cobalt);
+    margin: 0 0 6px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .actor .role::before { content: ""; width: 5px; height: 5px; background: var(--cobalt); border-radius: 50%; }
+  .actor h3 {
+    font-size: 1.24rem; letter-spacing: -0.014em; margin: 0 0 6px;
+  }
+  .actor .verb {
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    color: var(--cobalt); font-size: 0.98rem; margin: 0 0 10px;
+  }
+  .actor p {
+    font-size: 0.92rem; line-height: 1.55; color: var(--text-mute);
+    margin: 0;
+  }
+  .actor p code { background: var(--cobalt-soft); color: var(--cobalt); }
+  .shorthand {
+    text-align: center; margin: 24px 0 0;
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    color: var(--ink); font-size: 1.1rem;
+  }
+  .shorthand .sep { color: var(--shiny); margin: 0 12px; }
+
+  /* ============ ARCH DIAGRAM ============ */
+  .arch-figure {
+    margin: 0;
+    background: var(--bg-elev);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r);
+    padding: 22px 18px 18px;
+    box-shadow: var(--shadow-sm);
+  }
+  .arch-svg { width: 100%; max-width: 760px; height: auto; display: block; margin: 0 auto; }
+  .arch-figure figcaption {
+    text-align: center;
+    font-size: 0.86rem;
+    color: var(--text-mute);
+    margin-top: 14px;
+    font-family: var(--serif); font-style: italic;
+  }
+
+  /* ============ DUMB / SECURITY ROW CARDS ============ */
+  .row-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    margin: 22px 0;
+  }
+  @media (max-width: 720px) { .row-grid { grid-template-columns: 1fr; } }
+  .row-card {
+    background: var(--bg-elev);
+    border-radius: var(--r);
+    padding: 20px 22px;
+    border: 1px solid var(--hairline);
+    box-shadow: var(--shadow-sm);
+  }
+  .row-card .tag {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--cobalt);
+    margin: 0 0 8px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .row-card .tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--cobalt); }
+  .row-card.gold .tag { color: var(--shiny-deep); }
+  .row-card.gold .tag::before { background: var(--shiny); }
+  .row-card h3 { font-size: 1.06rem; margin: 0 0 8px; }
+  .row-card p { font-size: 0.92rem; color: var(--text-mute); line-height: 1.55; margin: 0; }
+  .row-card p strong { color: var(--ink); font-weight: 600; }
+  .row-card p code { background: var(--cobalt-soft); color: var(--cobalt); }
+
+  /* ============ NEST-FIGURE FOR §05 ============ */
+  .nest-figure {
+    margin: 0 0 22px;
+    text-align: center;
+  }
+  .nest-figure img {
+    max-width: 320px; width: 100%; height: auto;
+    display: block; margin: 0 auto;
+  }
+  .nest-figure figcaption {
+    font-family: var(--serif); font-style: italic;
+    color: var(--text-mute); font-size: 0.92rem;
+    margin-top: 12px; line-height: 1.45;
+  }
+
+  /* ============ SOCIAL-CARD PLATE (P05) ============ */
+  .plate-section {
+    padding: 64px 0;
+    text-align: center;
+  }
+  .plate-section .head { text-align: left; margin: 0 0 28px; }
+  .plate {
+    display: block;
+    max-width: 720px;
+    margin: 0 auto;
+    background: #ece8d8;
+    border: 1px solid #c8c0a6;
+    border-radius: var(--r);
+    padding: 14px;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .plate img { width: 100%; height: auto; display: block; border-radius: 6px; }
+  .plate .plate-tag {
+    position: absolute; top: -10px; left: 20px;
+    background: var(--ink); color: var(--shiny);
+    font: 500 10px var(--mono);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 4px;
+  }
+  .plate-caption {
+    margin: 18px auto 0;
+    max-width: 56ch;
+    font-family: var(--serif); font-style: italic;
+    color: var(--text-mute); font-size: 0.96rem;
+    line-height: 1.55;
+  }
+
+  /* ============ DATA LAYOUT BLOCK ============ */
+  .tree {
+    background: var(--ink); color: #f0e9da;
+    border-radius: var(--r);
+    padding: 22px 28px;
+    font-family: var(--mono); font-size: 0.88rem;
+    line-height: 1.7;
+    box-shadow: var(--shadow);
+    margin: 18px 0;
+    overflow-x: auto;
+  }
+  .tree .root { color: var(--shiny); }
+  .tree .com { color: var(--mid); font-style: italic; }
+
+  /* ============ LIST WITH GOLD BULLETS ============ */
+  ul.gold-bullets {
+    list-style: none; padding: 0; margin: 14px 0;
+  }
+  ul.gold-bullets li {
+    position: relative;
+    padding: 4px 0 4px 26px;
+    font-size: 0.96rem; line-height: 1.55;
+  }
+  ul.gold-bullets li::before {
+    content: "";
+    position: absolute; left: 6px; top: 14px;
+    width: 6px; height: 6px;
+    background: var(--shiny); border-radius: 50%;
+  }
+  ul.gold-bullets li strong { color: var(--ink); font-weight: 600; }
+  ul.gold-bullets li code { background: var(--cobalt-soft); color: var(--cobalt); }
+
+  /* ============ CTA STRIP ============ */
+  .cta-strip {
+    background: var(--ink); color: var(--paper);
+    padding: 64px 0;
+  }
+  .cta-strip h2 {
+    color: var(--paper); font-size: clamp(1.6rem, 2.6vw, 2rem);
+    line-height: 1.12; letter-spacing: -0.018em;
+    margin: 0 0 14px;
+  }
+  .cta-strip h2 em {
+    font-family: var(--serif); font-style: italic; font-weight: 500; color: var(--shiny);
+  }
+  .cta-strip p {
+    color: rgba(240,233,218,0.7); margin: 0 0 22px;
+    font-size: 1rem; line-height: 1.6; max-width: 56ch;
+  }
+  .cta-strip .actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: stretch; }
+  .cta-strip .install {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.16);
+  }
+  .cta-strip .btn {
+    background: transparent; color: var(--paper);
+    border-color: rgba(255,255,255,0.24);
+  }
+  .cta-strip .btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); }
+
+  /* ============ FOOTER ============ */
+  footer.site {
+    padding: 36px 0;
+    background: var(--paper);
+    border-top: 1px solid var(--hairline);
+    font-size: 0.88rem; color: var(--text-mute);
+  }
+  footer.site .container { display: flex; gap: 24px; flex-wrap: wrap; align-items: baseline; }
+  footer.site .colophon {
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink); flex: 1;
+  }
+  footer.site .colophon .sig {
+    display: block; font-family: var(--mono); font-style: normal;
+    font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text-subtle); margin-top: 6px;
+  }
+  footer.site a { color: var(--text-mute); }
+  footer.site a:hover { color: var(--cobalt); text-decoration: underline; }
+  footer.site .links { display: flex; gap: 18px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="container">
+    <a class="brand" href="./index.html">
+      <img class="mark" src="./assets/brand/logo-A.png" alt="Magpie mark" />
+      <span class="wm">Magpie</span>
+    </a>
+    <div class="links">
+      <a href="./index.html">Home</a>
+      <a href="./guide.html">Guide</a>
+      <a href="https://github.com/omerb784/magpie-mcp" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://npmjs.com/package/magpie-mcp" class="cta-primary" target="_blank" rel="noopener">Install →</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="grid">
+      <div>
+        <p class="eyebrow">Why Magpie · the architecture</p>
+        <h1>An MCP server that <em>has no LLM.</em></h1>
+        <p class="tagline">Three actors. One Node process. Sandboxed previews. Everything on your disk.</p>
+        <p class="lede">
+          Magpie is a local dashboard plus an embedded MCP server for the visuals your AI agent makes —
+          mockups, diagrams, charts, status reports, plans. <strong>The server is dumb infrastructure.</strong>
+          No model weights. No inference. No telemetry. Decisions live in a portable skill on the host side;
+          data lives in <code>~/.magpie/</code> on your machine.
+        </p>
+        <div class="hero-cta">
+          <div class="install">
+            <span class="line"><span class="k">$</span><span>npx magpie-mcp</span></span>
+            <span class="note"># opens localhost:3737 · auto-bumps port</span>
+          </div>
+          <a href="https://github.com/omerb784/magpie-mcp" class="btn" target="_blank" rel="noopener">Read the source<span class="arrow">→</span></a>
+        </div>
+        <div class="anti-row">
+          <span><b>not</b> a generator</span>
+          <span><b>not</b> a whiteboard</span>
+          <span><b>not</b> cloud</span>
+          <span><b>not</b> collaborative</span>
+          <span><b>not</b> freemium</span>
+        </div>
+      </div>
+      <figure class="hero-art plate">
+        <span class="plate-tag">OG card · 1200×630</span>
+        <img src="./assets/brand/p05-og-v2.png" alt="A magpie perched on a woven nest holding HTML source scrolls, with a gold bead at center — Magpie OG hero" />
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="tint" id="actors">
+  <div class="container">
+    <div class="head">
+      <h2><span class="num">01</span>Three actors. <em>One nest.</em></h2>
+      <p class="lead">You are the reader they all serve. Magpie is the bird; the Nest is your disk; the Master is the skill your AI gets.</p>
+    </div>
+    <div class="actors-grid">
+      <div class="actor">
+        <div class="seal"><img src="./assets/brand/p04-master.png" alt="Master · open book with quill — trainer illustration" /></div>
+        <p class="role">trainer</p>
+        <h3>Master</h3>
+        <p class="verb">Teaches your AI Magpie's rules.</p>
+        <p>A portable Agent Skill bundled in the npm tarball at <code>skill/magpie-master/SKILL.md</code>. Pure judgment — picks projects, decides iterate vs add, asks before filing when uncertain. No code. No storage.</p>
+      </div>
+      <div class="actor">
+        <div class="seal"><img src="./assets/brand/m04-bird.png" alt="Magpie · bird in side profile" /></div>
+        <p class="role">trained bird</p>
+        <h3>Magpie</h3>
+        <p class="verb">Tends the nest, version after version.</p>
+        <p>Your AI host (Claude · Cursor · Cline) with the Master skill loaded. Calls MCP tools to bring visuals to the Nest, arrange them by project, keep versions in order.</p>
+      </div>
+      <div class="actor">
+        <div class="seal"><img src="./assets/brand/m02-nest.png" alt="Nest · woven nest with gold bead" /></div>
+        <p class="role">dumb infra</p>
+        <h3>Nest</h3>
+        <p class="verb">Local. Quiet. Yours.</p>
+        <p>One SQLite file. One blobs folder. Lives at <code>~/.magpie/</code>. Holds what your Magpie brings. <strong>No LLM. No telemetry. Never phones home.</strong></p>
+      </div>
+    </div>
+    <p class="shorthand">Master trains<span class="sep">·</span>Magpie tends<span class="sep">·</span>Nest keeps.</p>
+  </div>
+</section>
+
+<section id="architecture">
+  <div class="container">
+    <div class="head">
+      <h2><span class="num">02</span>One process. <em>Two surfaces.</em></h2>
+      <p class="lead"><code>npx magpie-mcp</code> boots a single Node process that listens on two channels: stdio for your AI host, HTTP + WebSocket for your browser. Auto-port discovery if 3737 is taken.</p>
+    </div>
+    <figure class="arch-figure">
+      <svg class="arch-svg" viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture diagram">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f2b80" /></marker>
+          <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9396a1" /></marker>
+        </defs>
+        <rect x="20" y="40" width="200" height="120" rx="10" fill="#ffffff" stroke="#0e0f14" stroke-width="1.5"/>
+        <text x="120" y="68" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="15" fill="#0e0f14">Your AI host</text>
+        <text x="120" y="86" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">Claude · Cursor · Cline</text>
+        <rect x="36" y="98" width="168" height="20" rx="4" fill="rgba(31,43,128,0.1)" stroke="#1f2b80"/>
+        <text x="120" y="112" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1f2b80">magpie-master · skill</text>
+        <text x="120" y="138" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#8b8f9c">writes HTML · Mermaid · SVG · MD</text>
+        <text x="120" y="152" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#8b8f9c">DOT · Vega-Lite · D2</text>
+        <rect x="280" y="20" width="200" height="300" rx="10" fill="#0e0f14"/>
+        <text x="380" y="50" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="15" fill="#f0e9da">magpie-mcp</text>
+        <text x="380" y="68" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#d4a233">single Node process</text>
+        <line x1="296" y1="82" x2="464" y2="82" stroke="#3a3f55" stroke-width="1"/>
+        <text x="380" y="104" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">stdio listener (MCP)</text>
+        <text x="380" y="132" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">HTTP + WS server</text>
+        <text x="380" y="160" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">better-sqlite3 (sync)</text>
+        <text x="380" y="188" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">~/.magpie/blobs/</text>
+        <text x="380" y="216" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">render pool</text>
+        <text x="380" y="232" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#9396a1">puppeteer-core · WASM</text>
+        <line x1="296" y1="252" x2="464" y2="252" stroke="#3a3f55" stroke-width="1"/>
+        <text x="380" y="276" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="12" fill="#d4a233">no LLM weights</text>
+        <text x="380" y="294" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="12" fill="#d4a233">no telemetry · no phone-home</text>
+        <rect x="540" y="40" width="200" height="120" rx="10" fill="#ffffff" stroke="#0e0f14" stroke-width="1.5"/>
+        <text x="640" y="68" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="15" fill="#0e0f14">Browser tab</text>
+        <text x="640" y="86" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">React dashboard</text>
+        <text x="640" y="108" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#3a3f55">grid · drawer · compare</text>
+        <text x="640" y="126" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#3a3f55">talk-with-agent menu</text>
+        <path d="M 222 90 L 278 90" stroke="#1f2b80" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+        <text x="250" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1f2b80">stdio</text>
+        <path d="M 278 116 L 222 116" stroke="#9396a1" stroke-width="1.4" stroke-dasharray="4 3" fill="none" marker-end="url(#arrow2)"/>
+        <path d="M 482 90 L 538 90" stroke="#1f2b80" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+        <text x="510" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1f2b80">HTTP/WS</text>
+        <path d="M 538 116 L 482 116" stroke="#9396a1" stroke-width="1.4" stroke-dasharray="4 3" fill="none" marker-end="url(#arrow2)"/>
+        <rect x="20" y="220" width="200" height="100" rx="10" fill="#ffffff" stroke="#0e0f14" stroke-width="1.5"/>
+        <text x="120" y="258" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="15" fill="#0e0f14">You</text>
+        <text x="120" y="278" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">tag · star · compare ·</text>
+        <text x="120" y="294" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">archive · talk-with-agent</text>
+        <path d="M 120 220 L 120 160" stroke="#9396a1" stroke-width="1.4" stroke-dasharray="4 3" fill="none"/>
+        <path d="M 220 270 L 278 270" stroke="#d4a233" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+        <text x="248" y="262" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#a87e22">commands</text>
+      </svg>
+      <figcaption>Your AI is the command channel. The server is dumb infra — it never calls an LLM.</figcaption>
+    </figure>
+
+    <h3>The hot path</h3>
+    <ul class="gold-bullets">
+      <li>Your AI writes source (HTML / Mermaid / SVG / Markdown / DOT / Vega-Lite / D2) and calls <code>add_visual</code> or <code>iterate</code> over stdio.</li>
+      <li>Magpie writes the bytes to <code>~/.magpie/blobs/&lt;id&gt;/v&lt;n&gt;.&lt;ext&gt;</code>, inserts a row in SQLite, kicks the render pool for a PNG thumbnail.</li>
+      <li>WebSocket pushes the new visual to the browser tab. You see it land in the dashboard within a second.</li>
+      <li>Per-host <code>MAGPIE_HOME</code> isolates instances. One canonical process per home; subsequent <code>npx magpie-mcp</code> invocations become facades that multiplex over a named pipe.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="tint" id="dumb">
+  <div class="container">
+    <div class="head">
+      <h2><span class="num">03</span>Infra is dumb. <em>That's the point.</em></h2>
+      <p class="lead">The server has no model. The decisions happen on the host side, inside the trained AI. Dumb infrastructure is small, fast, auditable, and impossible to compromise in interesting ways.</p>
+    </div>
+    <div class="row-grid">
+      <div class="row-card">
+        <p class="tag">no model</p>
+        <h3>Small surface</h3>
+        <p>~200 KB pre-deps. Single Node process. <strong>No model weights shipped. No inference happens inside Magpie.</strong> The MCP tools are thin wrappers over SQLite and the filesystem.</p>
+      </div>
+      <div class="row-card">
+        <p class="tag">sync</p>
+        <h3>Fast by default</h3>
+        <p><code>better-sqlite3</code> is sync. Sub-millisecond filter and search across thousands of visuals. No ORM. No async overhead. Raw SQL is the convention.</p>
+      </div>
+      <div class="row-card">
+        <p class="tag">portable</p>
+        <h3>Skill, not service</h3>
+        <p>The decision protocol lives in a portable Agent Skill bundled in the tarball. Any MCP-aware host with skill support gets the same behavior. The server stays the same; the brains travel with the host.</p>
+      </div>
+      <div class="row-card">
+        <p class="tag">auditable</p>
+        <h3>Read the source</h3>
+        <p>MIT license. ~5K LOC of TypeScript in strict mode. Raw SQL, no ORM. The whole protocol surface fits on one page — 14 tools, 3 resources.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="secured">
+  <div class="container">
+    <div class="head">
+      <h2><span class="num">04</span>Sandboxed by <em>architecture.</em></h2>
+      <p class="lead">Magpie renders content your AI wrote. That source might be untrusted. Five concrete defenses keep the dashboard, your data, and the rest of your machine isolated.</p>
+    </div>
+    <ul class="gold-bullets">
+      <li><strong>Iframe sandbox.</strong> Every visual renders in an iframe with <code>allow-scripts</code> only — <strong>no <code>allow-same-origin</code></strong>. A hostile HTML mockup can't call back to the Magpie API, can't read other visuals, can't touch <code>localStorage</code>. (v0.9.2 A2 lock.)</li>
+      <li><strong>Markdown sanitized.</strong> Markdown goes through <code>marked</code> + <code>DOMPurify</code> before rendering. SVG sources are sanitized inline before serving.</li>
+      <li><strong>DNS rebind guard.</strong> The HTTP server validates <code>Host</code> headers against the bound interface — protects the dashboard from DNS-rebinding attacks aimed at the localhost API.</li>
+      <li><strong>Read-only ingest.</strong> When your AI passes <code>content_path</code>, Magpie reads + copies the bytes into the next blob slot. <strong>Magpie never moves, edits, or deletes your source files.</strong> Ever.</li>
+      <li><strong>Local bind.</strong> Default bind is <code>127.0.0.1</code>. No exposure to other machines on your network. Override with <code>MAGPIE_BIND</code> only when you mean to.</li>
+    </ul>
+    <p style="margin-top:18px;font-size:0.92rem;color:var(--text-mute);">The full prod-readiness audit (59 probes across 8 dimensions) closed with 0 open findings at v0.9.2 — <a href="https://github.com/omerb784/magpie-mcp/blob/main/SECURITY.md" target="_blank" rel="noopener">SECURITY.md</a> covers the threat model.</p>
+  </div>
+</section>
+
+<section class="tint" id="local">
+  <div class="container">
+    <div class="head">
+      <h2><span class="num">05</span>Local-only by <em>architecture, not by policy.</em></h2>
+      <p class="lead">There is no cloud option. There is no telemetry switch. The data layout is open and the backup is one folder copy.</p>
+    </div>
+    <figure class="nest-figure">
+      <img src="./assets/brand/p03-nest.png" alt="A woven nest holding three HTML source cards and a gold bead — the Nest as it holds your visuals" loading="lazy" />
+      <figcaption>The Nest holds source files (HTML, Mermaid, SVG…) and the gold bead — your starred keepers — exactly where you left them.</figcaption>
+    </figure>
+    <div class="tree">
+<span class="root">~/.magpie/</span>           <span class="com"># or wherever MAGPIE_HOME points</span>
+├── magpie.db        <span class="com"># SQLite — projects · visuals · versions · tags · templates · outbox</span>
+├── magpie.lock      <span class="com"># pid + IPC pipe name for the canonical process</span>
+├── blobs/
+│   └── &lt;id&gt;/
+│       ├── v1.html  <span class="com"># your AI wrote this</span>
+│       ├── v1.png   <span class="com"># puppeteer-core thumbnail</span>
+│       ├── v2.html
+│       └── v2.png
+└── ipc/             <span class="com"># named pipes for multi-shell facades</span>
+    </div>
+    <ul class="gold-bullets">
+      <li><strong>Backup is a folder copy.</strong> Quit Magpie, copy <code>~/.magpie/</code>, you're done. Or run <code>npx magpie-mcp --backup</code> for a USTAR + gzip archive with a WAL-consistent snapshot.</li>
+      <li><strong>Migrations are forward-only.</strong> The runner detects gaps and downgrades at boot. The downgrade path is <em>restore from an older backup</em> — there is no schema rollback by design. (R21.)</li>
+      <li><strong>Restore is an extract.</strong> Untar into <code>~/.magpie/</code>, reboot Magpie. Missing migrations replay on next boot.</li>
+      <li><strong>No accounts. No sync.</strong> Single user. Single machine. If you want it on another machine, copy the folder.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="cta-strip">
+  <div class="container">
+    <h2>Stop losing the visuals your AI <em>draws for you.</em></h2>
+    <p>MIT, offline, no telemetry — forever. One npm package, one Node process, one folder on your disk.</p>
+    <div class="actions">
+      <div class="install">
+        <span class="line"><span class="k">$</span><span>npx magpie-mcp</span></span>
+      </div>
+      <a class="btn" href="./guide.html">Read the user guide<span class="arrow">→</span></a>
+      <a class="btn" href="https://github.com/omerb784/magpie-mcp" target="_blank" rel="noopener">Source on GitHub<span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="container">
+    <div class="colophon">
+      Your loyal Magpie. Lands every visual in the nest.
+      <span class="sig">Colophon · v1.0 · MIT · made offline</span>
+    </div>
+    <div class="links">
+      <a href="./index.html">Home</a>
+      <a href="./guide.html">Guide</a>
+      <a href="https://github.com/omerb784/magpie-mcp" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://npmjs.com/package/magpie-mcp" target="_blank" rel="noopener">npm</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

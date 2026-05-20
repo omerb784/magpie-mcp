@@ -1,0 +1,960 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Magpie — Your loyal Magpie. Lands every visual in the nest.</title>
+<meta name="description" content="Local MCP server + dashboard that nests every visual your AI agent makes — HTML mockups, Mermaid diagrams, SVG, Markdown, Graphviz, Vega-Lite, D2. MIT, offline, no telemetry." />
+<link rel="icon" type="image/svg+xml" href="./assets/brand/magpie-mark.svg" />
+<link rel="alternate icon" type="image/png" href="./assets/brand/logo-A.png" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Magpie — Your loyal Magpie. Lands every visual in the nest." />
+<meta property="og:description" content="Local MCP server + dashboard for every visual your AI agent makes. MIT, offline, no telemetry." />
+<meta property="og:image" content="./assets/brand/p05-og-v2.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="./assets/brand/p05-og-v2.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500;1,6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0e0f14;
+    --ink-soft: #3a3f55;
+    --paper: #eef0f4;
+    --paper-2: #d9dce3;
+    --bg-elev: #ffffff;
+    --bg-muted: #e3e5ec;
+    --hairline: #d9dce3;
+    --hairline-strong: #b9bcc8;
+    --mid: #9396a1;
+    --text-mute: #5a5e6d;
+    --text-subtle: #8b8f9c;
+    --cobalt: #1f2b80;
+    --cobalt-deep: #141d5e;
+    --cobalt-soft: rgba(31, 43, 128, 0.08);
+    --shiny: #d4a233;
+    --shiny-deep: #a87e22;
+    --shiny-bg: rgba(212, 162, 51, 0.12);
+    --terra: #c25d3a;
+    --shadow-sm: 0 1px 2px rgba(14,15,20,0.04), 0 2px 8px rgba(14,15,20,0.04);
+    --shadow: 0 2px 4px rgba(14,15,20,0.04), 0 12px 28px rgba(14,15,20,0.06);
+    --shadow-pop: 0 4px 8px rgba(14,15,20,0.06), 0 24px 60px rgba(14,15,20,0.12);
+    --r-sm: 8px;
+    --r: 12px;
+    --r-lg: 18px;
+    --sans: "IBM Plex Sans", system-ui, sans-serif;
+    --serif: "Newsreader", Georgia, serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.6 var(--sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  a { color: var(--cobalt); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  code { font-family: var(--mono); font-size: 0.88em; background: var(--cobalt-soft); color: var(--cobalt); padding: 1px 6px; border-radius: 4px; }
+
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+  @media (max-width: 640px) { .container { padding: 0 22px; } }
+
+  /* ============ TOPBAR ============ */
+  nav.topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(238, 240, 244, 0.82);
+    backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid rgba(217, 220, 227, 0.6);
+  }
+  nav.topbar .container {
+    display: flex; align-items: center; gap: 28px;
+    padding-top: 14px; padding-bottom: 14px;
+  }
+  .brand {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: var(--ink); text-decoration: none;
+  }
+  .brand img.mark { width: 32px; height: 32px; display: block; }
+  .brand .wm { font-weight: 600; font-size: 1.06rem; letter-spacing: -0.012em; }
+  .brand .wm::after { content: "."; color: var(--shiny); font-weight: 700; }
+  nav.topbar .links {
+    margin-left: auto; display: flex; gap: 4px; align-items: center;
+    font-size: 0.94rem;
+  }
+  nav.topbar .links a {
+    color: var(--text-mute);
+    text-decoration: none; padding: 8px 14px;
+    border-radius: var(--r-sm); transition: color 100ms, background 100ms;
+  }
+  nav.topbar .links a:hover { color: var(--cobalt); background: var(--cobalt-soft); text-decoration: none; }
+  nav.topbar .links a.cta-primary {
+    background: var(--ink); color: #f0e9da; font-weight: 500;
+    padding: 8px 16px; margin-left: 8px;
+  }
+  nav.topbar .links a.cta-primary:hover { background: var(--cobalt); color: #f0e9da; }
+
+  /* ============ TYPE ============ */
+  h1, h2, h3 { font-family: var(--sans); color: var(--ink); letter-spacing: -0.018em; margin: 0; font-weight: 600; }
+  h1 {
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    line-height: 1.02; letter-spacing: -0.03em;
+  }
+  h2 {
+    font-size: clamp(2rem, 3.6vw, 2.7rem);
+    line-height: 1.06; letter-spacing: -0.022em;
+  }
+  h3 { font-size: 1.12rem; line-height: 1.35; }
+  p { margin: 0; color: var(--ink); }
+  em.serif {
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    color: var(--cobalt); letter-spacing: -0.012em;
+  }
+
+  /* eyebrow */
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--shiny-deep);
+    margin-bottom: 18px;
+  }
+  .eyebrow::before {
+    content: ""; width: 8px; height: 8px; background: var(--shiny);
+    border-radius: 50%;
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    position: relative;
+    padding: 32px 0 64px;
+    overflow: hidden;
+  }
+  .hero::before, .hero::after {
+    content: ""; position: absolute; z-index: 0; pointer-events: none;
+  }
+  .hero::before {
+    top: -120px; right: -80px;
+    width: 520px; height: 520px;
+    background: var(--cobalt-soft);
+    border-radius: 50%;
+    filter: blur(2px);
+  }
+  .hero::after {
+    bottom: -60px; left: 8%;
+    width: 18px; height: 18px;
+    background: var(--shiny);
+    border-radius: 50%;
+    box-shadow: 0 8px 24px rgba(212,162,51,0.3);
+    opacity: 0;
+    animation: bead-settle 1100ms cubic-bezier(.2,.6,.2,1) 700ms forwards;
+  }
+  @keyframes bead-settle {
+    0% { opacity: 0; transform: translateY(-30px) scale(1.4); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .hero .container { position: relative; z-index: 1; }
+  .hero .grid {
+    display: grid; grid-template-columns: 1fr 1.1fr;
+    gap: 40px; align-items: center;
+  }
+  @media (max-width: 960px) {
+    .hero .grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+  .hero h1 em {
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    color: var(--cobalt);
+    position: relative;
+  }
+  .hero h1 em::after {
+    content: ".";
+    color: var(--shiny);
+    font-family: var(--sans);
+    font-style: normal;
+    font-weight: 700;
+  }
+  .hero .tagline {
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    font-size: clamp(1.12rem, 1.7vw, 1.3rem);
+    color: var(--cobalt);
+    margin: 18px 0 16px; max-width: 36ch;
+    line-height: 1.4;
+  }
+  .hero .lede {
+    font-size: 1rem; line-height: 1.6;
+    color: var(--text-mute); max-width: 52ch;
+    margin: 0 0 22px;
+  }
+
+  .hero-cta {
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: stretch;
+  }
+  .install {
+    display: inline-flex; flex-direction: column; gap: 2px;
+    background: var(--ink); color: #f0e9da;
+    border-radius: var(--r);
+    padding: 14px 22px;
+    font-family: var(--mono); font-size: 1rem;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .install .line { display: flex; align-items: center; gap: 8px; }
+  .install .k { color: var(--shiny); }
+  .install .note {
+    color: var(--mid); font-size: 0.78em;
+  }
+  .install .copy {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(255,255,255,0.08);
+    color: #f0e9da;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 4px; padding: 4px 10px;
+    font: 500 10.5px var(--mono);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; opacity: 0; transition: opacity 120ms;
+  }
+  .install:hover .copy { opacity: 1; }
+  .install .copy:hover { background: rgba(255,255,255,0.16); }
+  .install .copy.copied { background: var(--shiny-bg); color: var(--shiny); border-color: var(--shiny); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 14px 22px;
+    border-radius: var(--r);
+    border: 1px solid var(--hairline-strong);
+    background: var(--bg-elev);
+    color: var(--ink);
+    font: 500 0.96rem var(--sans);
+    text-decoration: none;
+    transition: background 100ms, color 100ms, border-color 100ms;
+  }
+  .btn:hover { background: var(--paper-2); border-color: var(--ink); text-decoration: none; }
+  .btn .arrow { margin-left: 8px; transition: transform 160ms; }
+  .btn:hover .arrow { transform: translateX(3px); }
+
+  .anti-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin: 32px 0 0;
+  }
+  .anti-row span {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    color: var(--text-mute);
+    box-shadow: var(--shadow-sm);
+  }
+  .anti-row span b { color: var(--terra); font-weight: 600; margin-right: 5px; }
+
+  /* hero image — bird floats free with motion */
+  .hero-art {
+    position: relative;
+    display: block;
+    max-width: 720px;
+    margin: 0 0 0 auto;
+  }
+  @media (max-width: 1180px) {
+    .hero-art { max-width: 620px; }
+  }
+  .hero-art::before {
+    content: ""; position: absolute;
+    bottom: 4%; left: 50%;
+    width: 60%; height: 18px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(14,15,20,0.16) 0%, transparent 70%);
+    filter: blur(8px);
+    z-index: 0;
+    opacity: 0;
+    animation: shadow-in 900ms ease-out 400ms forwards;
+  }
+  @keyframes shadow-in { to { opacity: 0.9; } }
+  .hero-art img {
+    position: relative; z-index: 1;
+    display: block; width: 100%; height: auto;
+    opacity: 0;
+    transform: translateY(-32px) rotate(-2deg);
+    animation: land 1100ms cubic-bezier(.2,.7,.25,1) 200ms forwards;
+  }
+  @keyframes land {
+    0% { opacity: 0; transform: translateY(-32px) rotate(-2deg); }
+    60% { opacity: 1; transform: translateY(6px) rotate(0.5deg); }
+    100% { opacity: 1; transform: translateY(0) rotate(0); }
+  }
+
+  /* ============ SECTIONS ============ */
+  section { padding: 110px 0; position: relative; }
+  section.tint {
+    background-color: var(--bg-elev);
+    background-image: url(./assets/brand/p06-paper-texture.png);
+    background-blend-mode: multiply;
+    background-size: 480px 480px;
+    background-repeat: repeat;
+  }
+  section .head { max-width: 720px; margin: 0 0 56px; }
+  section .head .lede {
+    font-size: 1.1rem; line-height: 1.6;
+    color: var(--text-mute);
+    margin: 14px 0 0;
+  }
+
+  /* ============ ACTORS ============ */
+  .actors-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+  }
+  @media (max-width: 880px) { .actors-grid { grid-template-columns: 1fr; } }
+  .actor {
+    background: var(--bg-elev);
+    border-radius: var(--r-lg);
+    padding: 32px 30px 30px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+    position: relative; overflow: hidden;
+    border: 1px solid var(--hairline);
+  }
+  .actor:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .actor .seal {
+    width: 96px; height: 96px;
+    background: var(--paper);
+    border-radius: 50%;
+    display: grid; place-items: center; padding: 10px;
+    margin: 0 0 24px;
+  }
+  .actor .seal img { max-width: 100%; max-height: 100%; }
+  .actor .role {
+    font-family: var(--mono); font-size: 10.5px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--cobalt);
+    margin: 0 0 8px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .actor .role::before { content: ""; width: 5px; height: 5px; background: var(--cobalt); border-radius: 50%; }
+  .actor h3 {
+    font-size: 1.6rem; letter-spacing: -0.018em; margin: 0 0 8px;
+  }
+  .actor .verb {
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    color: var(--cobalt); font-size: 1.05rem; margin: 0 0 10px;
+  }
+  .actor p {
+    font-size: 0.96rem; line-height: 1.55; color: var(--text-mute);
+    margin: 0;
+  }
+  .actor p code { background: var(--cobalt-soft); color: var(--cobalt); }
+  .shorthand {
+    text-align: center; margin: 48px 0 0;
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    color: var(--ink); font-size: 1.18rem;
+  }
+  .shorthand .sep { color: var(--shiny); margin: 0 14px; }
+
+  /* ============ WHAT ============ */
+  .what-grid {
+    display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 18px;
+  }
+  @media (max-width: 880px) { .what-grid { grid-template-columns: 1fr; } }
+  .what-card {
+    background: var(--bg-elev);
+    border-radius: var(--r);
+    padding: 28px 30px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--hairline);
+  }
+  .what-card.is { background: var(--cobalt); color: var(--paper); border-color: var(--cobalt); }
+  .what-card .tag {
+    font-family: var(--mono); font-size: 10.5px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    margin: 0 0 16px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .what-card .tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .what-card.is .tag { color: var(--shiny); }
+  .what-card.isnt .tag { color: var(--terra); }
+  .what-card p { margin: 0; font-size: 1.04rem; line-height: 1.55; color: var(--text-mute); }
+  .what-card.is p { color: rgba(240,233,218,0.78); }
+  .what-card p .lead-word {
+    font-family: var(--serif); font-style: italic; font-weight: 600;
+    color: var(--ink); font-size: 1.18em;
+  }
+  .what-card.is p .lead-word { color: #f0e9da; }
+
+  /* ============ FORMATS ============ */
+  .format-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  }
+  @media (max-width: 880px) { .format-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .format-grid { grid-template-columns: 1fr; } }
+  .format {
+    background: var(--bg-elev);
+    border-radius: var(--r);
+    padding: 22px 22px 24px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 160ms ease, box-shadow 160ms ease;
+    border: 1px solid var(--hairline);
+    position: relative;
+  }
+  .format:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .format .num {
+    position: absolute; top: 14px; right: 18px;
+    font-family: var(--mono); font-size: 10px; color: var(--text-subtle);
+    letter-spacing: 0.08em;
+  }
+  .format h3 {
+    font-size: 1.1rem; margin: 0 0 4px; display: flex; align-items: center; gap: 10px;
+  }
+  .format .ext {
+    font-family: var(--mono); font-size: 11px; color: var(--text-subtle);
+    margin-bottom: 12px; display: block; letter-spacing: 0.04em;
+  }
+  .format p { font-size: 0.9rem; color: var(--text-mute); line-height: 1.5; margin: 0; }
+  .badge {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
+  }
+  .badge.html { background: rgba(194,93,58,0.12); color: #c25d3a; }
+  .badge.mermaid { background: rgba(59,111,179,0.12); color: #3b6fb3; }
+  .badge.svg { background: rgba(90,138,82,0.14); color: #5a8a52; }
+  .badge.markdown { background: rgba(183,131,32,0.14); color: #b78320; }
+  .badge.dot { background: rgba(122,75,168,0.12); color: #7a4ba8; }
+  .badge.vega { background: rgba(188,76,108,0.12); color: #bc4c6c; }
+  .badge.d2 { background: rgba(31,122,122,0.12); color: #1f7a7a; }
+  .format.deferred { background: var(--paper); border-style: dashed; box-shadow: none; }
+  .format.deferred h3 { color: var(--text-subtle); }
+  .format.deferred p { color: var(--text-mute); }
+
+  /* ============ DASHBOARD STRIP ============ */
+  .shots-hero {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 18px;
+    height: clamp(420px, 56vw, 620px);
+  }
+  @media (max-width: 880px) {
+    .shots-hero { grid-template-columns: 1fr; height: auto; }
+    .shots-hero .shot.big { grid-row: auto; }
+  }
+  .shot {
+    background: var(--bg-elev);
+    border-radius: var(--r);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--hairline);
+    position: relative;
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .shot:hover { transform: translateY(-2px); box-shadow: var(--shadow-pop); }
+  .shot.big { grid-row: span 2; }
+  .shot .img-wrap { width: 100%; height: 100%; overflow: hidden; position: relative; }
+  .shot .img-wrap img {
+    width: 100%; height: 100%; object-fit: cover; object-position: top left;
+    display: block;
+  }
+  .shot figcaption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 16px 20px;
+    background: linear-gradient(to top, rgba(14,15,20,0.85), rgba(14,15,20,0));
+    color: #f0e9da;
+    display: flex; align-items: baseline; gap: 12px;
+    font-size: 0.92rem;
+  }
+  .shot figcaption .label {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--shiny);
+  }
+  .shot figcaption .desc {
+    font-family: var(--serif); font-style: italic;
+  }
+
+  /* ============ THREE WAYS ============ */
+  .three-ways-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+  }
+  @media (max-width: 880px) { .three-ways-grid { grid-template-columns: 1fr; } }
+  .tw-card {
+    background: var(--bg-elev);
+    border-radius: var(--r-lg);
+    padding: 28px 28px 26px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--hairline);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .tw-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .tw-card .tw-tag {
+    font-family: var(--mono); font-size: 10.5px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--cobalt); margin: 0 0 14px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .tw-card .tw-tag::before {
+    content: ""; width: 6px; height: 6px;
+    background: var(--cobalt); border-radius: 50%;
+  }
+  .tw-card h3 {
+    font-size: 1.5rem; letter-spacing: -0.014em;
+    margin: 0 0 12px;
+  }
+  .tw-card .tw-desc {
+    font-size: 0.96rem; line-height: 1.55;
+    color: var(--text-mute); margin: 0 0 16px;
+  }
+  .tw-card .tw-desc code {
+    background: var(--cobalt-soft); color: var(--cobalt);
+    font-size: 0.86em; padding: 1px 5px;
+  }
+  .tw-card .tw-meta {
+    font-family: var(--serif); font-style: italic;
+    font-weight: 500;
+    font-size: 0.92rem; color: var(--cobalt);
+    margin: 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--hairline);
+  }
+  .tw-footer {
+    text-align: center; margin: 40px 0 0;
+    font-family: var(--mono); font-size: 0.88rem;
+    letter-spacing: 0.04em;
+  }
+  .tw-footer a { color: var(--cobalt); }
+  .tw-footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+  /* ============ QUICKSTART ============ */
+  .qs-grid {
+    display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: start;
+  }
+  @media (max-width: 920px) { .qs-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+  .qs-steps {
+    counter-reset: qs;
+    list-style: none; padding: 0; margin: 0;
+  }
+  .qs-steps li {
+    counter-increment: qs;
+    padding: 24px 26px 26px 88px;
+    position: relative;
+    background: var(--bg-elev);
+    border-radius: var(--r);
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--hairline);
+    transition: transform 200ms ease;
+  }
+  .qs-steps li:hover { transform: translateX(4px); }
+  .qs-steps li::before {
+    content: counter(qs, decimal-leading-zero);
+    position: absolute; left: 28px; top: 26px;
+    font-family: var(--serif); font-style: italic; font-weight: 600;
+    font-size: 2.4rem; color: var(--shiny);
+    line-height: 0.9; letter-spacing: -0.02em;
+  }
+  .qs-steps li b {
+    display: block; font-weight: 600; font-size: 1.06rem;
+    color: var(--ink); margin-bottom: 4px;
+  }
+  .qs-steps li p { font-size: 0.94rem; color: var(--text-mute); line-height: 1.55; margin: 0; }
+
+  .qs-aside {
+    position: sticky; top: 90px;
+  }
+  .qs-aside .panel {
+    background: var(--bg-elev);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r);
+    padding: 22px 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .qs-aside .panel + .panel { margin-top: 14px; }
+  .qs-aside .panel h3 {
+    font-size: 1.04rem; margin: 0 0 10px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .qs-aside .panel h3::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--cobalt);
+  }
+  .qs-aside .panel.gold { background: var(--shiny-bg); border-color: rgba(212,162,51,0.3); }
+  .qs-aside .panel.gold h3::before { background: var(--shiny); }
+  .qs-aside .panel p { font-size: 0.94rem; color: var(--text-mute); line-height: 1.55; margin: 0; }
+  .qs-aside .panel p b { color: var(--ink); }
+
+  /* ============ CTA STRIP ============ */
+  .cta-strip {
+    background: var(--ink); color: var(--paper);
+    padding: 80px 0;
+    border-radius: 0;
+  }
+  .cta-strip .container {
+    display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; align-items: center;
+  }
+  @media (max-width: 880px) { .cta-strip .container { grid-template-columns: 1fr; } }
+  .cta-strip h2 {
+    color: var(--paper); font-size: clamp(1.8rem, 3vw, 2.4rem);
+    line-height: 1.1; letter-spacing: -0.022em;
+  }
+  .cta-strip h2 em {
+    font-family: var(--serif); font-style: italic; font-weight: 500; color: var(--shiny);
+  }
+  .cta-strip p {
+    color: rgba(240,233,218,0.7); margin-top: 14px;
+    font-size: 1.04rem; line-height: 1.6;
+  }
+  .cta-strip .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .cta-strip .install {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.16);
+  }
+  .cta-strip .btn {
+    background: transparent; color: var(--paper);
+    border-color: rgba(255,255,255,0.24);
+  }
+  .cta-strip .btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); }
+
+  /* ============ FOOTER ============ */
+  footer.site {
+    padding: 60px 0 70px;
+    background: var(--paper);
+    border-top: 1px solid var(--hairline);
+    font-size: 0.92rem; color: var(--text-mute);
+  }
+  footer.site .container { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 32px; }
+  @media (max-width: 720px) { footer.site .container { grid-template-columns: 1fr 1fr; gap: 24px; } }
+  footer.site .colophon {
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink); font-size: 1.05rem; line-height: 1.55;
+    max-width: 34ch;
+  }
+  footer.site .colophon .sig {
+    display: block; font-family: var(--mono); font-style: normal;
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--text-subtle); margin-top: 14px;
+  }
+  footer.site h4 {
+    font: 500 0.72rem var(--mono);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text-subtle); margin: 0 0 12px;
+  }
+  footer.site ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  footer.site a { color: var(--text-mute); }
+  footer.site a:hover { color: var(--cobalt); text-decoration: underline; }
+
+  /* reveal-on-scroll */
+  .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 700ms cubic-bezier(.2,.6,.2,1), transform 700ms cubic-bezier(.2,.6,.2,1);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+    .hero-art img, .hero::after { opacity: 1 !important; transform: none !important; }
+  }
+
+  /* topbar density at narrow widths */
+  @media (max-width: 1024px) {
+    nav.topbar .links a:not(.cta-primary):nth-child(-n+2) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="container">
+    <a class="brand" href="./index.html">
+      <img class="mark" src="./assets/brand/logo-A.png" alt="Magpie mark" />
+      <span class="wm">Magpie</span>
+    </a>
+    <div class="links">
+      <a href="#formats">Formats</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="./guide.html">Guide</a>
+      <a href="https://github.com/omerb784/magpie-mcp" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://npmjs.com/package/magpie-mcp" class="cta-primary" target="_blank" rel="noopener">Install →</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero" id="top">
+  <div class="container">
+    <div class="grid">
+      <div>
+        <p class="eyebrow">Local · MIT · v1.0</p>
+        <h1>Your loyal <em>Magpie</em><br/>Lands every visual in the nest.</h1>
+        <p class="tagline">A gallery your AI agent curates for you, version after version.</p>
+        <p class="lede">
+          Your LLM gives you chat history. Magpie gives you a local library for every non-code thing
+          it makes — mockups, diagrams, charts, status reports, plans. Offline. Yours.
+        </p>
+        <div class="hero-cta">
+          <div class="install" id="install-pill">
+            <span class="line"><span class="k">$</span><span>npx magpie-mcp</span></span>
+            <span class="note"># opens localhost:3737 · auto-bumps port</span>
+            <button class="copy" type="button" aria-label="Copy install command">copy</button>
+          </div>
+          <a href="./guide.html" class="btn">Read the guide<span class="arrow">→</span></a>
+        </div>
+        <div class="anti-row">
+          <span><b>not</b> a generator</span>
+          <span><b>not</b> a whiteboard</span>
+          <span><b>not</b> cloud</span>
+          <span><b>not</b> an LLM</span>
+        </div>
+      </div>
+      <figure class="hero-art">
+        <img src="./assets/brand/p01-hero.png" alt="A magpie in flight bringing a paper scroll to a woven nest with a gold bead — painterly hero" />
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="tint" id="what">
+  <div class="container">
+    <div class="head reveal">
+      <p class="eyebrow">What it is</p>
+      <h2>An organizer, <em class="serif">not</em> a generator.</h2>
+      <p class="lede">
+        Magpie is a local dashboard plus an embedded MCP server. Claude (or Cursor, Cline, or any MCP host)
+        writes the visuals; Magpie files them by project, tags them, versions them, lets you compare any two
+        side-by-side. No LLM lives in the server. No cloud. No accounts.
+      </p>
+    </div>
+    <div class="what-grid reveal">
+      <div class="what-card is">
+        <p class="tag">It is</p>
+        <p><span class="lead-word">A library</span> for the visuals your AI agent makes. Like Eagle or PureRef, but your AI fills the nest through MCP.</p>
+      </div>
+      <div class="what-card isnt">
+        <p class="tag">It isn't</p>
+        <p><span class="lead-word">A generator.</span> The server has no model. Your AI agent does the drawing.</p>
+      </div>
+      <div class="what-card isnt">
+        <p class="tag">It isn't</p>
+        <p><span class="lead-word">A whiteboard.</span> No infinite canvas, no drawing tools, no real-time collaboration.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="actors">
+  <div class="container">
+    <div class="head reveal">
+      <p class="eyebrow">Three actors</p>
+      <h2>Master <em class="serif">trains.</em> Magpie <em class="serif">tends.</em><br/>Nest <em class="serif">keeps.</em></h2>
+      <p class="lede">You are the reader they all serve. Magpie is the bird; the Nest is your disk; the Master is the skill your AI gets.</p>
+    </div>
+    <div class="actors-grid reveal">
+      <div class="actor">
+        <div class="seal"><img src="./assets/brand/p04-master.png" alt="Master — open book with quill on cream paper" /></div>
+        <p class="role">trainer</p>
+        <h3>Master</h3>
+        <p class="verb">Teaches your AI Magpie's rules.</p>
+        <p>A portable Agent Skill bundled in the npm tarball — pure judgment, no code.</p>
+      </div>
+      <div class="actor">
+        <div class="seal"><img src="./assets/brand/m04-bird.png" alt="Magpie — bird in side profile" /></div>
+        <p class="role">trained bird</p>
+        <h3>Magpie</h3>
+        <p class="verb">Tends the nest, version after version.</p>
+        <p>Your AI with the Master loaded. Brings visuals to the Nest, arranges by project, keeps versions in order.</p>
+      </div>
+      <div class="actor">
+        <div class="seal"><img src="./assets/brand/m02-nest.png" alt="Nest — woven nest with gold bead at center" /></div>
+        <p class="role">dumb infra</p>
+        <h3>Nest</h3>
+        <p class="verb">Local. Quiet. Yours.</p>
+        <p>One SQLite file. One blobs folder. Lives at <code>~/.magpie/</code> on your disk. No LLM. No telemetry.</p>
+      </div>
+    </div>
+    <p class="shorthand reveal">Master trains<span class="sep">·</span>Magpie tends<span class="sep">·</span>Nest keeps.</p>
+  </div>
+</section>
+
+<section class="tint" id="formats">
+  <div class="container">
+    <div class="head reveal">
+      <p class="eyebrow">Format coverage</p>
+      <h2>Seven formats. <em class="serif">One nest.</em></h2>
+      <p class="lede">All renderable, all comparable side-by-side, all offline.</p>
+    </div>
+    <div class="format-grid reveal">
+      <div class="format"><span class="num">01</span><h3>HTML <span class="badge html">html</span></h3><span class="ext">.html · sandboxed iframe</span><p>UI mockups, dashboards, landing pages — sandboxed iframe.</p></div>
+      <div class="format"><span class="num">02</span><h3>Mermaid <span class="badge mermaid">mermaid</span></h3><span class="ext">.mmd · bundled v11</span><p>Flowcharts, sequence, state, ER, gantt — bundled v11.</p></div>
+      <div class="format"><span class="num">03</span><h3>SVG <span class="badge svg">svg</span></h3><span class="ext">.svg · direct</span><p>Icons, logos, single vector elements — sanitized inline.</p></div>
+      <div class="format"><span class="num">04</span><h3>Markdown <span class="badge markdown">md</span></h3><span class="ext">.md · marked + DOMPurify</span><p>Prose, READMEs, design notes — marked + DOMPurify.</p></div>
+      <div class="format"><span class="num">05</span><h3>Graphviz <span class="badge dot">dot</span></h3><span class="ext">.dot · graphviz-wasm</span><p>Directed and undirected graphs via WASM Graphviz.</p></div>
+      <div class="format"><span class="num">06</span><h3>Vega-Lite <span class="badge vega">vega-lite</span></h3><span class="ext">.vl.json · vega SSR</span><p>Bar, line, scatter, area charts — inline data only.</p></div>
+      <div class="format"><span class="num">07</span><h3>D2 <span class="badge d2">d2</span></h3><span class="ext">.d2 · @terrastruct/d2 wasm</span><p>Modern diagram-as-code with dagre or elk layouts.</p></div>
+      <div class="format deferred"><span class="num">—</span><h3>+ more</h3><span class="ext">deferred · permanently</span><p>PlantUML / Excalidraw break the offline + pure-JS rule. <a href="./guide.html#faq">Why →</a></p></div>
+    </div>
+  </div>
+</section>
+
+<section id="dashboard">
+  <div class="container">
+    <div class="head reveal">
+      <p class="eyebrow">In the dashboard</p>
+      <h2>One process. <em class="serif">One tab.</em> One nest.</h2>
+      <p class="lede">Boots in seconds. Opens a browser tab. Auto-bumps to a free port if 3737 is taken.</p>
+    </div>
+    <div class="shots-hero reveal">
+      <figure class="shot big">
+        <div class="img-wrap"><img src="./assets/dashboard/01-dashboard-light.png" alt="Magpie dashboard — light theme, project grid view" loading="lazy" /></div>
+        <figcaption><span class="label">Library</span><span class="desc">Sidebar projects + searchable grid.</span></figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="img-wrap"><img src="./assets/dashboard/04-grid-all.png" alt="Magpie grid view across all formats" loading="lazy" /></div>
+        <figcaption><span class="label">Grid</span><span class="desc">Filter by type, tag, project.</span></figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="img-wrap"><img src="./assets/dashboard/06-compare-side-by-side.png" alt="Side-by-side compare of two versions" loading="lazy" /></div>
+        <figcaption><span class="label">Compare</span><span class="desc">v(N-1) ↔ vN side-by-side.</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="tint" id="three-ways">
+  <div class="container">
+    <div class="head reveal">
+      <p class="eyebrow">Three ways</p>
+      <h2>Hand work back to your <em class="serif">agent.</em></h2>
+      <p class="lede">
+        Same goal — get the bird flying with context loaded. Pick the channel that fits how you work.
+      </p>
+    </div>
+    <div class="three-ways-grid reveal">
+      <div class="tw-card">
+        <p class="tw-tag">Pillar 1 · Async</p>
+        <h3>Outbox</h3>
+        <p class="tw-desc">Push a templated prompt to a server-managed queue. Your AI picks it up via <code>magpie://inbox</code> when it's ready. No timing dance.</p>
+        <p class="tw-meta">Best for: batched work · overnight runs</p>
+      </div>
+      <div class="tw-card">
+        <p class="tw-tag">Pillar 2 · Reusable</p>
+        <h3>Templates</h3>
+        <p class="tw-desc">Design a prompt once with typed variables and visual references. 10 built-ins ship; scope your own to a project or visual.</p>
+        <p class="tw-meta">Best for: recurring iteration loops</p>
+      </div>
+      <div class="tw-card">
+        <p class="tw-tag">Pillar 3 · Direct</p>
+        <h3>MCP Prompts</h3>
+        <p class="tw-desc">Same templates surface as slash commands in your AI host (<code>/magpie:iterate</code>). User-fired — no clipboard, no queue.</p>
+        <p class="tw-meta">Best for: in-chat refinements</p>
+      </div>
+    </div>
+    <p class="tw-footer reveal"><a href="./guide.html#talk">Read §07 in the guide →</a></p>
+  </div>
+</section>
+
+<section class="tint" id="quickstart">
+  <div class="container">
+    <div class="head reveal">
+      <p class="eyebrow">Quick start</p>
+      <h2>Three minutes from <code style="font-family:var(--mono);font-size:0.74em;background:var(--cobalt-soft);color:var(--cobalt);padding:4px 12px;border-radius:6px;">npx</code> to your first visual.</h2>
+      <p class="lede">No accounts. No API keys. No build step.</p>
+    </div>
+    <div class="qs-grid reveal">
+      <ol class="qs-steps">
+        <li>
+          <b>Boot the server.</b>
+          <p>Run <code>npx magpie-mcp</code> · prints a dashboard URL · opens automatically.</p>
+        </li>
+        <li>
+          <b>Install the Master skill.</b>
+          <p><code>npx magpie-mcp --install-skill</code> · drops the skill into Claude Code / Claude Desktop.</p>
+        </li>
+        <li>
+          <b>Wire your MCP host.</b>
+          <p><code>npx magpie-mcp --print-config</code> · paste the snippet into your MCP host config, restart.</p>
+        </li>
+        <li>
+          <b>Ask for a mock.</b>
+          <p><em style="font-family:var(--serif);font-style:italic;">"Mock a settings page"</em> · the visual lands in the dashboard within a second.</p>
+        </li>
+      </ol>
+      <aside class="qs-aside">
+        <div class="panel">
+          <h3>Read the full guide</h3>
+          <p>The <a href="./guide.html">user guide</a> covers architecture, all 7 formats, compare modes, the Outbox, Templates, MCP tool surface, shortcuts, export, backup, and FAQ.</p>
+        </div>
+        <div class="panel gold">
+          <h3>What your AI does, what Magpie holds</h3>
+          <p>Your AI writes the source — HTML, Mermaid, SVG, etc. — and calls <code>add_visual</code> or <code>iterate</code>. Magpie stores it, renders a thumbnail, gives you a preview URL. <b>No LLM lives in the server.</b></p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="cta-strip">
+  <div class="container">
+    <div>
+      <h2>Lands every visual <em>in the nest.</em></h2>
+      <p>v1.0 · <strong>MIT, offline, no telemetry — forever.</strong></p>
+    </div>
+    <div class="actions">
+      <div class="install">
+        <span class="line"><span class="k">$</span><span>npx magpie-mcp</span></span>
+      </div>
+      <a class="btn" href="./guide.html">Read the guide<span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="container">
+    <div class="colophon">
+      Your loyal Magpie. Lands every visual in the nest.
+      <span class="sig">Colophon · v1.0 · MIT · made offline</span>
+    </div>
+    <div>
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="./index.html">Landing</a></li>
+        <li><a href="./guide.html">User guide</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Code</h4>
+      <ul>
+        <li><a href="https://github.com/omerb784/magpie-mcp" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://npmjs.com/package/magpie-mcp" target="_blank" rel="noopener">npm</a></li>
+        <li><a href="https://github.com/omerb784/magpie-mcp/blob/main/LICENSE" target="_blank" rel="noopener">MIT</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // reveal-on-scroll
+  (function(){
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      }
+    }, { threshold: 0.05, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.reveal').forEach((s) => io.observe(s));
+  })();
+
+  // install pill copy button
+  document.querySelectorAll('.install .copy').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText('npx magpie-mcp');
+        btn.textContent = 'copied'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1400);
+      } catch (e) {
+        btn.textContent = 'failed';
+        setTimeout(() => { btn.textContent = 'copy'; }, 1400);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
