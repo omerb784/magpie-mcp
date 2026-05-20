@@ -95,7 +95,7 @@ export function installSkill(options: InstallOptions = {}): InstallResult {
         `To install the master skill manually, copy ${bundledPath}`,
         `to: ${target}`,
         "",
-        "(Cursor + Cline auto-install not supported in v0.9.3 — manual copy works for any host that reads SKILL.md.)",
+        "(Cursor + Cline auto-install not supported in v1.0.0 — manual copy works for any host that reads SKILL.md.)",
       ].join("\n"),
       exitCode: 0,
     };

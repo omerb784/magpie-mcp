@@ -1,6 +1,6 @@
 {
   "name": "magpie-mcp",
-  "version": "0.9.3",
+  "version": "1.0.0",
   "description": "Your loyal Magpie lands every visual in the nest. Local library for HTML mockups, Mermaid, SVG, Markdown, Graphviz, Vega-Lite, D2, and any non-code artifact your AI agent authors (Claude, Cursor, Cline). Pairs with any MCP host. Organize, version, compare — never generate.",
   "license": "MIT",
   "author": "Omer BarOr <omerb784@gmail.com>",

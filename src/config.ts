@@ -23,7 +23,7 @@ export const config = {
   contentRoot: CONTENT_ROOT,
 } as const;
 
-export const VERSION = "0.9.3";
+export const VERSION = "1.0.0";
 export const INSTRUCTIONS_VERSION = "11";
 
 export const CONFIG_SNIPPET_CODE = `# Claude Code — project-level .mcp.json (in repo root)
