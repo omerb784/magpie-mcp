@@ -71,22 +71,26 @@ function walkRel(absRoot: string): Record<string, Buffer> {
   return out;
 }
 
-function tarFlags(): string[] {
-  // Windows bsd-tar reads "C:\..." as host:path (rsh syntax). --force-local
-  // disables that. POSIX tar also accepts the flag silently.
-  return process.platform === "win32" ? ["--force-local"] : [];
+// Run tar from the archive's own dir with RELATIVE paths so neither a drive
+// colon (C:\...) nor the tar flavor matters: GNU tar reads "C:" as a remote
+// host (would need --force-local), while Windows bsd-tar rejects --force-local
+// outright. Going relative side-steps both — works on bsd-tar, GNU tar, Linux.
+function runTarExtract(archivePath: string, into: string, gz: boolean): void {
+  mkdirSync(into, { recursive: true });
+  const cwd = path.dirname(archivePath);
+  const archiveRel = path.basename(archivePath);
+  const intoRel = path.relative(cwd, into);
+  const flag = gz ? "-xzf" : "-xf";
+  const r = spawnSync("tar", [flag, archiveRel, "-C", intoRel], { cwd, encoding: "utf8" });
+  if (r.status !== 0) throw new Error(`tar ${flag} failed: status=${r.status} stderr=${r.stderr}`);
 }
 
 function extractTar(tarPath: string, into: string): void {
-  mkdirSync(into, { recursive: true });
-  const r = spawnSync("tar", [...tarFlags(), "-xf", tarPath, "-C", into], { encoding: "utf8" });
-  if (r.status !== 0) throw new Error(`tar -xf failed: status=${r.status} stderr=${r.stderr}`);
+  runTarExtract(tarPath, into, false);
 }
 
 function extractTarGz(tarGzPath: string, into: string): void {
-  mkdirSync(into, { recursive: true });
-  const r = spawnSync("tar", [...tarFlags(), "-xzf", tarGzPath, "-C", into], { encoding: "utf8" });
-  if (r.status !== 0) throw new Error(`tar -xzf failed: status=${r.status} stderr=${r.stderr}`);
+  runTarExtract(tarGzPath, into, true);
 }
 
 describe("backupHome", () => {
