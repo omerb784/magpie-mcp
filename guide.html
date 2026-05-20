@@ -1198,7 +1198,7 @@
           </defs>
           <rect x="20" y="40" width="200" height="120" rx="10" fill="#ffffff" stroke="#0e0f14" stroke-width="1.5"/>
           <text x="120" y="68" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="15" fill="#0e0f14">Your AI host</text>
-          <text x="120" y="86" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">Claude · Cursor · Cline</text>
+          <text x="120" y="86" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">AI coding agent</text>
           <rect x="36" y="98" width="168" height="20" rx="4" fill="rgba(31,43,128,0.1)" stroke="#1f2b80"/>
           <text x="120" y="112" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1f2b80">magpie-master · skill</text>
           <text x="120" y="138" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#8b8f9c">writes HTML · Mermaid · SVG · MD</text>
@@ -1500,7 +1500,7 @@
           <p style="font:500 0.66rem var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--shiny-deep);margin:0 0 8px;">Pillar 3</p>
           <h3 style="margin: 0 0 6px;">MCP Prompts</h3>
           <p style="font-size:.9rem;color:var(--text-mute);margin:0;">
-            Same templates surface as slash commands in your AI host (e.g. <code>/magpie:iterate</code> in Claude Code). User-fired — host invokes, your AI receives the resolved prompt.
+            Same templates surface as slash commands in your AI host (e.g. <code>/magpie:iterate</code>). User-fired — host invokes, your AI receives the resolved prompt.
           </p>
           <p style="font-size:.84rem;margin:8px 0 0;"><a href="#templates">→ §09 covers slash menu</a></p>
         </div>
@@ -1652,7 +1652,7 @@
       <p style="font-size:.92rem;">Each template can carry up to <strong>3 visual references</strong> — pinned visual ids (optionally version-pinned) that get resolved into the prompt as additional <code>magpie://visual/&lt;id&gt;</code> chips. Use them when an iteration always needs context from the same companion piece — e.g., "compare against the locked design spec".</p>
 
       <h3>MCP Prompts — same templates, host-fired</h3>
-      <p>Magpie exposes its templates as MCP Prompts. In Claude Code, type <code>/magpie:</code> and the slash menu surfaces them: <code>/magpie:iterate</code>, <code>/magpie:variants</code>, <code>/magpie:explain</code>, <code>/magpie:a11y_audit</code>, <code>/magpie:responsive_check</code>, <code>/magpie:dark_mode_port</code>, <code>/magpie:simplify</code>, <code>/magpie:add_data</code>.</p>
+      <p>Magpie exposes its templates as MCP Prompts. In your AI coding agent, type <code>/magpie:</code> and the slash menu surfaces them: <code>/magpie:iterate</code>, <code>/magpie:variants</code>, <code>/magpie:explain</code>, <code>/magpie:a11y_audit</code>, <code>/magpie:responsive_check</code>, <code>/magpie:dark_mode_port</code>, <code>/magpie:simplify</code>, <code>/magpie:add_data</code>.</p>
       <p style="font-size:.92rem;">The host resolves the slash, asks for any required vars, and fires the prompt to your AI as the next turn. No clipboard, no Outbox roundtrip — direct invocation. Built-ins ship today; user templates surface in MCP Prompts in v1.1.</p>
 
       <div class="callout gold">
@@ -1843,7 +1843,7 @@
           <p>No. Your AI writes the content; Magpie organizes, renders, versions, and serves it. <strong>There is no LLM in the server.</strong></p>
         </details>
         <details>
-          <summary>Can I use it without Claude?</summary>
+          <summary>Can I use it with any AI coding agent?</summary>
           <p>Yes — any MCP-aware host works (Claude Code, Claude Desktop, Cursor, Cline, custom clients). The dashboard alone is also useful as a viewer for content you produce by hand: drop files into the HTTP API directly.</p>
         </details>
         <details>
