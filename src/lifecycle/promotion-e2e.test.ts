@@ -8,11 +8,12 @@ import { spawn, type ChildProcess } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { killProcessTree } from "./kill-process-tree.test-helper.js";
 
 const REPO_ROOT = path.resolve(
-  path.dirname(new URL(import.meta.url).pathname).replace(/^\//, ""),
+  path.dirname(fileURLToPath(import.meta.url)),
   "..",
   "..",
 );

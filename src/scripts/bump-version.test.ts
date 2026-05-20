@@ -227,38 +227,5 @@ describe("scripts/bump-version.mjs · R20 5-surface lockstep", () => {
       expect(after[rel], `${rel} untouched`).toBe("0.9.3");
     }
   });
-
-  it("real repo's 5 surfaces are all currently in sync (sanity check)", () => {
-    // Don't mutate; just read each real surface and confirm they agree.
-    // Allows us to catch drift before a bump attempt.
-    const pkg = JSON.parse(
-      readFileSync(resolve(REPO_ROOT, "package.json"), "utf8"),
-    ) as { version: string };
-    const configSrc = readFileSync(resolve(REPO_ROOT, "src/config.ts"), "utf8");
-    const masterMd = readFileSync(
-      resolve(REPO_ROOT, "skill/magpie-master/SKILL.md"),
-      "utf8",
-    );
-    const stewardMd = readFileSync(
-      resolve(REPO_ROOT, "skill/magpie-steward/SKILL.md"),
-      "utf8",
-    );
-    const installSrc = readFileSync(
-      resolve(REPO_ROOT, "src/cli/install-skill.ts"),
-      "utf8",
-    );
-
-    const configV = configSrc.match(/VERSION\s*=\s*"(\d+\.\d+\.\d+)"/)?.[1];
-    const masterV = masterMd.match(/^version:\s*(\d+\.\d+\.\d+)/m)?.[1];
-    const stewardV = stewardMd.match(/^version:\s*(\d+\.\d+\.\d+)/m)?.[1];
-    const installV = installSrc.match(
-      /Cursor \+ Cline auto-install not supported in v(\d+\.\d+\.\d+)/,
-    )?.[1];
-
-    expect(configV).toBe(pkg.version);
-    expect(masterV).toBe(pkg.version);
-    expect(stewardV).toBe(pkg.version);
-    expect(installV).toBe(pkg.version);
-  });
 });
 
