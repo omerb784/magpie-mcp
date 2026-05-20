@@ -1,7 +1,7 @@
 ---
 name: magpie-master
 description: Master decision protocol for the Magpie MCP server. Use when working with magpie, magpie-mcp, add_visual, iterate, find_visuals, or any tool that deposits visuals into the nest. Defines when to file silently, when to iterate vs add, when to stop and ask the Owner about new projects or ambiguous matches.
-version: 1.0.0
+version: 1.0.1
 ---
 
 # Magpie master — decision protocol
