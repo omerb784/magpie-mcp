@@ -39,7 +39,7 @@
   "files": [
     "dist",
     "skill/magpie-master",
-    "seed",
+    "seed/example-bundle.json",
     "scripts/preinstall-check.mjs",
     "README.md",
     "LICENSE",

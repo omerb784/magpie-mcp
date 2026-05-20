@@ -18,7 +18,7 @@ Local dashboard + embedded MCP server. Your AI agent writes HTML, Mermaid, SVG, 
 
 > Your LLM gives you chat history. Magpie gives you a gallery your AI curates for you.
 
-A dumb organizer with smart producers. Claude (or Stitch, Figma, Mermaid Chart, SVGMaker, Icons8 over MCP) does the creative work; Magpie files it, tags it, versions it, attributes it, and lets you browse every non-code thing your AI ever made for you — across sessions, in a real grid UI.
+A dumb organizer with smart producers. Your AI coding agent (or Stitch, Figma, Mermaid Chart, SVGMaker, Icons8 over MCP) does the creative work; Magpie files it, tags it, versions it, attributes it, and lets you browse every non-code thing your AI ever made for you — across sessions, in a real grid UI.
 
 ## What it isn't
 
@@ -35,7 +35,7 @@ Magpie's story is three named roles. You're the reader they all serve.
 | Actor | What | Sticky line |
 |---|---|---|
 | **Master** · the trainer | A portable Agent Skill bundled in the npm tarball at `skill/magpie-master/SKILL.md`. Pure judgment — picks projects, decides iterate vs add, asks before filing when uncertain. No code, no storage. | *Teaches your AI Magpie's rules.* |
-| **Magpie** · the trained bird | Your AI host (Claude · Cursor · Cline) with the Master skill loaded. Brings visuals to the Nest, arranges them by project, keeps versions in order. | *Tends the nest, version after version.* |
+| **Magpie** · the trained bird | Your AI coding agent (Cursor, Cline, etc.) with the Master skill loaded. Brings visuals to the Nest, arranges them by project, keeps versions in order. | *Tends the nest, version after version.* |
 | **Nest** · the dumb infra | One SQLite file. One blobs folder. Lives at `~/.magpie/` on your disk. Holds what your Magpie brings. No LLM. No telemetry. Never phones home. | *Local. Quiet. Yours.* |
 
 > *Master trains · Magpie tends · Nest keeps.*
@@ -72,7 +72,7 @@ magpie-mcp
 Requires Node ≥20 and a system Chrome / Chromium install (Magpie uses `puppeteer-core` against your existing browser — no 200 MB download).
 
 On first run Magpie starts two listeners:
-1. **MCP stdio** — Claude connects via your config (below).
+1. **MCP stdio** — your AI coding agent connects via your config (below).
 2. **HTTP + WebSocket** — dashboard at `http://localhost:3737` (auto-bumps if taken).
 
 Open the URL. Keep the terminal running. From any other terminal, `npx magpie` re-opens the dashboard against the last running port.
@@ -102,13 +102,13 @@ Restart your host. Magpie's tools and resources should appear.
 
 ## Install the master skill (v0.9.1+)
 
-Magpie ships with an Agent Skill that teaches Claude Code *when* to file silently, *when* to iterate, and *when* to stop and ask you about new projects or ambiguous matches. The skill is opt-in:
+Magpie ships with an Agent Skill that teaches your AI coding agent *when* to file silently, *when* to iterate, and *when* to stop and ask you about new projects or ambiguous matches. The skill is opt-in:
 
 ```bash
 npx magpie-mcp --install-skill
 ```
 
-This copies `magpie-master/SKILL.md` into `~/.claude/skills/magpie-master/`. Claude Code loads it on-demand when triggered by the keywords `magpie`, `magpie-mcp`, `add_visual`, `iterate`, or `nest`. The skill defers to your existing instructions for everything else.
+This copies `magpie-master/SKILL.md` into `~/.claude/skills/magpie-master/`. Your AI coding agent loads it on-demand when triggered by the keywords `magpie`, `magpie-mcp`, `add_visual`, `iterate`, or `nest`. The skill defers to your existing instructions for everything else.
 
 Already installed? `--install-skill` is idempotent:
 
@@ -122,15 +122,15 @@ Cursor + Cline auto-install is not supported in v0.9.1. Manual install (copy the
 
 ## First visual
 
-In Claude:
+In your AI coding agent:
 
 > *"Mock me a CRM dashboard for sales reps."*
 
-Claude writes HTML → calls `add_visual` → Magpie saves, renders a thumbnail, returns a preview URL. Click it. Tag it. Star it.
+Your AI coding agent writes HTML → calls `add_visual` → Magpie saves, renders a thumbnail, returns a preview URL. Click it. Tag it. Star it.
 
 > *"Make it dark mode."*
 
-Claude calls `iterate` → v2 added to the same visual. Compare v1 vs v2 side-by-side from the dashboard.
+Your AI coding agent calls `iterate` → v2 added to the same visual. Compare v1 vs v2 side-by-side from the dashboard.
 
 ## Dashboard tour
 
@@ -141,7 +141,7 @@ Claude calls `iterate` → v2 added to the same visual. Compare v1 vs v2 side-by
 - **Header search** — debounced full-library title search.
 - **Empty state** — landing card with the `--print-config` snippet pre-baked.
 
-The dashboard auto-refreshes via WebSocket when Claude adds, iterates, or archives. A "Reconnecting…" banner appears if the connection drops.
+The dashboard auto-refreshes via WebSocket when your AI coding agent adds, iterates, or archives. A "Reconnecting…" banner appears if the connection drops.
 
 ## Tools reference
 
@@ -162,7 +162,7 @@ The dashboard auto-refreshes via WebSocket when Claude adds, iterates, or archiv
 | `archive_visual(visual_id)` | Hide a visual from default views. |
 | `archive_project(name)` | Hide a project from default views. |
 | `merge_projects(src_name, dst_name)` | Move all visuals into `dst` and archive `src`. |
-| `read_inbox(since?)` | Pull recent dashboard activity (sends to Claude, comments, picks) for warm session handoff. |
+| `read_inbox(since?)` | Pull recent dashboard activity (sends to agent, comments, picks) for warm session handoff. |
 
 All tools return plain text. Preview URLs come back in the response so you can click straight to the dashboard.
 
@@ -178,7 +178,7 @@ For inspecting library state without driving tools:
 
 ## Export
 
-Dashboard-only. Claude doesn't drive downloads — open the dashboard and click.
+Dashboard-only. Your AI coding agent doesn't drive downloads — open the dashboard and click.
 
 | What | Where | Notes |
 |---|---|---|
@@ -207,7 +207,7 @@ Pair Magpie with the master skill plus any visual MCP:
 | [SVGMaker](https://github.com/GenWaveLLC/svgmaker-mcp) | `add_visual(type='svg', source='svgmaker')` |
 | [Icons8 MCP](https://icons8.com/mcp) | `add_visual(type='svg', source='icons8')` |
 
-Magpie never calls generators or fetches URLs. Claude orchestrates: skill (when) + generator (what) → Magpie (where).
+Magpie never calls generators or fetches URLs. Your AI coding agent orchestrates: skill (when) + generator (what) → Magpie (where).
 
 ## FAQ
 
@@ -230,11 +230,11 @@ Zero. No phone home. No version checks. No analytics. Forever.
 Bundled web only. The browser tab is the UI — a locked architectural decision.
 
 **Why "Magpie"?**
-Magpies are famous for collecting shiny objects and storing them in their nest. That's exactly what this app does for every visual your AI agent authors — your loyal Magpie lands the mockups, diagrams, charts, reports, plans, and references Claude (or Cursor, Cline, etc.) produces and keeps them organized in one place.
+Magpies are famous for collecting shiny objects and storing them in their nest. That's exactly what this app does for every visual your AI agent authors — your loyal Magpie lands the mockups, diagrams, charts, reports, plans, and references your AI coding agent (Cursor, Cline, etc.) produces and keeps them organized in one place.
 
 ## Process model — one canonical Magpie per machine
 
-Magpie runs **one canonical process per `MAGPIE_HOME`**, with N facades. The first process to bind the IPC pipe at `$MAGPIE_HOME/magpie.pipe-*` becomes canonical and owns HTTP, SQLite, blob writes, and the render queue. Subsequent processes (a second Claude Code session, Cursor, Claude Desktop) detect the bound pipe and become facades — they own the stdio pipe to their host and forward MCP traffic to the canonical over IPC. When the canonical dies, exactly one facade wins the race to bind and becomes the new canonical (re-binding the previous HTTP port so the dashboard URL doesn't change).
+Magpie runs **one canonical process per `MAGPIE_HOME`**, with N facades. The first process to bind the IPC pipe at `$MAGPIE_HOME/magpie.pipe-*` becomes canonical and owns HTTP, SQLite, blob writes, and the render queue. Subsequent processes (a second AI coding agent session, Cursor, Claude Desktop) detect the bound pipe and become facades — they own the stdio pipe to their host and forward MCP traffic to the canonical over IPC. When the canonical dies, exactly one facade wins the race to bind and becomes the new canonical (re-binding the previous HTTP port so the dashboard URL doesn't change).
 
 You'll see one of three banners on stderr at boot:
 

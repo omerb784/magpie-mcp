@@ -14,10 +14,13 @@ mkdirSync(dst, { recursive: true });
 cpSync(src, dst, { recursive: true });
 console.log(`copied migrations -> ${dst}`);
 
-const seedSrc = join(root, "seed");
-const seedDst = join(root, "dist", "seed");
+// Ship only the linden-loaf example bundle. The user guide (seed/user-guide/)
+// is NOT bundled in npm — it lives on the site. /guide degrades to
+// "Guide not bundled" in the published package by design (v1.0).
+const seedSrc = join(root, "seed", "example-bundle.json");
+const seedDst = join(root, "dist", "seed", "example-bundle.json");
 if (existsSync(seedSrc)) {
-  mkdirSync(seedDst, { recursive: true });
-  cpSync(seedSrc, seedDst, { recursive: true });
-  console.log(`copied seed -> ${seedDst}`);
+  mkdirSync(dirname(seedDst), { recursive: true });
+  cpSync(seedSrc, seedDst);
+  console.log(`copied seed bundle -> ${seedDst}`);
 }
