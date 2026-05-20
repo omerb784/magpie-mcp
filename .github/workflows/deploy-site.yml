@@ -1,0 +1,63 @@
+name: Deploy site
+
+# Mirrors site/ to the gh-pages branch on every push to main.
+# Authoring stays on main; gh-pages is build-output only (orphan branch).
+# Pure git — no 3rd-party action — aligns with v0.9.2 supply-chain stance.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - '.github/workflows/deploy-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-site
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0
+
+      - name: Publish site/ to gh-pages
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          src_sha=$(git rev-parse --short HEAD)
+
+          # Materialize a clean working dir from site/ contents.
+          stage=$(mktemp -d)
+          cp -r site/. "$stage/"
+          touch "$stage/.nojekyll"
+
+          # Land into orphan gh-pages branch (create if missing).
+          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
+            git fetch origin gh-pages
+            git worktree add -B gh-pages gh-pages-wt origin/gh-pages
+          else
+            git worktree add --orphan -b gh-pages gh-pages-wt
+            (cd gh-pages-wt && git rm -rf . >/dev/null 2>&1 || true)
+          fi
+
+          # Replace contents wholesale (no history merge — site is build output).
+          find gh-pages-wt -mindepth 1 -maxdepth 1 -not -name '.git' -exec rm -rf {} +
+          cp -r "$stage/." gh-pages-wt/
+
+          cd gh-pages-wt
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No site changes to deploy."
+            exit 0
+          fi
+          git commit -m "deploy: site @ ${src_sha} [skip ci]"
+          git push origin gh-pages

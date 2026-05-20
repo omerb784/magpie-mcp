@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Magpie — User Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0e0f14;
+    --ink-soft: #3a3f55;
+    --paper: #eef0f4;
+    --paper-2: #d9dce3;
+    --bg-elev: #ffffff;
+    --bg-muted: #e3e5ec;
+    --hairline: #d9dce3;
+    --hairline-strong: #b9bcc8;
+    --mid: #9396a1;
+    --text-mute: #5a5e6d;
+    --text-subtle: #8b8f9c;
+    --cobalt: #1f2b80;
+    --cobalt-deep: #141d5e;
+    --accent-soft: rgba(31, 43, 128, 0.10);
+    --accent-tint: rgba(31, 43, 128, 0.06);
+    --shiny: #d4a233;
+    --shiny-deep: #a87e22;
+    --code-bg: #e3e5ec;
+    --code-fg: #1f2b80;
+    --shadow: 0 1px 2px rgba(14,15,20,0.04), 0 4px 14px rgba(14,15,20,0.06);
+    --shadow-pop: 0 2px 4px rgba(14,15,20,0.05), 0 18px 40px rgba(14,15,20,0.08);
+    --radius: 10px;
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  [data-theme="dark"] {
+    --ink: #ecedf3;
+    --ink-soft: #c4c7d4;
+    --paper: #0e0f14;
+    --paper-2: #1a1c25;
+    --bg-elev: #1a1c25;
+    --bg-muted: #232633;
+    --hairline: #2c2f3a;
+    --hairline-strong: #44485a;
+    --mid: #6a6f80;
+    --text-mute: #a3a8bb;
+    --text-subtle: #6a7088;
+    --cobalt: #5d72e0;
+    --cobalt-deep: #3d52c4;
+    --accent-soft: rgba(93, 114, 224, 0.18);
+    --accent-tint: rgba(93, 114, 224, 0.08);
+    --shiny: #e0b656;
+    --shiny-deep: #a87e22;
+    --code-bg: #232633;
+    --code-fg: #c4c7d4;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+    --shadow-pop: 0 2px 4px rgba(0,0,0,.4), 0 18px 40px rgba(0,0,0,.4);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font: 16px/1.55 var(--sans);
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: var(--cobalt); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, pre, kbd { font-family: var(--mono); }
+  code { background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 4px; font-size: 0.92em; }
+  pre {
+    background: var(--ink);
+    color: #f0e9da;
+    padding: 16px 18px;
+    border-radius: var(--radius);
+    overflow-x: auto;
+    font-size: 0.86rem;
+    line-height: 1.55;
+  }
+  pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+  pre code .k { color: var(--shiny); }
+  kbd {
+    background: var(--bg-muted);
+    border: 1px solid var(--hairline-strong);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.82em;
+    color: var(--ink);
+  }
+
+  /* layout */
+  header.topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(238,240,244,.88);
+    backdrop-filter: saturate(140%) blur(8px);
+    border-bottom: 1px solid var(--hairline);
+    padding: 12px 28px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  [data-theme="dark"] header.topbar { background: rgba(14,15,20,.88); }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 1.05rem; }
+  .brand-mark {
+    width: 30px; height: 30px; border-radius: 7px;
+    background: var(--ink);
+    display: grid; place-items: center; color: var(--paper);
+    font-family: var(--sans); font-weight: 600;
+    position: relative;
+  }
+  .brand-mark::after {
+    content: ""; position: absolute; top: 6px; right: 5px;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--shiny);
+  }
+  .brand .name {
+    font-family: var(--sans); font-weight: 600; letter-spacing: -0.014em;
+  }
+  .brand .sub { color: var(--text-subtle); font-weight: 400; font-size: .82rem; font-family: var(--serif); font-style: italic; }
+  nav.toc {
+    display: flex; gap: 2px; flex: 1; flex-wrap: wrap; font-size: 0.86rem;
+  }
+  nav.toc a {
+    color: var(--text-mute);
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+  }
+  nav.toc a:hover { background: var(--accent-tint); color: var(--cobalt); }
+  .theme-toggle {
+    background: var(--bg-elev);
+    border: 1px solid var(--hairline-strong);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.82rem;
+    font-family: var(--mono);
+    cursor: pointer;
+    color: var(--ink);
+    letter-spacing: 0.06em;
+  }
+  .theme-toggle:hover { background: var(--bg-muted); }
+
+  main { max-width: 1080px; margin: 0 auto; padding: 32px 28px 120px; }
+  section { margin-bottom: 56px; scroll-margin-top: 80px; }
+  h1 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: clamp(2.4rem, 5vw, 3.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+  }
+  h1 em { font-style: italic; color: var(--cobalt); font-weight: 600; }
+  h2 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 1.7rem;
+    letter-spacing: -0.012em;
+    margin: 0 0 12px;
+    display: flex; align-items: baseline; gap: 14px;
+  }
+  h2 .num {
+    font-family: var(--mono);
+    color: var(--shiny);
+    font-weight: 500;
+    font-size: 0.7em;
+    letter-spacing: 0.06em;
+  }
+  h3 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 24px 0 8px;
+    letter-spacing: -0.005em;
+  }
+  p { margin: 0 0 12px; color: var(--ink); }
+  p.lead {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.18rem;
+    color: var(--text-mute);
+    max-width: 60ch;
+    margin: 0 0 18px;
+  }
+  ul, ol { padding-left: 22px; margin: 0 0 14px; color: var(--ink); }
+  li { margin-bottom: 6px; }
+  figure { margin: 18px 0; }
+  figure img {
+    width: 100%; height: auto; display: block;
+    border-radius: var(--radius);
+    border: 1px solid var(--hairline);
+    box-shadow: var(--shadow);
+  }
+  figcaption {
+    margin-top: 10px;
+    font-family: var(--serif); font-style: italic;
+    font-size: 0.92rem; color: var(--text-mute);
+  }
+
+  /* pills */
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+  .pill {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 5px 11px; border-radius: 999px;
+    border: 1px solid var(--hairline);
+    color: var(--text-mute); background: var(--bg-elev);
+  }
+  .pill.accent {
+    color: var(--cobalt); border-color: var(--cobalt); background: var(--accent-tint);
+  }
+  .pill.gold {
+    color: var(--shiny-deep); border-color: var(--shiny); background: rgba(212,162,51,0.08);
+  }
+
+  /* hero */
+  .hero { display: grid; grid-template-columns: 1fr 360px; gap: 36px; align-items: center; padding: 28px 0 12px; }
+  @media (max-width: 820px) { .hero { grid-template-columns: 1fr; } }
+  .hero-img img { box-shadow: var(--shadow-pop); }
+
+  /* three actors */
+  .actors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 18px 0; }
+  @media (max-width: 820px) { .actors { grid-template-columns: 1fr; } }
+  .actor {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: var(--radius); padding: 20px 22px;
+  }
+  .actor .role {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--cobalt); margin: 0 0 4px;
+  }
+  .actor h4 {
+    font-family: var(--sans); font-weight: 600; font-size: 1.2rem;
+    letter-spacing: -0.01em; margin: 0 0 4px;
+  }
+  .actor h4 .dot { color: var(--shiny); }
+  .actor .role-line {
+    font-family: var(--serif); font-style: italic;
+    font-size: 0.92rem; color: var(--text-mute); margin: 0 0 12px;
+  }
+  .actor p { font-size: 0.9rem; line-height: 1.55; color: var(--text-mute); margin: 0; }
+  .actor p strong { color: var(--ink); font-weight: 500; }
+  .shorthand {
+    text-align: center; margin: 20px 0 0;
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    color: var(--ink); font-size: 1.05rem;
+  }
+  .shorthand .sep { color: var(--mid); margin: 0 12px; }
+
+  /* cards / grids */
+  .card {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: var(--radius); padding: 18px 20px;
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 12px 0; }
+  @media (max-width: 820px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  /* format card */
+  .format-card {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .format-card .thumb { aspect-ratio: 5/3; background: var(--bg-muted); overflow: hidden; }
+  .format-card .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .format-card .body { padding: 14px 16px 16px; }
+  .format-card h4 {
+    font-family: var(--sans); font-weight: 600; font-size: 1rem;
+    margin: 0 0 4px; display: flex; align-items: center; gap: 8px;
+  }
+  .format-card .ext {
+    font-family: var(--mono); font-size: 0.74rem; color: var(--text-subtle);
+    letter-spacing: 0.06em;
+  }
+  .format-card p { font-size: .88rem; color: var(--text-mute); margin: 8px 0 0; line-height: 1.5; }
+  .badge {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
+  }
+  .badge.html { background: rgba(194,93,58,0.12); color: #c25d3a; }
+  .badge.mermaid { background: rgba(59,111,179,0.12); color: #3b6fb3; }
+  .badge.svg { background: rgba(90,138,82,0.14); color: #5a8a52; }
+  .badge.markdown { background: rgba(183,131,32,0.14); color: #b78320; }
+  .badge.dot { background: rgba(122,75,168,0.12); color: #7a4ba8; }
+  .badge.vega { background: rgba(188,76,108,0.12); color: #bc4c6c; }
+  .badge.d2 { background: rgba(31,122,122,0.12); color: #1f7a7a; }
+
+  /* step list */
+  .step-list { counter-reset: step; padding-left: 0; list-style: none; margin: 14px 0; }
+  .step-list li {
+    counter-increment: step;
+    padding: 16px 18px 16px 56px;
+    position: relative;
+    background: var(--bg-elev);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+  }
+  .step-list li::before {
+    content: counter(step);
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    width: 30px; height: 30px;
+    background: var(--cobalt); color: var(--paper);
+    border-radius: 50%; display: grid; place-items: center;
+    font-family: var(--mono); font-weight: 500; font-size: 0.88rem;
+  }
+
+  /* tabs */
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--hairline); }
+  .tabs button {
+    background: none; border: none; padding: 10px 18px; font-size: 0.9rem;
+    font-family: var(--sans); font-weight: 500;
+    color: var(--text-mute); cursor: pointer; border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tabs button:hover { color: var(--ink); }
+  .tabs button.active { color: var(--cobalt); border-bottom-color: var(--cobalt); }
+  .tab-panel { display: none; padding-top: 0; }
+  .tab-panel.active { display: block; }
+  .tab-panel pre { border-top-left-radius: 0; border-top-right-radius: 0; margin: 0; }
+
+  /* tool table */
+  .tool-table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+  .tool-table th, .tool-table td {
+    text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--hairline);
+    font-size: 0.92rem;
+  }
+  .tool-table th {
+    font-family: var(--mono); font-size: 0.74rem; font-weight: 500;
+    color: var(--text-subtle); letter-spacing: 0.12em; text-transform: uppercase;
+    border-bottom: 1px solid var(--ink);
+  }
+  .tool-table td:first-child { width: 200px; }
+  .tool-table td.phase { color: var(--text-subtle); font-family: var(--mono); font-size: 0.78rem; text-align: right; width: 60px; }
+  .tool-table tr:hover td { background: var(--accent-tint); }
+
+  /* shortcuts grid */
+  .keys { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 24px; margin: 12px 0; }
+  @media (max-width: 640px) { .keys { grid-template-columns: 1fr; } }
+  .keys .row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0; border-bottom: 1px solid var(--hairline);
+    font-size: 0.92rem;
+  }
+  .keys .row span { color: var(--text-mute); }
+
+  /* preset grid */
+  .presets-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 14px 0; }
+  @media (max-width: 820px) { .presets-grid { grid-template-columns: 1fr; } }
+  .preset {
+    background: var(--bg-elev); border: 1px solid var(--hairline);
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .preset .ico {
+    display: inline-grid; place-items: center;
+    width: 24px; height: 24px; border-radius: 5px;
+    background: var(--accent-tint); color: var(--cobalt);
+    font-weight: 600; font-size: 13px; margin-right: 8px;
+    vertical-align: -6px;
+  }
+  .preset h4 { display: inline; font-family: var(--sans); font-weight: 600; font-size: 0.98rem; }
+  .preset p { font-size: 0.86rem; color: var(--text-mute); margin: 6px 0 0; line-height: 1.5; }
+
+  /* arch svg colors via tokens */
+  .arch-svg { width: 100%; max-width: 760px; margin: 0 auto; display: block; }
+  .state-svg { width: 100%; max-width: 620px; margin: 0 auto; display: block; }
+
+  .callout {
+    border-left: 3px solid var(--cobalt);
+    background: var(--bg-elev);
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 14px 0;
+    font-size: 0.92rem;
+  }
+  .callout.gold { border-left-color: var(--shiny); }
+  .callout strong { color: var(--cobalt); }
+  .callout.gold strong { color: var(--shiny-deep); }
+
+  /* nogo list */
+  .nogo { color: var(--text-mute); }
+  .nogo li::marker { color: var(--shiny); }
+
+  /* footer */
+  footer.foot {
+    border-top: 1px solid var(--hairline);
+    padding: 28px 28px;
+    color: var(--text-subtle);
+    font-size: 0.86rem;
+    text-align: center;
+    font-family: var(--mono);
+    letter-spacing: 0.04em;
+  }
+  footer.foot a { color: var(--cobalt); }
+
+  /* reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">M</div>
+    <span class="name">Magpie</span>
+    <span class="sub">User Guide</span>
+  </div>
+  <nav class="toc">
+    <a href="#actors">Actors</a>
+    <a href="#install">Install</a>
+    <a href="#architecture">How it works</a>
+    <a href="#formats">Formats</a>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#compare">Compare</a>
+    <a href="#iterate">Iterate</a>
+    <a href="#talk">Talk with agent</a>
+    <a href="#shortcuts">Shortcuts</a>
+    <a href="#tools">MCP tools</a>
+    <a href="#export">Export</a>
+    <a href="#backup">Backup</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <button class="theme-toggle" onclick="toggleTheme()">Toggle theme</button>
+</header>
+
+<main>
+
+<section class="hero" id="top">
+  <div>
+    <div class="pills">
+      <span class="pill accent">v1.0</span>
+      <span class="pill">offline · local-first</span>
+      <span class="pill">7 formats</span>
+      <span class="pill gold">MIT</span>
+    </div>
+    <h1>Your loyal <em>Magpie.</em><br/>Lands every visual in the nest.</h1>
+    <p class="lead">
+      Magpie is a local nest for every visual your AI hands you — mockups, diagrams, charts, status reports, plans. Library, projects, tags, versions, side-by-side compare. One Node process, your browser, your disk. No cloud. No accounts.
+    </p>
+    <div style="margin-top:18px;">
+      <pre style="margin:0;display:inline-block;"><code><span class="k">$</span> npx magpie-mcp</code></pre>
+    </div>
+  </div>
+  <div class="hero-img">
+    <img src="./assets/01-dashboard-light.png" alt="Magpie dashboard" />
+  </div>
+</section>
+
+<section id="actors">
+  <h2><span class="num">00</span> Three actors</h2>
+  <p class="lead">You're not one of them — you're the reader they all serve.</p>
+
+  <div class="actors">
+    <div class="actor">
+      <p class="role">The trainer</p>
+      <h4>Master<span class="dot">.</span></h4>
+      <p class="role-line">Teaches your AI Magpie's rules.</p>
+      <p>A portable skill bundled in the npm tarball. Decides which project a visual belongs to, when to iterate vs add, when to ask before filing. <strong>No code, no storage — pure judgment.</strong> Install with <code>npx magpie-mcp --install-skill</code>.</p>
+    </div>
+    <div class="actor">
+      <p class="role">The trained bird</p>
+      <h4>Magpie<span class="dot">.</span></h4>
+      <p class="role-line">Tends the nest, version after version.</p>
+      <p>Your AI with the Master loaded. <strong>Brings visuals to the Nest</strong>, arranges them by project, keeps versions in order, asks before adding when uncertain.</p>
+    </div>
+    <div class="actor">
+      <p class="role">The dumb infra</p>
+      <h4>Nest<span class="dot">.</span></h4>
+      <p class="role-line">Local. Quiet. Yours.</p>
+      <p>One SQLite file. One blobs folder. Lives at <code>~/.magpie/</code> on your disk. <strong>Holds what your Magpie brings.</strong> No LLM. No telemetry. No phone-home.</p>
+    </div>
+  </div>
+
+  <p class="shorthand">Master trains<span class="sep">·</span>Magpie tends<span class="sep">·</span>Nest keeps.</p>
+</section>
+
+<section id="install">
+  <h2><span class="num">01</span> Install &amp; wire to your host</h2>
+  <p class="lead">Two listeners boot from one command: stdio (for your AI host) and HTTP (for your browser).</p>
+
+  <ol class="step-list">
+    <li>
+      <strong>Boot the server.</strong>
+      Run <code>npx magpie-mcp</code> in a terminal. It prints a dashboard URL like
+      <code>http://127.0.0.1:3737</code>. Open that in your browser. If 3737 is taken, it auto-bumps to the next free port.
+    </li>
+    <li>
+      <strong>Install the Master skill.</strong>
+      Run <code>npx magpie-mcp --install-skill</code>. Drops <code>magpie-master/SKILL.md</code> into your host's skill directory (auto-detected for Claude Code · Claude Desktop). Your AI now knows the protocol.
+    </li>
+    <li>
+      <strong>Get the MCP config snippet.</strong>
+      In another terminal: <code>npx magpie-mcp --print-config</code>. It prints both Claude Code and Claude Desktop forms.
+    </li>
+    <li>
+      <strong>Paste into your host.</strong>
+      Use the tab below that matches your client. Restart the host to load the server.
+    </li>
+    <li>
+      <strong>Ask your AI to mock something.</strong>
+      Try: <em>"Mock a settings page"</em> or <em>"Sketch the auth flow as a diagram."</em>
+      The visual lands in the dashboard within a second; the URL appears in the reply.
+    </li>
+  </ol>
+
+  <h3>MCP config snippet</h3>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="code">Claude Code</button>
+      <button class="tab-btn" data-tab="desktop">Claude Desktop</button>
+    </div>
+    <div class="tab-panel active" data-tab="code">
+<pre><code>{
+  "mcpServers": {
+    "magpie": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "magpie-mcp"]
+    }
+  }
+}</code></pre>
+      <p style="font-size:.85rem;color:var(--text-mute);padding:0 16px 12px;">
+        Drop this in <code>.mcp.json</code> at your repo root, or in your Claude Code config.
+      </p>
+    </div>
+    <div class="tab-panel" data-tab="desktop">
+<pre><code>{
+  "mcpServers": {
+    "magpie": {
+      "command": "npx",
+      "args": ["-y", "magpie-mcp"]
+    }
+  }
+}</code></pre>
+      <p style="font-size:.85rem;color:var(--text-mute);padding:0 16px 12px;">
+        Add to <code>claude_desktop_config.json</code>. macOS path:
+        <code>~/Library/Application Support/Claude/</code>. Restart Claude Desktop.
+      </p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>MAGPIE_HOME:</strong> set <code>MAGPIE_HOME=/path</code> to pin storage to a custom directory.
+    Default is <code>~/.magpie/</code> — a single SQLite file plus a <code>blobs/</code> tree.
+    Backup is copying that folder. See <a href="#backup">§12 Backup</a>.
+  </div>
+
+  <div class="callout gold">
+    <strong>Cursor · Cline · any MCP host:</strong> Magpie speaks the standard MCP stdio transport — no proprietary protocol, no API key. If your host wires up MCP servers, Magpie shows up. <code>--install-skill</code> ships to Claude Code + Claude Desktop today; host detection for Cursor + Cline arrives in v1.1.
+  </div>
+</section>
+
+<section id="architecture">
+  <h2><span class="num">02</span> How it works</h2>
+  <p class="lead">One process, two surfaces. Your AI commands via stdio. You watch via the browser. <strong>No LLM lives in the server.</strong></p>
+
+  <figure>
+    <svg class="arch-svg" viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture diagram">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#1f2b80" />
+        </marker>
+        <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#9396a1" />
+        </marker>
+      </defs>
+
+      <rect x="20" y="40" width="200" height="120" rx="10" fill="#ffffff" stroke="#0e0f14" stroke-width="1.5"/>
+      <text x="120" y="68" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="15" fill="#0e0f14">Your AI host</text>
+      <text x="120" y="86" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">Claude · Cursor · Cline</text>
+      <rect x="36" y="98" width="168" height="20" rx="4" fill="rgba(31,43,128,0.1)" stroke="#1f2b80"/>
+      <text x="120" y="112" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1f2b80">magpie-master · skill</text>
+      <text x="120" y="138" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#8b8f9c">writes HTML · Mermaid · SVG · MD</text>
+      <text x="120" y="152" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#8b8f9c">DOT · Vega-Lite · D2</text>
+
+      <rect x="280" y="20" width="200" height="300" rx="10" fill="#0e0f14"/>
+      <text x="380" y="50" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="15" fill="#f0e9da">magpie-mcp</text>
+      <text x="380" y="68" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#d4a233">single Node process</text>
+      <line x1="296" y1="82" x2="464" y2="82" stroke="#3a3f55" stroke-width="1"/>
+      <text x="380" y="104" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">stdio listener (MCP)</text>
+      <text x="380" y="132" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">HTTP + WS server</text>
+      <text x="380" y="160" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">better-sqlite3 (sync)</text>
+      <text x="380" y="188" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">~/.magpie/blobs/</text>
+      <text x="380" y="216" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#f0e9da">render pool</text>
+      <text x="380" y="232" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#9396a1">puppeteer-core · WASM</text>
+      <line x1="296" y1="252" x2="464" y2="252" stroke="#3a3f55" stroke-width="1"/>
+      <text x="380" y="276" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="12" fill="#d4a233">no LLM weights</text>
+      <text x="380" y="294" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="12" fill="#d4a233">no telemetry · no phone-home</text>
+
+      <rect x="540" y="40" width="200" height="120" rx="10" fill="#ffffff" stroke="#0e0f14" stroke-width="1.5"/>
+      <text x="640" y="68" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="15" fill="#0e0f14">Browser tab</text>
+      <text x="640" y="86" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">React dashboard</text>
+      <text x="640" y="108" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#3a3f55">grid · drawer · compare</text>
+      <text x="640" y="126" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#3a3f55">talk-with-agent menu</text>
+
+      <path d="M 222 90 L 278 90" stroke="#1f2b80" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+      <text x="250" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1f2b80">stdio</text>
+      <path d="M 278 116 L 222 116" stroke="#9396a1" stroke-width="1.4" stroke-dasharray="4 3" fill="none" marker-end="url(#arrow2)"/>
+
+      <path d="M 482 90 L 538 90" stroke="#1f2b80" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+      <text x="510" y="82" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#1f2b80">HTTP/WS</text>
+      <path d="M 538 116 L 482 116" stroke="#9396a1" stroke-width="1.4" stroke-dasharray="4 3" fill="none" marker-end="url(#arrow2)"/>
+
+      <rect x="20" y="220" width="200" height="100" rx="10" fill="#ffffff" stroke="#0e0f14" stroke-width="1.5"/>
+      <text x="120" y="258" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="15" fill="#0e0f14">You</text>
+      <text x="120" y="278" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">tag · star · compare ·</text>
+      <text x="120" y="294" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">archive · talk-with-agent</text>
+
+      <path d="M 120 220 L 120 160" stroke="#9396a1" stroke-width="1.4" stroke-dasharray="4 3" fill="none"/>
+      <path d="M 220 270 L 278 270" stroke="#d4a233" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+      <text x="248" y="262" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#a87e22">commands</text>
+    </svg>
+    <figcaption>Your AI is the command channel. The server is dumb infra — it never calls an LLM.</figcaption>
+  </figure>
+
+  <div class="grid-3">
+    <div class="card">
+      <h3>Storage</h3>
+      <p style="font-size:.9rem;color:var(--text-mute);">
+        Single SQLite file at <code>~/.magpie/magpie.db</code> for metadata.
+        Blobs (HTML, source, thumbnails) live next door under <code>blobs/&lt;id&gt;/v&lt;n&gt;.&lt;ext&gt;</code>.
+        Portable; copy the folder to migrate. Migrations are <strong>forward-only</strong> — see <a href="#faq">FAQ</a>.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Renderers</h3>
+      <p style="font-size:.9rem;color:var(--text-mute);">
+        Mermaid bundled offline; Markdown via <code>marked</code> + DOMPurify; DOT via graphviz-wasm;
+        Vega-Lite via vega SSR; D2 via wasm. HTML + SVG render directly. PNG thumbs via <code>puppeteer-core</code> + system Chrome.
+      </p>
+    </div>
+    <div class="card">
+      <h3>No network</h3>
+      <p style="font-size:.9rem;color:var(--text-mute);">
+        Offline-capable. The server doesn't fetch anything from the internet — Vega-Lite specs must
+        carry inline data (<code>"data": {"values": ...}</code>).
+        Zero telemetry, zero accounts.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="formats">
+  <h2><span class="num">03</span> Seven supported formats</h2>
+  <p class="lead">Your AI picks a format that fits the request. Magpie renders + thumbnails each one. All offline. All side-by-side comparable.</p>
+
+  <div class="grid-3">
+    <div class="format-card">
+      <div class="thumb"><img src="./assets/05-drawer-html.png" alt="HTML mockup example" /></div>
+      <div class="body">
+        <h4>HTML <span class="badge html">html</span></h4>
+        <span class="ext">.html · sandboxed iframe</span>
+        <p>UI mockups, dashboards, landing pages. Rendered in a sandboxed iframe (no <code>allow-same-origin</code>).</p>
+      </div>
+    </div>
+    <div class="format-card">
+      <div class="thumb"><img src="./assets/16-format-mermaid.png" alt="Mermaid diagram example" /></div>
+      <div class="body">
+        <h4>Mermaid <span class="badge mermaid">mermaid</span></h4>
+        <span class="ext">.mmd · bundled v11</span>
+        <p>Flowcharts, sequence, state, ER, gantt. Rendered offline — no CDN.</p>
+      </div>
+    </div>
+    <div class="format-card">
+      <div class="thumb"><img src="./assets/15-format-svg.png" alt="SVG example" /></div>
+      <div class="body">
+        <h4>SVG <span class="badge svg">svg</span></h4>
+        <span class="ext">.svg · direct</span>
+        <p>Icons, logos, single vector elements. Served as <code>image/svg+xml</code>.</p>
+      </div>
+    </div>
+    <div class="format-card">
+      <div class="thumb"><img src="./assets/14-format-markdown.png" alt="Markdown rendered example" /></div>
+      <div class="body">
+        <h4>Markdown <span class="badge markdown">md</span></h4>
+        <span class="ext">.md · marked + DOMPurify</span>
+        <p>Prose, READMEs, design notes. Code blocks syntax-highlighted (highlight.js).</p>
+      </div>
+    </div>
+    <div class="format-card">
+      <div class="thumb"><img src="./assets/13-format-dot.png" alt="Graphviz DOT example" /></div>
+      <div class="body">
+        <h4>Graphviz / DOT <span class="badge dot">dot</span></h4>
+        <span class="ext">.dot · graphviz-wasm</span>
+        <p>Directed and undirected graphs. <code>digraph</code> / <code>graph</code> source.</p>
+      </div>
+    </div>
+    <div class="format-card">
+      <div class="thumb"><img src="./assets/11-format-vega.png" alt="Vega-Lite chart example" /></div>
+      <div class="body">
+        <h4>Vega-Lite <span class="badge vega">vega-lite</span></h4>
+        <span class="ext">.vl.json · vega SSR</span>
+        <p>Charts, data viz. JSON spec with inline data (no remote fetches).</p>
+      </div>
+    </div>
+    <div class="format-card">
+      <div class="thumb"><img src="./assets/12-format-d2.png" alt="D2 diagram example" /></div>
+      <div class="body">
+        <h4>D2 <span class="badge d2">d2</span></h4>
+        <span class="ext">.d2 · @terrastruct/d2 (wasm)</span>
+        <p>Modern diagram-as-code. Clean syntax, good for system maps.</p>
+      </div>
+    </div>
+    <div class="format-card" style="background:var(--bg-muted);">
+      <div class="thumb" style="display:grid;place-items:center;color:var(--text-subtle);">
+        <span style="font-family:var(--mono);font-size:0.78rem;letter-spacing:0.14em;">DEFERRED</span>
+      </div>
+      <div class="body">
+        <h4 style="color:var(--text-mute);">plantuml · excalidraw</h4>
+        <span class="ext">offline + pure-JS rule</span>
+        <p>JVM dep / canvas-heavy — break the offline rule. Not on the roadmap.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="dashboard">
+  <h2><span class="num">04</span> The dashboard</h2>
+  <p class="lead">Three regions: sidebar (filters), grid (your visuals), drawer (the selected one). View-only — entity creation goes through MCP.</p>
+
+  <figure>
+    <img src="./assets/04-grid-all.png" alt="Dashboard grid view" />
+    <figcaption>Grid view, "All visuals". The sidebar filters compose with AND.</figcaption>
+  </figure>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Sidebar filters</h3>
+      <ul style="font-size:.92rem;">
+        <li><strong>Library</strong> — All / Starred / Archived counts.</li>
+        <li><strong>Projects</strong> — flat list with visual counts. Click to filter.</li>
+        <li><strong>Tags</strong> — every tag in the library, sorted by use. Click multiple → AND.</li>
+        <li><strong>Type</strong> — filter by format (html, mermaid, svg, …).</li>
+        <li><strong>Source</strong> — which generator made it (Stitch, Figma, Mermaid Chart, etc.).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>The drawer</h3>
+      <ul style="font-size:.92rem;">
+        <li><strong>Open preview</strong> — full-page render in a unified shell.</li>
+        <li><strong>Compare v(N-1) ↔ vN</strong> — opens side-by-side or overlay.</li>
+        <li><strong>Talk with agent</strong> — copy a templated prompt that references this visual (see <a href="#talk">§07</a>).</li>
+        <li><strong>Download</strong> — PNG / SVG / source.</li>
+        <li><strong>Star, Archive, Re-render thumbnail.</strong></li>
+        <li><strong>Tags</strong> — inline editor; <strong>Versions</strong> list with revert.</li>
+      </ul>
+    </div>
+  </div>
+
+  <figure>
+    <img src="./assets/05-drawer-html.png" alt="Detail drawer with versions, tags, actions" />
+    <figcaption>Detail drawer — actions at top, tags + versions below, archive at bottom.</figcaption>
+  </figure>
+
+  <h3>Search</h3>
+  <p>
+    Top bar search (or <kbd>/</kbd> to focus, <kbd>⌘K</kbd> to reset) matches title, project, and tag.
+    Filters from the sidebar still apply on top.
+  </p>
+
+  <h3>Empty state · seed scaffold</h3>
+  <p style="font-size:.92rem;color:var(--text-mute);">
+    Brand-new install? The empty-state CTA loads a 5-visual seed bundle (one per format) so you have something to browse while you wire up your AI host. Dismissible · idempotent · doesn't run twice.
+  </p>
+
+  <h3>Dark mode</h3>
+  <figure>
+    <img src="./assets/02-dashboard-dark.png" alt="Dashboard in dark mode" />
+    <figcaption>Dark theme is one click away in the top bar.</figcaption>
+  </figure>
+</section>
+
+<section id="compare">
+  <h2><span class="num">05</span> Compare versions</h2>
+  <p class="lead">When your AI iterates a visual, every version sticks. Compare them in two modes.</p>
+
+  <figure>
+    <img src="./assets/06-compare-side-by-side.png" alt="Side-by-side compare mode" />
+    <figcaption>Side-by-side. Pickers at top swap A/B; sync-scroll keeps both panes aligned.</figcaption>
+  </figure>
+
+  <h3>Shell states</h3>
+  <p>The unified shell decides what to render based on the picker selection:</p>
+
+  <figure>
+    <svg class="state-svg" viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Shell state machine">
+      <defs>
+        <marker id="sarrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#9396a1" />
+        </marker>
+      </defs>
+      <rect x="230" y="20" width="160" height="56" rx="8" fill="rgba(31,43,128,0.10)" stroke="#1f2b80" stroke-width="1.5"/>
+      <text x="310" y="44" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="14" fill="#0e0f14">single</text>
+      <text x="310" y="62" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">B unset · only A renders</text>
+
+      <rect x="40" y="140" width="160" height="68" rx="8" fill="#ffffff" stroke="#0e0f14" stroke-width="1.5"/>
+      <text x="120" y="164" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="14" fill="#0e0f14">comparable</text>
+      <text x="120" y="182" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">A ≠ B · both panes,</text>
+      <text x="120" y="196" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">sxs / overlay buttons</text>
+
+      <rect x="420" y="140" width="160" height="68" rx="8" fill="#ffffff" stroke="#0e0f14" stroke-width="1.5"/>
+      <text x="500" y="164" text-anchor="middle" font-family="IBM Plex Sans" font-weight="600" font-size="14" fill="#0e0f14">not-comparable</text>
+      <text x="500" y="182" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">A = B · type-mismatch ·</text>
+      <text x="500" y="196" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#5a5e6d">empty pane w/ reason</text>
+
+      <path d="M 290 76 Q 200 110 170 138" stroke="#9396a1" stroke-width="1.4" fill="none" marker-end="url(#sarrow)"/>
+      <text x="220" y="120" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#5a5e6d">add B</text>
+      <path d="M 330 76 Q 420 110 450 138" stroke="#9396a1" stroke-width="1.4" fill="none" marker-end="url(#sarrow)"/>
+      <text x="420" y="120" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#5a5e6d">degenerate B</text>
+      <path d="M 200 174 Q 310 174 420 174" stroke="#9396a1" stroke-width="1.4" fill="none" marker-end="url(#sarrow)"/>
+      <text x="310" y="166" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#5a5e6d">change B</text>
+    </svg>
+    <figcaption>Shell decides single / comparable / not-comparable from picker state.</figcaption>
+  </figure>
+
+  <p style="font-size:.92rem;color:var(--text-mute);">
+    URL-driven: <code>/v/&lt;id&gt;</code> for single, <code>/compare/&lt;id&gt;?a=N&amp;b=M&amp;mode=sxs</code> for compare.
+    Bookmark a specific compare; reload preserves picker.
+  </p>
+</section>
+
+<section id="iterate">
+  <h2><span class="num">06</span> Iterate &amp; revert</h2>
+  <p class="lead">Each refinement creates a new version. Old versions never disappear.</p>
+
+  <ol>
+    <li>Ask your AI to tweak a visual ("make it dark", "remove the sidebar"). It calls <code>iterate(visual_id, content, message?)</code>.</li>
+    <li>The new version becomes <em>current</em>. <code>v(N-1)</code> stays accessible.</li>
+    <li>From the drawer, click any version to preview it. Click <strong>Revert to v{n}</strong> to make an older version current.</li>
+    <li>Reverting doesn't delete history — it just changes which version the thumbnail and default preview point at.</li>
+  </ol>
+
+  <div class="callout">
+    <strong>Big iterations:</strong> for HTML &gt; a few KB, the Master skill instructs your AI to pass <code>content_path</code> instead of inline <code>content</code>.
+    Same result; saves tokens. Path must live under your project root (or <code>MAGPIE_CONTENT_ROOT</code> if set). <strong>Magpie never moves, edits, or deletes the source — it reads + copies.</strong>
+  </div>
+</section>
+
+<section id="talk">
+  <h2><span class="num">07</span> Talk with agent</h2>
+  <p class="lead">Hand a visual back to your AI with a templated prompt — eight presets, one custom. Copy to clipboard, paste into chat. No MCP roundtrip needed.</p>
+
+  <figure>
+    <img src="./assets/08-send-to-claude.png" alt="Talk with agent preset menu" />
+    <figcaption>Eight presets plus a custom slot. The selected visual's reference fills in automatically.</figcaption>
+  </figure>
+
+  <div class="presets-grid">
+    <div class="preset"><span class="ico">↻</span><h4>Iterate</h4><p>Draft the next version with a specific change.</p></div>
+    <div class="preset"><span class="ico">▦</span><h4>Variants</h4><p>Three options exploring the same intent.</p></div>
+    <div class="preset"><span class="ico">?</span><h4>Explain</h4><p>Walk through decisions in plain language.</p></div>
+    <div class="preset"><span class="ico">A</span><h4>A11y audit</h4><p>WCAG findings — not a rewrite.</p></div>
+    <div class="preset"><span class="ico">⇿</span><h4>Responsive check</h4><p>Desktop ⇿ mobile parity pass.</p></div>
+    <div class="preset"><span class="ico">◐</span><h4>Dark mode port</h4><p>Light theme over to dark, tokens preserved.</p></div>
+    <div class="preset"><span class="ico">−</span><h4>Simplify</h4><p>Cut to the essential moves.</p></div>
+    <div class="preset"><span class="ico">+</span><h4>Add data</h4><p>Real values in place of lorem.</p></div>
+  </div>
+
+  <h3>Variables</h3>
+  <p style="font-size:.92rem;color:var(--text-mute);">
+    Presets resolve these tokens against the selected visual:
+    <code>{{visual_id}}</code> · <code>{{title}}</code> · <code>{{project}}</code> · <code>{{type}}</code> · <code>{{version}}</code> · <code>{{preview_url}}</code> · <code>{{magpie_ref}}</code>.
+  </p>
+
+  <div class="callout gold">
+    <strong>Privacy posture:</strong> the visual never leaves your machine. Only its <code>magpie://visual/&lt;id&gt;</code> reference travels with the prompt. Your AI reads the visual via the MCP resource — same trust boundary as any other MCP call.
+  </div>
+</section>
+
+<section id="shortcuts">
+  <h2><span class="num">08</span> Keyboard shortcuts</h2>
+  <p class="lead">Press <kbd>?</kbd> from any dashboard view to see them all.</p>
+
+  <figure>
+    <img src="./assets/03-shortcuts-overlay.png" alt="? shortcut overlay" />
+    <figcaption>The <kbd>?</kbd> overlay — full reference, dismiss with <kbd>Esc</kbd>.</figcaption>
+  </figure>
+
+  <div class="keys">
+    <div class="row"><kbd>/</kbd><span>focus search</span></div>
+    <div class="row"><kbd>⌘K</kbd><span>reset search</span></div>
+    <div class="row"><kbd>j</kbd> / <kbd>k</kbd><span>next / prev visual</span></div>
+    <div class="row"><kbd>Enter</kbd><span>open drawer</span></div>
+    <div class="row"><kbd>Esc</kbd><span>close drawer / overlay</span></div>
+    <div class="row"><kbd>s</kbd><span>star / unstar</span></div>
+    <div class="row"><kbd>?</kbd><span>show this overlay</span></div>
+    <div class="row"><kbd>g</kbd> <kbd>l</kbd><span>go to library</span></div>
+  </div>
+</section>
+
+<section id="tools">
+  <h2><span class="num">09</span> MCP tool surface</h2>
+  <p class="lead">Your AI has 14 tools and 3 resources. You don't call them directly — you ask in plain English, and the Master skill picks the right tool.</p>
+
+  <table class="tool-table">
+    <thead>
+      <tr><th>Tool</th><th>What it does</th><th>Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>add_visual</code></td><td>Save a new mockup / diagram / chart / doc as v1 of a new entity.</td><td class="phase">1</td></tr>
+      <tr><td><code>iterate</code></td><td>Add a new version to an existing visual. Supports per-version description.</td><td class="phase">1</td></tr>
+      <tr><td><code>create_project</code></td><td>Create an empty project (usually optional — <code>add_visual</code> auto-creates).</td><td class="phase">1</td></tr>
+      <tr><td><code>list_projects</code></td><td>Show all projects with counts and last activity.</td><td class="phase">1</td></tr>
+      <tr><td><code>list_versions</code></td><td>Full version history for a visual.</td><td class="phase">1</td></tr>
+      <tr><td><code>find_visuals</code></td><td>Search across the library. Filters by tag, source, type, project, starred.</td><td class="phase">2</td></tr>
+      <tr><td><code>compare</code></td><td>Open the compare view for two versions.</td><td class="phase">2</td></tr>
+      <tr><td><code>open_preview</code></td><td>Return a preview URL for an existing visual.</td><td class="phase">2</td></tr>
+      <tr><td><code>update_visual</code></td><td>Rename, retag, star, mark final.</td><td class="phase">2</td></tr>
+      <tr><td><code>update_project</code></td><td>Rename a project, change type, edit description. Includes rename-and-merge semantics.</td><td class="phase">2</td></tr>
+      <tr><td><code>archive_visual</code></td><td>Soft-archive a visual (UI restorable).</td><td class="phase">3</td></tr>
+      <tr><td><code>archive_project</code></td><td>Archive a whole project at once.</td><td class="phase">3</td></tr>
+      <tr><td><code>merge_projects</code></td><td>Move all visuals from <em>src</em> into <em>dst</em>; archive <em>src</em>.</td><td class="phase">3</td></tr>
+      <tr><td><code>read_inbox</code></td><td>Read pending visuals from external generators (Stitch · Figma · etc.) before nesting.</td><td class="phase">3</td></tr>
+    </tbody>
+  </table>
+
+  <h3>MCP resources</h3>
+  <p>
+    Read-only library inspection from your AI:
+    <code>magpie://library</code> · <code>magpie://project/&lt;name&gt;</code> · <code>magpie://visual/&lt;id&gt;[/v&lt;n&gt;]</code>.
+  </p>
+
+  <div class="callout">
+    <strong>Hard delete?</strong> No — the MCP surface is archive-only.
+    To purge permanently, use the dashboard. <strong>Errors are prose</strong>, not structured codes — your AI gets a human-readable message it can recover from.
+  </div>
+</section>
+
+<section id="export">
+  <h2><span class="num">10</span> Export</h2>
+  <p class="lead">Take any visual offline. Three single-file forms plus a project zip.</p>
+
+  <ul>
+    <li><strong>PNG</strong> — the rendered thumbnail at full size.</li>
+    <li><strong>SVG</strong> — for vector formats (mermaid, svg, dot, vega-lite, d2). Crisp at any size.</li>
+    <li><strong>Source</strong> — the original HTML / .mmd / .svg / .md / .dot / .vl.json / .d2 file.</li>
+    <li><strong>Project zip</strong> — every visual in a project, latest version of each, with a manifest.</li>
+  </ul>
+
+  <p style="font-size:.92rem;color:var(--text-mute);">
+    Find these on the drawer ("Download") or via dashboard project menu ("Export project").
+  </p>
+</section>
+
+<section id="backup">
+  <h2><span class="num">11</span> Backup &amp; restore</h2>
+  <p class="lead">Two ways to back up. Both produce a single artifact you can store wherever you store everything else.</p>
+
+  <h3>The folder copy</h3>
+  <p>
+    Everything Magpie holds is at <code>~/.magpie/</code> (or wherever <code>MAGPIE_HOME</code> points). Quit Magpie, copy the folder, you're done.
+  </p>
+
+  <h3>The CLI</h3>
+<pre><code><span class="k">$</span> npx magpie-mcp --backup
+<span class="k">→</span> wrote magpie-backup-2026-05-19.tar.gz (12.4 MB)</code></pre>
+  <p style="font-size:.92rem;color:var(--text-mute);">
+    Writes a USTAR + gzip archive. Zero new dependencies. Internally runs a WAL checkpoint first so the snapshot is consistent.
+  </p>
+
+  <h3>Restore</h3>
+  <p>
+    Extract the archive into <code>~/.magpie/</code> (or your <code>MAGPIE_HOME</code>), reboot Magpie. <strong>Migrations are forward-only</strong> — restoring an older snapshot replays missing migrations on next boot. There is no rollback path by design; downgrade = restore from an older backup.
+  </p>
+</section>
+
+<section id="faq">
+  <h2><span class="num">12</span> FAQ &amp; not-goals</h2>
+
+  <h3>Where is my data?</h3>
+  <p>
+    <code>~/.magpie/</code> on your machine. SQLite metadata + filesystem blobs. Nothing leaves the host.
+    Override with <code>MAGPIE_HOME=/path</code>.
+  </p>
+
+  <h3>What is the Master skill, exactly?</h3>
+  <p>
+    A portable Agent Skill — a markdown file with frontmatter that teaches your AI Magpie's protocol. Ships in the npm tarball at <code>skill/magpie-master/SKILL.md</code>. <code>npx magpie-mcp --install-skill</code> drops it into your host's skill directory (Claude Code · Claude Desktop today). The MCP server itself also carries a layered fallback string so untrained hosts still work — the skill is the high-resolution version.
+  </p>
+
+  <h3>Does Magpie generate visuals?</h3>
+  <p>No. Your AI writes the content; Magpie organizes, renders, versions, and serves it. <strong>There is no LLM in the server.</strong></p>
+
+  <h3>Can I use it without Claude?</h3>
+  <p>
+    Yes — any MCP-aware host works (Claude Code, Claude Desktop, Cursor, Cline, custom clients). The dashboard alone is also useful as a viewer for content you produce by hand: drop files into the HTTP API directly.
+  </p>
+
+  <h3>Multiple browsers / multiple machines?</h3>
+  <p>
+    The dashboard binds to <code>127.0.0.1</code> by default — local only. To share, change <code>MAGPIE_BIND</code>.
+    For multi-machine, copy <code>~/.magpie/</code> (or the backup archive); there's no sync.
+  </p>
+
+  <h3>I ran <code>npx magpie-mcp</code> in two folders — why two HTTP ports?</h3>
+  <p>
+    Magpie runs <strong>one canonical process per <code>MAGPIE_HOME</code></strong>. Subsequent <code>npx magpie-mcp</code> invocations in the same home become <strong>facades</strong> that multiplex MCP traffic to the existing canonical over a named pipe — they bind zero HTTP ports.
+  </p>
+  <p>
+    You see two ports only when you have two <em>different</em> <code>MAGPIE_HOME</code> values. Each home gets its own lock, IPC pipe, and HTTP listener. Example: repo A pins <code>MAGPIE_HOME=./.tmp-home</code> in its <code>.mcp.json</code> and gets canonical A on :3737; repo B with no override falls back to <code>~/.magpie/</code> and gets canonical B on :3738 (auto-bumped because :3737 was taken).
+  </p>
+  <p>
+    The facade log line <code>connected as facade to canonical pid=N http=:M</code> is informational — it tells you where the canonical's dashboard lives, not that the facade opened a port.
+  </p>
+  <p>
+    To merge into one canonical (one port): set the same <code>MAGPIE_HOME</code> in both shells before running <code>npx magpie-mcp</code>. To kill a stale canonical: read the pid from <code>$MAGPIE_HOME/magpie.lock</code> and terminate it.
+  </p>
+
+  <h3>What about migrations and breaking changes?</h3>
+  <p>
+    Migrations are <strong>forward-only forever</strong> (R21). The runner detects gaps and downgrades at boot. The downgrade path is restore-from-backup — see <a href="#backup">§11 Backup</a>.
+  </p>
+
+  <h3>Does Magpie touch my source files?</h3>
+  <p>
+    No. <code>content_path</code> is <strong>read + copy only</strong> — bytes go from your named path into the next blob slot. The origin is left exactly where it was. Magpie never moves, edits, or deletes your source.
+  </p>
+
+  <h3>Things Magpie will <em>not</em> do</h3>
+  <ul class="nogo">
+    <li>Run an LLM. The server is dumb infra.</li>
+    <li>Cloud sync, share links, public gallery.</li>
+    <li>Auto-tag with AI.</li>
+    <li>Multi-user accounts.</li>
+    <li>Ship as Electron / Tauri. Bundled web only.</li>
+    <li>Real-time collab / infinite canvas / drawing.</li>
+  </ul>
+
+  <h3>Browser support</h3>
+  <p>Chrome / Chromium-based browsers only at v1.0. The render pipeline uses system Chrome via <code>puppeteer-core</code>, and the dashboard targets the same surface. Firefox + Safari are deferred indefinitely.</p>
+</section>
+
+</main>
+
+<footer class="foot">
+  <code>magpie-mcp</code> · v1.0 · MIT · <a href="https://github.com/omerb784/magpie-mcp">github.com/omerb784/magpie-mcp</a>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const root = document.documentElement;
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('magpie-guide-theme', next); } catch (e) {}
+  }
+  try {
+    const saved = localStorage.getItem('magpie-guide-theme');
+    if (saved) document.documentElement.dataset.theme = saved;
+  } catch (e) {}
+
+  document.querySelectorAll('.tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      const tabs = btn.closest('.card');
+      tabs.querySelectorAll('.tab-btn').forEach((b) => b.classList.toggle('active', b === btn));
+      tabs.querySelectorAll('.tab-panel').forEach((p) => p.classList.toggle('active', p.dataset.tab === tab));
+    });
+  });
+</script>
+
+</body>
+</html>

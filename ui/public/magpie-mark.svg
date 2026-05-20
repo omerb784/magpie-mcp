@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80" role="img" aria-label="Magpie mark — bird with gold bead at beak, cobalt wing panel">
+  <title>Magpie · brand mark</title>
+  <desc>Three-quarter view magpie with gold bead at beak tip, cobalt wing panel on shoulder, long tail extending lower-right. Vector-authored — favicon-grade.</desc>
+
+  <defs>
+    
+    <g id="m-body">
+      
+      <path d="&#xA;        M 30 12&#xA;        C 24 12 21 15 21 20&#xA;        L 11 14&#xA;        L 21 22&#xA;        C 21 27 24 31 28 34&#xA;        C 31 38 32 44 33 50&#xA;        C 35 56 39 62 46 66&#xA;        C 54 70 62 73 71 76&#xA;        C 65 71 60 68 56 64&#xA;        C 60 64 62 61 60 57&#xA;        C 56 53 51 50 49 46&#xA;        C 47 38 44 28 39 20&#xA;        C 36 14 33 12 30 12 Z&#xA;      " fill="#0e0f14"></path>
+
+      
+      <path d="&#xA;        M 30 34&#xA;        C 33 32 38 33 40 38&#xA;        C 42 44 41 51 38 53&#xA;        C 34 51 31 44 30 38 Z&#xA;      " fill="#fdfaf2"></path>
+
+      
+      <path d="&#xA;        M 39 35&#xA;        C 45 33 51 38 51 44&#xA;        C 50 49 45 50 41 47&#xA;        C 38 43 38 38 39 35 Z&#xA;      " fill="#1f2b80"></path>
+
+      
+      <path d="M 50 44 L 52 48 L 48 49 Z" fill="#141d5e"></path>
+
+      
+      <circle cx="25" cy="19" r="1.1" fill="#fdfaf2"></circle>
+      <circle cx="25" cy="19" r="0.5" fill="#0e0f14"></circle>
+
+      
+      <g stroke="#0e0f14" stroke-width="0.22" stroke-linecap="round" fill="none" opacity="0.45">
+        <path d="M 48 60 L 60 70"></path>
+        <path d="M 50 58 L 62 68"></path>
+        <path d="M 52 56 L 64 66"></path>
+        <path d="M 54 56 L 66 64"></path>
+        <path d="M 44 50 L 52 56"></path>
+        <path d="M 42 46 L 50 52"></path>
+        <path d="M 28 24 L 32 28"></path>
+        <path d="M 30 22 L 34 26"></path>
+      </g>
+    </g>
+
+    
+    <pattern id="m-hatch" patternUnits="userSpaceOnUse" width="2" height="2" patternTransform="rotate(35)">
+      <line x1="0" y1="0" x2="0" y2="2" stroke="#0e0f14" stroke-width="0.25" opacity="0.35"></line>
+    </pattern>
+  </defs>
+
+  
+  <symbol id="mark-light" viewBox="0 0 80 80">
+    <circle cx="9" cy="11" r="3.2" fill="#d4a233"></circle>
+    <use href="#m-body"></use>
+  </symbol>
+
+  
+  <symbol id="mark-dark" viewBox="0 0 80 80">
+    <circle cx="9" cy="11" r="3.2" fill="#d4a233"></circle>
+    
+    <path d="&#xA;      M 30 12&#xA;      C 24 12 21 15 21 20&#xA;      L 11 14&#xA;      L 21 22&#xA;      C 21 27 24 31 28 34&#xA;      C 31 38 32 44 33 50&#xA;      C 35 56 39 62 46 66&#xA;      C 54 70 62 73 71 76&#xA;      C 65 71 60 68 56 64&#xA;      C 60 64 62 61 60 57&#xA;      C 56 53 51 50 49 46&#xA;      C 47 38 44 28 39 20&#xA;      C 36 14 33 12 30 12 Z&#xA;    " fill="#eef0f4"></path>
+    
+    <path d="&#xA;      M 30 34&#xA;      C 33 32 38 33 40 38&#xA;      C 42 44 41 51 38 53&#xA;      C 34 51 31 44 30 38 Z&#xA;    " fill="#0e0f14"></path>
+    
+    <path d="&#xA;      M 39 35&#xA;      C 45 33 51 38 51 44&#xA;      C 50 49 45 50 41 47&#xA;      C 38 43 38 38 39 35 Z&#xA;    " fill="#1f2b80"></path>
+    <path d="M 50 44 L 52 48 L 48 49 Z" fill="#141d5e"></path>
+    <circle cx="25" cy="19" r="1.1" fill="#0e0f14"></circle>
+    <circle cx="25" cy="19" r="0.5" fill="#eef0f4"></circle>
+    <g stroke="#eef0f4" stroke-width="0.22" stroke-linecap="round" fill="none" opacity="0.35">
+      <path d="M 48 60 L 60 70"></path>
+      <path d="M 50 58 L 62 68"></path>
+      <path d="M 52 56 L 64 66"></path>
+      <path d="M 44 50 L 52 56"></path>
+    </g>
+  </symbol>
+
+  
+  <symbol id="mark-mono" viewBox="0 0 80 80">
+    
+    <circle cx="9" cy="11" r="3.2" fill="none" stroke="#0e0f14" stroke-width="0.9"></circle>
+    
+    <path d="&#xA;      M 30 12&#xA;      C 24 12 21 15 21 20&#xA;      L 11 14&#xA;      L 21 22&#xA;      C 21 27 24 31 28 34&#xA;      C 31 38 32 44 33 50&#xA;      C 35 56 39 62 46 66&#xA;      C 54 70 62 73 71 76&#xA;      C 65 71 60 68 56 64&#xA;      C 60 64 62 61 60 57&#xA;      C 56 53 51 50 49 46&#xA;      C 47 38 44 28 39 20&#xA;      C 36 14 33 12 30 12 Z&#xA;    " fill="#0e0f14"></path>
+    
+    <path d="&#xA;      M 30 34&#xA;      C 33 32 38 33 40 38&#xA;      C 42 44 41 51 38 53&#xA;      C 34 51 31 44 30 38 Z&#xA;    " fill="#eef0f4"></path>
+    
+    <path d="&#xA;      M 39 35&#xA;      C 45 33 51 38 51 44&#xA;      C 50 49 45 50 41 47&#xA;      C 38 43 38 38 39 35 Z&#xA;    " fill="url(#m-hatch)" stroke="#0e0f14" stroke-width="0.3"></path>
+    <circle cx="25" cy="19" r="1.0" fill="#eef0f4" stroke="#0e0f14" stroke-width="0.25"></circle>
+  </symbol>
+
+  
+  <symbol id="mark-favicon" viewBox="0 0 80 80">
+    
+    <circle cx="14" cy="14" r="6" fill="#d4a233"></circle>
+    
+    <path d="&#xA;      M 32 14&#xA;      C 26 14 22 18 22 22&#xA;      L 12 16&#xA;      L 22 25&#xA;      C 22 30 25 34 30 36&#xA;      C 32 42 33 49 36 54&#xA;      C 40 60 46 66 56 72&#xA;      C 66 76 72 78 76 78&#xA;      C 70 72 64 68 58 64&#xA;      C 62 62 64 58 60 54&#xA;      C 56 50 52 47 50 42&#xA;      C 48 32 44 22 38 16&#xA;      C 36 14 34 14 32 14 Z&#xA;    " fill="#0e0f14"></path>
+    
+    <path d="M 32 36 C 36 34 41 36 42 42 C 43 49 41 54 38 54 C 34 52 32 44 32 36 Z" fill="#fdfaf2"></path>
+    
+    <path d="M 42 36 C 50 34 56 42 54 48 C 50 52 44 50 42 44 Z" fill="#1f2b80"></path>
+  </symbol>
+
+  
+  <use href="#mark-light"></use>
+</svg>

@@ -1,0 +1,8 @@
+digraph G {
+  rankdir=LR;
+  node [shape=box, style=filled, fillcolor="#fdf3e3", color="#c89c4a", fontname="sans-serif"];
+  edge [color="#4b6b46"];
+  Owner -> Magpie;
+  Magpie -> Nest;
+  Nest -> Dashboard;
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Magpie golden · vega-lite · F1",
+  "width": 320,
+  "height": 200,
+  "data": {
+    "values": [
+      {"phase": "A", "tests": 4},
+      {"phase": "B", "tests": 129},
+      {"phase": "C", "tests": 85},
+      {"phase": "D", "tests": 24},
+      {"phase": "E", "tests": 19}
+    ]
+  },
+  "mark": {"type": "bar", "color": "#4b6b46"},
+  "encoding": {
+    "x": {"field": "phase", "type": "ordinal", "axis": {"title": "phase"}},
+    "y": {"field": "tests", "type": "quantitative", "axis": {"title": "tests added"}}
+  }
+}

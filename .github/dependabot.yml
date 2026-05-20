@@ -1,0 +1,51 @@
+# v0.9.2 Phase B / S5 — Dependabot configuration.
+#
+# Weekly npm audit on the production tree. Grouped minor/patch bumps to
+# keep PR noise low; major bumps each get their own PR for review.
+# GitHub Actions ecosystem covered too so the SHA pins from S4 don't
+# silently rot — Dependabot will open a PR with a new SHA when an
+# action releases.
+
+version: 2
+
+updates:
+  # npm — runtime + dev deps
+  - package-ecosystem: "npm"
+    directory: "/"
+    target-branch: "main"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 5
+    versioning-strategy: "increase"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    groups:
+      minor-and-patch:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
+    labels:
+      - "dependencies"
+
+  # GitHub Actions — SHA-pinned per S4 still needs Dependabot to
+  # advance the pin when an action releases a new version.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "main"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(actions)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"

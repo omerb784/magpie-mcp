@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+# Least-privilege baseline (v0.9.2 Phase B/S4). CI does no writes —
+# no comments, no artifact upload, no release. Read is enough.
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.os }} · Node ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [20, 22]
+    steps:
+      # SHA-pinned per v0.9.2 Phase B/S4 (supply-chain hardening).
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Setup Node ${{ matrix.node }}
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Lifecycle e2e tests
+        # Run even if unit tests failed — the 2 pre-existing render-queue
+        # flakes in src/render/index.test.ts shouldn't gate the e2e signal.
+        # Each step still surfaces its own pass/fail to the cell summary.
+        if: always()
+        run: npm run test:e2e

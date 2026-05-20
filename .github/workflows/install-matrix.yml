@@ -1,0 +1,223 @@
+name: Install matrix
+
+# v0.9.2 Phase E/E1 — Clean-install smoke across 3 OS x 2 Node = 6 cells.
+# CI exercises the tarball install path the way end users hit it via npx.
+# Pairs with publish-time `npm pack`; this asserts the packed artifact boots.
+
+on:
+  push:
+    branches: [main, v0.9.2, v0.9.2-phase-e]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install-smoke:
+    name: ${{ matrix.os }} · Node ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [20, 22]
+    timeout-minutes: 10
+    steps:
+      # SHA-pinned per v0.9.2 Phase B/S4 (supply-chain hardening).
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Setup Node ${{ matrix.node }}
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install build deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Pack
+        id: pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          tarball="$(npm pack --silent --pack-destination "$RUNNER_TEMP")"
+          # npm pack on some versions prints just the filename, on others a full path.
+          # Normalise to an absolute path.
+          case "$tarball" in
+            /*) abs="$tarball" ;;
+            *)  abs="$RUNNER_TEMP/$tarball" ;;
+          esac
+          [ -f "$abs" ] || { echo "::error::tarball not found at $abs"; ls -la "$RUNNER_TEMP"; exit 1; }
+          size_bytes=$(wc -c < "$abs" | tr -d ' ')
+          echo "tarball=$abs" >> "$GITHUB_OUTPUT"
+          echo "size_bytes=$size_bytes" >> "$GITHUB_OUTPUT"
+          echo "Packed tarball: $abs ($size_bytes bytes)"
+
+      - name: Install tarball into fresh dir
+        id: install
+        shell: bash
+        env:
+          TARBALL: ${{ steps.pack.outputs.tarball }}
+        run: |
+          set -euo pipefail
+          fresh="$RUNNER_TEMP/install-cell"
+          mkdir -p "$fresh"
+          cd "$fresh"
+          start_epoch=$(date +%s)
+          npm init -y > /dev/null
+          # production-only install of the packed artifact, no scripts skipped.
+          npm install --omit=dev --no-audit --no-fund "$TARBALL"
+          end_epoch=$(date +%s)
+          duration=$(( end_epoch - start_epoch ))
+          echo "fresh=$fresh" >> "$GITHUB_OUTPUT"
+          echo "duration_s=$duration" >> "$GITHUB_OUTPUT"
+          echo "Install completed in ${duration}s"
+
+      - name: Print-config sanity (exit 0 + snippet present)
+        shell: bash
+        env:
+          FRESH: ${{ steps.install.outputs.fresh }}
+        run: |
+          set -euo pipefail
+          cd "$FRESH"
+          out="$(npx --no-install magpie-mcp --print-config)"
+          echo "$out"
+          echo "$out" | grep -q '"magpie"' || { echo "::error::--print-config did not emit magpie snippet"; exit 1; }
+
+      - name: Version sanity
+        shell: bash
+        env:
+          FRESH: ${{ steps.install.outputs.fresh }}
+        run: |
+          set -euo pipefail
+          cd "$FRESH"
+          v="$(npx --no-install magpie-mcp --version)"
+          echo "magpie-mcp version: $v"
+          echo "$v" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+' || { echo "::error::--version did not emit semver"; exit 1; }
+
+      - name: Boot probe · dashboard URL on stderr (POSIX)
+        if: runner.os != 'Windows'
+        shell: bash
+        env:
+          FRESH: ${{ steps.install.outputs.fresh }}
+        run: |
+          set -euo pipefail
+          cd "$FRESH"
+          export MAGPIE_HOME="$RUNNER_TEMP/magpie-home-cell"
+          mkdir -p "$MAGPIE_HOME"
+          log="$RUNNER_TEMP/boot.log"
+          : > "$log"
+          # boot in background; redirect both streams to log; close stdin so the MCP
+          # readline loop sees EOF and exits cleanly on kill.
+          ( npx --no-install magpie-mcp < /dev/null > "$log" 2>&1 & echo $! > "$RUNNER_TEMP/magpie.pid" )
+          pid=$(cat "$RUNNER_TEMP/magpie.pid")
+          # Poll up to 60 s for the dashboard line.
+          deadline=$(( $(date +%s) + 60 ))
+          ok=0
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+            if grep -qE '^\[magpie\] dashboard: http://' "$log"; then
+              ok=1
+              break
+            fi
+            sleep 1
+          done
+          echo "--- boot log ---"
+          cat "$log"
+          echo "--- end log ---"
+          kill "$pid" 2>/dev/null || true
+          # let it shut down so the canonical IPC pipe / lock release cleanly.
+          sleep 2
+          kill -9 "$pid" 2>/dev/null || true
+          [ "$ok" = "1" ] || { echo "::error::dashboard URL not printed within 60s"; exit 1; }
+
+      - name: Boot probe · dashboard URL on stderr (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          FRESH: ${{ steps.install.outputs.fresh }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Set-Location $env:FRESH
+          $env:MAGPIE_HOME = Join-Path $env:RUNNER_TEMP "magpie-home-cell"
+          New-Item -ItemType Directory -Force -Path $env:MAGPIE_HOME | Out-Null
+          $log = Join-Path $env:RUNNER_TEMP "boot.log"
+          Set-Content -Path $log -Value '' -Encoding utf8
+          # Start magpie-mcp via the locally installed bin; redirect stdout+stderr.
+          $bin = Join-Path $env:FRESH "node_modules\.bin\magpie-mcp.cmd"
+          if (-not (Test-Path $bin)) {
+            throw "magpie-mcp.cmd not found at $bin"
+          }
+          $proc = Start-Process -FilePath $bin `
+            -RedirectStandardOutput $log `
+            -RedirectStandardError "$log.err" `
+            -NoNewWindow -PassThru
+          $deadline = (Get-Date).AddSeconds(60)
+          $ok = $false
+          while ((Get-Date) -lt $deadline) {
+            $combined = @()
+            if (Test-Path $log)      { $combined += Get-Content $log }
+            if (Test-Path "$log.err") { $combined += Get-Content "$log.err" }
+            if ($combined -match '^\[magpie\] dashboard: http://') {
+              $ok = $true
+              break
+            }
+            Start-Sleep -Seconds 1
+          }
+          Write-Host '--- boot log ---'
+          if (Test-Path $log)      { Get-Content $log }
+          if (Test-Path "$log.err") { Get-Content "$log.err" }
+          Write-Host '--- end log ---'
+          try { Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue } catch {}
+          if (-not $ok) {
+            Write-Error 'dashboard URL not printed within 60s'
+            exit 1
+          }
+
+      - name: Postinstall hook audit (fresh dir)
+        if: always()
+        shell: bash
+        env:
+          FRESH: ${{ steps.install.outputs.fresh }}
+        run: |
+          set -euo pipefail
+          cd "$FRESH"
+          node "$GITHUB_WORKSPACE/scripts/audit-postinstall.mjs" --json > "$RUNNER_TEMP/postinstall-audit.json" || true
+          {
+            echo ""
+            echo "<details><summary>Postinstall audit · ${{ matrix.os }} · Node ${{ matrix.node }}</summary>"
+            echo ""
+            echo '```json'
+            cat "$RUNNER_TEMP/postinstall-audit.json"
+            echo '```'
+            echo "</details>"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Offline install probe (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        env:
+          TARBALL: ${{ steps.pack.outputs.tarball }}
+        run: |
+          set -euo pipefail
+          node scripts/offline-install-probe.mjs "$TARBALL"
+
+      - name: Cell summary
+        if: always()
+        shell: bash
+        env:
+          DURATION: ${{ steps.install.outputs.duration_s }}
+          SIZE: ${{ steps.pack.outputs.size_bytes }}
+        run: |
+          {
+            echo "### ${{ matrix.os }} · Node ${{ matrix.node }}"
+            echo ""
+            echo "| Metric | Value |"
+            echo "|---|---|"
+            echo "| Install duration | ${DURATION:-?}s |"
+            echo "| Tarball size | ${SIZE:-?} bytes |"
+            echo "| Status | ${{ job.status }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
