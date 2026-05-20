@@ -10,7 +10,7 @@ Local dashboard + embedded MCP server. Your AI agent writes HTML, Mermaid, SVG, 
 
 <div align="center">
 
-[![npm version](https://img.shields.io/npm/v/magpie-mcp.svg)](https://www.npmjs.com/package/magpie-mcp) [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Node 20+](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](#install) [![CI](https://github.com/omerb784/magpie-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/omerb784/magpie-mcp/actions)
+[![npm version](https://img.shields.io/npm/v/magpie-mcp.svg)](https://www.npmjs.com/package/magpie-mcp) [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Node 20+](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](#install)
 
 </div>
 
@@ -184,7 +184,7 @@ Dashboard-only. Your AI coding agent doesn't drive downloads — open the dashbo
 |---|---|---|
 | Source blob (HTML / Mermaid / SVG / Markdown / DOT / `.vl.json` / `.d2`) | Drawer → **Download** → Source | Pick any version from the version dropdown first. |
 | Thumbnail PNG | Drawer → **Download** → Thumbnail (PNG) | Disabled if the version's render isn't `ok`. |
-| Rendered SVG | Drawer → **Download** → Rendered SVG | Available for `svg`, `dot`, `vega-lite`, `d2`. Mermaid needs a browser to compile — limitation, see CHANGELOG. |
+| Rendered SVG | Drawer → **Download** → Rendered SVG | Available for `svg`, `dot`, `vega-lite`, `d2`. Mermaid needs a browser to compile — limitation. |
 | Whole project as zip | Sidebar → project context menu → **Export as zip…** | Chooser: **Current versions only** (default) or **All versions**. Zip includes `manifest.json`, per-visual `meta.json`, source blobs, and thumbs (when render is `ok`). |
 
 REST endpoints powering the above (read-only, offline):
@@ -340,7 +340,3 @@ Magpie is a local-only process. It opens loopback ports (127.0.0.1), reads/write
 ## License
 
 MIT. © 2026 Omer BarOr.
-
-## Changelog
-
-See [`CHANGELOG.md`](CHANGELOG.md) for the full release history. Versioned per [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
