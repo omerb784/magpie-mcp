@@ -1,16 +1,18 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/brand/web/readme/readme-header-dark-1280x320.png" />
-  <img alt="Magpie · Your loyal Magpie. Lands every visual in the nest." src="assets/brand/web/readme/readme-header-1280x320.png" width="100%" />
-</picture>
+<p align="center">
+  <img src="assets/brand/web/readme/magpie-mark.svg" alt="Magpie" width="120" height="120" />
+</p>
 
-# Magpie
+<h1 align="center">Magpie</h1>
 
-> **Your loyal Magpie.**
-> **Lands every visual in the nest.**
+<p align="center"><em>Your loyal Magpie.<br />Lands every visual in the nest.</em></p>
 
 Local dashboard + embedded MCP server. Your AI agent writes HTML, Mermaid, SVG, Markdown, Graphviz/DOT, Vega-Lite, D2, status reports, ADRs, plans — Magpie lands them in a gallery you can browse. Library, projects, tags, versions, side-by-side compare, source attribution. One install, two surfaces (MCP tools + browser dashboard).
 
+<div align="center">
+
 [![npm version](https://img.shields.io/npm/v/magpie-mcp.svg)](https://www.npmjs.com/package/magpie-mcp) [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Node 20+](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](#install) [![CI](https://github.com/omerb784/magpie-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/omerb784/magpie-mcp/actions)
+
+</div>
 
 ## What it is
 
@@ -225,16 +227,14 @@ Hard deletes are intentionally UI-only. The MCP surface only archives. This make
 Zero. No phone home. No version checks. No analytics. Forever.
 
 **Why not Electron?**
-Bundled web only. Browser tab is the UI. Decision logged in `docs/decisions.md` (D1).
+Bundled web only. The browser tab is the UI — a locked architectural decision.
 
 **Why "Magpie"?**
 Magpies are famous for collecting shiny objects and storing them in their nest. That's exactly what this app does for every visual your AI agent authors — your loyal Magpie lands the mockups, diagrams, charts, reports, plans, and references Claude (or Cursor, Cline, etc.) produces and keeps them organized in one place.
 
-## v0.9.0 upgrade — machine-scoped lifecycle
+## Process model — one canonical Magpie per machine
 
-Before v0.9.0, every MCP host session (Claude Code session #1, session #2, Cursor, Claude Desktop) spawned its own `magpie-mcp` process — multiple processes hitting the same `~/.magpie/db.sqlite`. WAL absorbed it but it was a footgun.
-
-v0.9.0 introduces **one canonical Magpie per machine**, with N facades. The first process to bind the IPC pipe at `$MAGPIE_HOME/magpie.pipe-*` becomes canonical and owns HTTP, SQLite, blob writes, and the render queue. Subsequent processes detect the pipe is bound and become facades — they own the stdio pipe to their host and forward MCP traffic to the canonical over IPC. When canonical dies, exactly one facade wins the race to bind and becomes the new canonical (and re-binds the previous HTTP port so the dashboard URL doesn't change).
+Magpie runs **one canonical process per `MAGPIE_HOME`**, with N facades. The first process to bind the IPC pipe at `$MAGPIE_HOME/magpie.pipe-*` becomes canonical and owns HTTP, SQLite, blob writes, and the render queue. Subsequent processes (a second Claude Code session, Cursor, Claude Desktop) detect the bound pipe and become facades — they own the stdio pipe to their host and forward MCP traffic to the canonical over IPC. When the canonical dies, exactly one facade wins the race to bind and becomes the new canonical (re-binding the previous HTTP port so the dashboard URL doesn't change).
 
 You'll see one of three banners on stderr at boot:
 
@@ -242,9 +242,7 @@ You'll see one of three banners on stderr at boot:
 - `[magpie] connected as facade to canonical pid=99999 ipc=... http=:3737` — another canonical exists; this process is a facade.
 - `[magpie] promoted to canonical pid=12345 ... (prev httpPort=3737)` — was a facade; canonical died; this process won the promotion race.
 
-**One-time restart required:** if you had any magpie process running before pulling v0.9.0, close + reopen your MCP host once so it spawns under the new boot path. No data migration. Full details + rollback in `docs/v0.9.0/migration.md`.
-
-**Windows AV note:** Defender real-time scanning adds ~1-3% overhead to test runs on a default install. Add `$PWD` and `$env:MAGPIE_HOME` as `Add-MpPreference -ExclusionPath` entries if you're running benchmarks. See `docs/v0.9.0/migration.md` AV section + `scripts/measure-av-overhead.mjs` for the measurement harness.
+**Windows AV note:** Defender real-time scanning adds ~1-3% overhead to test runs on a default install. Add `$PWD` and `$env:MAGPIE_HOME` as `Add-MpPreference -ExclusionPath` entries if you're running benchmarks. See `scripts/measure-av-overhead.mjs` for the measurement harness.
 
 ## Back up your nest
 
@@ -333,7 +331,7 @@ UI dev runs on `:5273` and proxies `/api` + `/ws` to the server (port `3838`, se
 
 ## Contributing
 
-See `docs/` — `decisions.md` for locked architectural decisions (incl. R9 brand rename), `architecture.md` for the layout, `ux-spec.md` for dashboard targets. PRs welcome; please open an issue first for non-trivial changes.
+PRs welcome — please open an issue first for non-trivial changes. To keep the scope tight, these are deliberately **out of scope** and won't be merged: an LLM in the server, MCP Apps / iframe-in-chat, an Electron or native shell, cloud sync or share links, AI auto-tagging, and multi-user / accounts. Magpie organizes AI-authored visuals; it does not generate them. For security issues, see [`SECURITY.md`](SECURITY.md).
 
 ## Security
 

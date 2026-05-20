@@ -193,7 +193,7 @@ When you produce Owner-facing prose (commit messages, status reports, response c
 
 > **Your loyal Magpie.** Lands every visual in the nest.
 
-Don't paraphrase as *"draws"* or *"catches"* or *"collects"* — the verb **"lands"** is locked (R23, 2026-05-16). Other phrasings have a small superseded set documented in `docs/decisions.md`.
+Don't paraphrase as *"draws"* or *"catches"* or *"collects"* — the verb **"lands"** is locked (R23, 2026-05-16).
 
 ### Seed-vs-add disambiguation
 

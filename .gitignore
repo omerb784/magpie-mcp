@@ -85,5 +85,8 @@ guides-*.png
 # v1.0 launch sprint — scope mocks + site drafts (Owner-local scratch).
 .tmp-v1.0-*/
 
+# Security review reports — Owner-local; may list unfixed findings, keep out of public repo.
+docs/v1.0/security-review.md
+
 # Claude Design return slot — raw extracted bundles balloon to MB-scale.
 docs/marketing/**/return/extracted/

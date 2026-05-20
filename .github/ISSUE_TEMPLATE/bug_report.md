@@ -21,11 +21,11 @@ labels: bug
 
 ## Environment
 
-- Looksee version: <!-- `npx looksee-mcp --version` -->
+- Magpie version: <!-- `npx magpie-mcp --version` -->
 - Node version: <!-- `node --version` -->
 - OS: <!-- macOS 14 / Ubuntu 22.04 / Windows 11 -->
 - MCP host: <!-- Claude Desktop / Claude Code / other -->
-- Chrome path: <!-- if `LOOKSEE_CHROME_PATH` is set -->
+- Chrome path: <!-- if `MAGPIE_CHROME_PATH` is set -->
 
 ## Logs
 

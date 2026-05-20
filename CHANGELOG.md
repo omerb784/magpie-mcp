@@ -4,7 +4,7 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-> **Note on 0.5 → 0.9.3 gap.** Versions between `0.4.0-pre` and `1.0.0` were tagged locally during development but never published to npm (per the v0.2.0 Owner decision to defer all npm publishes until v1.0). Per-release detail lives in `docs/v0.N.0/status.md` for each tag (e.g. `docs/v0.9.3/status.md`). The `1.0.0` entry below rolls up everything material that changed since `v0.4.0-pre`. From v1.0 onward, every published release gets its own entry here.
+> **Note on 0.5 → 0.9.3 gap.** Versions between `0.4.0-pre` and `1.0.0` were tagged locally during development but never published to npm (per the v0.2.0 Owner decision to defer all npm publishes until v1.0). The `1.0.0` entry below rolls up everything material that changed since `v0.4.0-pre`. From v1.0 onward, every published release gets its own entry here.
 
 ## [1.0.0] — 2026-05-20 — first public release · soft launch
 
@@ -69,7 +69,6 @@ The polished v0.9.3 binary becomes a published artifact. Path 1 ship-minimum str
 - **CLAUDE.md hard-rule** (Q11 a): "Magpie NEVER moves, edits, or deletes Owner source files; `content_path` = read + copy only." Applies across all tool handlers, render pipeline, export routes, and any future ingest path.
 - **README**: npm + CI badges · tool count corrected to 14 (was stale at 13) · `--backup` CLI documented as shipped (was "future v0.9.3+") · new "Where files live" 4-line layered filesystem contract · changelog link at footer.
 - **5-surface version bump script** (`scripts/bump-version.mjs`) — single command bumps `package.json` + `src/config.ts` VERSION + master + steward SKILL frontmatters + `src/cli/install-skill.ts` banner to a target version. Idempotent · dirty-guard · `--dry-run` · post-write self-verify · 9-case test suite.
-- **Phase L close-ritual pre-writes** under `docs/v1.0/`: status.md (sprint state) · log.md (commit-by-commit) · close-ritual.md (exact T-0 + post-publish steps) · v1.0.1-hopper.md (40+ deferred items across 10 categories).
 
 ### Fixed
 
@@ -83,11 +82,11 @@ The polished v0.9.3 binary becomes a published artifact. Path 1 ship-minimum str
 
 ### Security
 
-- R24 (proposed) — `magpie-security` skill enforces the 15-invariant watch-list against the diff since the previous tag. HI findings block release; MED + LO advisory. First run on the v1.0 diff is an Owner mission gated on cp-install. R24 promotion to root `docs/decisions.md` deferred to v1.0.1 (rule lives in CLAUDE.md hard rules until enforcement has real first-run history).
+- R24 (proposed) — `magpie-security` skill enforces the 15-invariant watch-list against the diff since the previous tag. HI findings block release; MED + LO advisory. First run on the v1.0 diff is an Owner mission gated on cp-install. R24 promotion to the root decisions log deferred to v1.0.1 (the rule is enforced by Owner discipline until it has real first-run history).
 - Filesystem origin-untouched contract — explicit CLAUDE.md hard rule (Q11 a). Applies to all current and future ingest paths.
 - Tarball boundary lock — only `skill/magpie-master/SKILL.md` ships under `skill/`. `skill/magpie-steward/` and `skill/magpie-security/` are Owner-local dev tools that live in the repo for source-of-truth + version control but are excluded from the npm allowlist by `files` glob + tested.
 
-### Deferred to v1.0.1+ (full list in `docs/v1.0/v1.0.1-hopper.md`)
+### Deferred to v1.0.1+
 
 Marketing surfaces (HN · PH · Reddit · Twitter · LinkedIn · Dev.to · 5 directory blurbs · FAQ · objection bank) · demo video (Loom 3-min + scripted 60-90s) · Phase M master skill v2 stages M1/M2/M4/M5 (eval-driven rewrite — M3 feature-bake shipped at v1.0) · seed scaffold polish (preview modal · backup-before-seed · format showcase · post-load tour overlay) · site polish (var-name rename · /guide mirror page on site · "How it works" 3-step animation · screenshot carousel · dark-mode toggle) · user guide v1.0-chrome screenshot re-capture · Cursor + Cline `--install-skill` host detection (Q7) · puppeteer ephemeral profile dirs (Q5 if Owner reproduces) · `magpie-security` 3 invariant-nuance calibration Qs · R24 + FS hard-rule promotion to root decisions.md · living-overview × 3 refresh · 4 Claude Design site-handover §11 open items.
 
@@ -155,7 +154,7 @@ Polish — dashboard UX rough edges + Export gap. No new visual formats. No new 
   - `src/util/slug.ts` — title slugifier with id fallback.
   - `src/util/mime.ts` — `mimeForType` (extracted from `mcp/resources.ts` so HTTP and MCP share one source of truth) + `rendersToSvg`.
 - **New icons** in `ui/src/Icon.tsx`: `download`, `zip`.
-- **Deps**: + `fflate@0.8.2` (locked in `docs/v0.4.0/log.md` — ~30KB vs jszip's 100KB+, sync API, ESM-native).
+- **Deps**: + `fflate@0.8.2` (~30KB vs jszip's 100KB+, sync API, ESM-native).
 
 ### Known limitations
 
