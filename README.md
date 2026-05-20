@@ -1,9 +1,10 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/web/readme/header-dark-1280x320.png" />
-    <img src="assets/brand/web/readme/header-light-1280x320.png" alt="Magpie — your loyal Magpie. Lands every visual in the nest." width="760" />
-  </picture>
+  <img src="assets/brand/web/readme/logo-A.png" alt="Magpie" width="140" />
 </p>
+
+<h1 align="center">Magpie</h1>
+
+<p align="center"><em>Your loyal Magpie.<br />Lands every visual in the nest.</em></p>
 
 Local dashboard + embedded MCP server. Your AI agent writes HTML, Mermaid, SVG, Markdown, Graphviz/DOT, Vega-Lite, D2, status reports, ADRs, plans — Magpie lands them in a gallery you can browse. Library, projects, tags, versions, side-by-side compare, source attribution. One install, two surfaces (MCP tools + browser dashboard).
 
@@ -25,10 +26,6 @@ Local dashboard + embedded MCP server. Your AI agent writes HTML, Mermaid, SVG, 
 > Your LLM gives you chat history. Magpie gives you a gallery your AI curates for you.
 
 A dumb organizer with smart producers. Your AI coding agent (or Stitch, Figma, Mermaid Chart, SVGMaker, Icons8 over MCP) does the creative work; Magpie files it, tags it, versions it, attributes it, and lets you browse every non-code thing your AI ever made for you — across sessions, in a real grid UI.
-
-<p align="center">
-  <img src="assets/brand/web/readme/dashboard-grid.png" alt="Magpie dashboard — a project grid with one card per visual, format badges across HTML, D2, Vega-Lite, DOT, Markdown, SVG and Mermaid." width="840" />
-</p>
 
 ## What it isn't
 
@@ -150,10 +147,6 @@ Your AI coding agent calls `iterate` → v2 added to the same visual. Compare v1
 - **Compare URL** — `/compare/:id?a=N&b=M` opens side-by-side iframes for any two versions.
 - **Header search** — debounced full-library title search.
 - **Empty state** — landing card with the `--print-config` snippet pre-baked.
-
-<p align="center">
-  <img src="assets/brand/web/readme/compare.png" alt="Side-by-side compare view — version 1 and version 2 of a visual rendered next to each other." width="840" />
-</p>
 
 The dashboard auto-refreshes via WebSocket when your AI coding agent adds, iterates, or archives. A "Reconnecting…" banner appears if the connection drops.
 
