@@ -14,7 +14,7 @@ mkdirSync(dst, { recursive: true });
 cpSync(src, dst, { recursive: true });
 console.log(`copied migrations -> ${dst}`);
 
-// Ship only the linden-loaf example bundle. The user guide (seed/user-guide/)
+// Ship only the atlas example bundle. The user guide (seed/user-guide/)
 // is NOT bundled in npm — it lives on the site. /guide degrades to
 // "Guide not bundled" in the published package by design (v1.0).
 const seedSrc = join(root, "seed", "example-bundle.json");

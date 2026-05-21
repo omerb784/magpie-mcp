@@ -19,7 +19,7 @@ function buildApp(): Hono {
 }
 
 describe("POST /api/seed/load-example", () => {
-  it("seeds 7 visuals in a fresh linden-loaf project", async () => {
+  it("seeds 8 visuals in a fresh atlas project", async () => {
     const app = buildApp();
     const res = await app.request("/api/seed/load-example", { method: "POST" });
     expect(res.status).toBe(200);
@@ -31,15 +31,15 @@ describe("POST /api/seed/load-example", () => {
     expect(body.created).toBe(true);
     expect(body.projectId).toBeTruthy();
     expect(Array.isArray(body.visualIds)).toBe(true);
-    expect(body.visualIds.length).toBe(7);
+    expect(body.visualIds.length).toBe(8);
 
-    const project = findByName("linden-loaf");
+    const project = findByName("atlas");
     expect(project).not.toBeNull();
     expect(project?.id).toBe(body.projectId);
   });
 
-  it("returns 409 with existing:true when linden-loaf already exists", async () => {
-    const pre = createProject("linden-loaf", "mixed");
+  it("returns 409 with existing:true when atlas already exists", async () => {
+    const pre = createProject("atlas", "mixed");
     const app = buildApp();
     const res = await app.request("/api/seed/load-example", { method: "POST" });
     expect(res.status).toBe(409);

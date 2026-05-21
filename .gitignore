@@ -5,9 +5,6 @@ dist/
 .env
 .env.local
 .env.dev
-.tmp-dev-home/
-.tmp-list-test-home/
-.tmp-empty-home/
 coverage/
 .vite/
 *.tsbuildinfo
@@ -15,38 +12,9 @@ coverage/
 ui/node_modules/
 ui/dist/
 
-.tmp-smoke-home/
-.tmp-smoke-home */
-.tmp-*.mjs
-.tmp-*-shots/
-.tmp-tools-content-path/
-.tmp-pathguard/
-.tmp-overview-update/
-.tmp-features-overview/
-.tmp-handover-assets/
-.tmp-claude-design*/
-.tmp-smoke/
-.tmp-tool-guides/
-.tmp-spike-*/
-.tmp-spike/
-.tmp-s3-mock/
-.tmp-mock-update/
-.tmp-s6-smoke-findings/
-.tmp-s7-plan/
-.tmp-research-summary/
-.tmp-status-board-update/
-.tmp-phase-a-smoke/
-.tmp-design-system/
-.tmp-marketing-rebuild/
-.tmp-phase-c-founder/
-.tmp-v092-phase-e/
-.tmp-owner-mocks/
-.tmp-smoke-home/
-.tmp-cold-empty-home/
-.tmp-brand-assets/
-.tmp-brand-kit-update/
-.tmp-handover-claude-design/
-.tmp-handover-2/
+# Scratch / temp — one glob covers every .tmp-* file and dir (incl. local MCP
+# homes like .tmp-smoke-home/ and stray .tmp-*.mjs probes).
+.tmp-*
 Magpie - Branding toolkit.zip
 
 # v0.9.2 Phase B/S5 — SBOM is generated per-build, never committed.
@@ -64,29 +32,6 @@ sbom.json
 smoke-*.png
 pr*-*.png
 guides-*.png
-.tmp-v060-plan/
-
-# User guide now bundled under seed/user-guide/ for npm tarball + /guide HTTP route (v1.0).
-# Old paths kept out of repo as legacy.
-.tmp-mcp-creator-guide/
-.tmp-phaseb-summary/
-.tmp-phase-c-founder/
-.tmp-phase-d-plan/
-.tmp-seed-bench-home/
-.tmp-scope-mocks/
-.tmp-scope-j/
-.tmp-scope-g/
-.tmp-perf-home/
-.tmp-cold-home/
-.tmp-skill-demos/
-.tmp-steward-review/
-.tmp-v093-scope/
-
-# v1.0 launch sprint — scope mocks + site drafts (Owner-local scratch).
-.tmp-v1.0-*/
-
-# Launch demo scratch — staged HTML for the demo video (blobs already copied into the Nest).
-.tmp-demo/
 
 # Security review reports — Owner-local; may list unfixed findings, keep out of public repo.
 docs/v1.0/security-review.md

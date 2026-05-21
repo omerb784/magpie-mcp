@@ -2001,7 +2001,7 @@ export function App() {
                             const r = await fetch("/api/seed/load-example", { method: "POST" });
                             if (r.status === 200) {
                               const body = (await r.json()) as { created: boolean; projectId: string };
-                              pushToast("success", "Example project loaded", "linden-loaf");
+                              pushToast("success", "Example project loaded", "atlas");
                               refreshProjects();
                               setSelectedProjectId(body.projectId);
                               setSelectedVisualId(null);

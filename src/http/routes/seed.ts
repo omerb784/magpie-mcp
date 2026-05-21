@@ -11,7 +11,7 @@ import { broadcast } from "../ws.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const PROJECT_NAME = "linden-loaf";
+const PROJECT_NAME = "atlas";
 
 interface ExampleEntry {
   type: VisualType;
@@ -71,7 +71,7 @@ export function mountSeedRoutes(app: Hono): void {
     const existing = findByName(PROJECT_NAME);
     if (existing) {
       return c.json(
-        { existing: true, projectId: existing.id, msg: "User guide already loaded" },
+        { existing: true, projectId: existing.id, msg: "Example project already loaded" },
         409
       );
     }
