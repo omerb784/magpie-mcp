@@ -71,7 +71,7 @@
     "prepublishOnly": "npm run build && npm run test:all && npm run check:tarball && npm run audit:postinstall && npm run audit:deps && npm run sbom"
   },
   "dependencies": {
-    "@hono/node-server": "^1.13.0",
+    "@hono/node-server": "^2.0.4",
     "@hpcc-js/wasm-graphviz": "^1.21.5",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "@terrastruct/d2": "^0.1.33",
