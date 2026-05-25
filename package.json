@@ -86,7 +86,7 @@
     "marked-highlight": "^2.2.4",
     "mermaid": "^11.4.0",
     "nanoid": "^5.0.0",
-    "puppeteer-core": "^23.0.0",
+    "puppeteer-core": "^25.0.4",
     "vega": "^6.2.0",
     "vega-lite": "^6.4.3",
     "ws": "^8.18.0",
